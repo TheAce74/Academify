@@ -1,0 +1,2 @@
+# Academify
+Academic Management Platform
