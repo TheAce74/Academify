@@ -1,0 +1,114 @@
+.error {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  inset: 0;
+  z-index: 9999;
+  background-image: url("https://assets.codepen.io/1538474/star.svg"), linear-gradient(to bottom, #05007a, #4d007d);
+  background-attachment: fixed;
+  overflow: hidden;
+}
+@keyframes floating {
+  from {
+    transform: translateY(0px);
+  }
+  65% {
+    transform: translateY(15px);
+  }
+  to {
+    transform: translateY(0px);
+  }
+}
+.error .mars {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  height: 27vmin;
+  background: url("https://assets.codepen.io/1538474/mars.svg") no-repeat bottom center;
+  background-size: cover;
+}
+.error .logo-404 {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top: 16vmin;
+  width: 30vmin;
+}
+@media (max-width: 480px) and (min-width: 320px) {
+  .error .logo-404 {
+    top: 45vmin;
+  }
+}
+.error .meteor {
+  position: absolute;
+  right: 2vmin;
+  top: 16vmin;
+}
+.error .title {
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  font-size: 5vmin;
+  margin-block: 31vmin 1em;
+}
+@media (max-width: 480px) and (min-width: 320px) {
+  .error .title {
+    margin-top: 65vmin;
+  }
+}
+.error .subtitle {
+  color: white;
+  font-weight: 400;
+  text-align: center;
+  font-size: 3.5vmin;
+  margin-top: -1vmin;
+  margin-bottom: 9vmin;
+}
+.error div:has(> .btn-back) {
+  width: -moz-max-content;
+  width: max-content;
+  margin-inline: auto;
+}
+.error .btn-back {
+  border: 1px solid white;
+  color: white;
+  height: 5vmin;
+  padding: 12px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+.error .btn-back:hover {
+  background: white;
+  color: #4d007d;
+}
+@media (max-width: 480px) and (min-width: 320px) {
+  .error .btn-back {
+    font-size: 3.5vmin;
+  }
+}
+.error .astronaut {
+  position: absolute;
+  top: 18vmin;
+  left: 10vmin;
+  height: 30vmin;
+  animation: floating 3s infinite ease-in-out;
+}
+@media (max-width: 480px) and (min-width: 320px) {
+  .error .astronaut {
+    top: 2vmin;
+  }
+}
+.error .spaceship {
+  position: absolute;
+  bottom: 15vmin;
+  right: 24vmin;
+}
+@media (max-width: 480px) and (min-width: 320px) {
+  .error .spaceship {
+    width: 45vmin;
+    bottom: 18vmin;
+  }
+}

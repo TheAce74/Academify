@@ -1,0 +1,33 @@
+/* for the plain css people */
+:root {
+  --font-jakarta: "Plus Jakarta Sans", sans-serif;
+  --clr-neutral-100: #ffffff;
+  --clr-neutral-200: #ececec;
+  --clr-neutral-300: #afafaf;
+  --clr-neutral-400: #686868;
+  --clr-neutral-900: #2f2f2f;
+  --clr-primary-100: #e8ecfe;
+  --clr-primary-300: #667df6;
+  --clr-primary-400: #1b3df1;
+  --clr-primary-500: #132bab;
+  --clr-accent-400: #6036d6;
+}
+
+/* for the tailwindcss fans */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .button-primary {
+    @apply bg-primary-400 text-neutral-100 border-primary-400 hover:bg-accent-400 hover:border-accent-400 focus-visible:bg-accent-400 focus-visible:border-accent-400;
+  }
+
+  .button-inverted {
+    @apply bg-transparent border-primary-400 hover:bg-primary-400 hover:text-neutral-100 focus-visible:bg-primary-400 focus-visible:text-neutral-100;
+  }
+
+  .button-accent {
+    @apply bg-accent-400 text-neutral-100 border-accent-400 hover:bg-primary-400 hover:border-primary-400 focus-visible:bg-primary-400 focus-visible:border-primary-400;
+  }
+}
