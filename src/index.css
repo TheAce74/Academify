@@ -13,10 +13,6 @@
   --clr-accent-400: #6036d6;
 }
 
-body {
-  display: block;
-}
-
 /* for the tailwindcss fans */
 @tailwind base;
 @tailwind components;
