@@ -13,6 +13,11 @@
   --clr-accent-400: #6036d6;
 }
 
+/* General elements transitions */
+.transition-element {
+  transition: all 0.2s ease-in-out;
+}
+
 /* for the tailwindcss fans */
 @tailwind base;
 @tailwind components;
