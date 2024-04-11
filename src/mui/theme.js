@@ -18,6 +18,9 @@ const theme = createTheme({
     accent: {
       main: "#6036d6",
     },
+    dark: {
+      main: "#1C1C1C",
+    },
   },
 });
 
