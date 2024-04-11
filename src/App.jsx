@@ -1,18 +1,14 @@
-import { useState } from "react";
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ScrollToTop } from "./utils/ScrollToTop";
 import Error from "./components/layout/Error";
 import { SnackbarProvider } from "notistack";
-import Sidebar from "./pages/dashboard/components/layout/Sidebar";
-import Header from "./components/ui/Header";
-// import Home from "./pages/dashboard/sections/Home";
-// import Profile from "./pages/dashboard/sections/Profile";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import AuthContextProvider from "./context/AuthContext";
 import Guard from "./helpers/Guard";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./mui/theme";
+import MenuTogglerWrapper from "./helpers/MenuTogglerWrapper";
 
 // Adviser
 import AdviserDashboard from "./pages/dashboard/adviser/sections/Dashboard";
@@ -35,7 +31,6 @@ import ParentProfile from "./pages/dashboard/parent/sections/Profile";
 import ParentNotification from "./pages/dashboard/parent/sections/Notifications";
 
 function App() {
-  const [showMenu, setShowMenu] = useState(false);
   const router = createBrowserRouter([
     {
       element: (
@@ -54,14 +49,7 @@ function App() {
           path: "/",
           element: (
             <Guard>
-              <Sidebar
-                showMenu={showMenu}
-                toggleMenu={() => setShowMenu(!showMenu)}
-              />
-              <Header
-                showMenu={showMenu}
-                toggleMenu={() => setShowMenu(!showMenu)}
-              />
+              <MenuTogglerWrapper />
               <div className="w-full p-5 ml-auto 2xl:w-4/5 xl:w-[78%] lg:w-[76%] md:w-[68%] md:p-8">
                 <Outlet />
               </div>

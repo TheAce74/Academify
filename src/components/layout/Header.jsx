@@ -27,6 +27,7 @@ export default function Header({ toggleMenu, showMenu }) {
   const toggleShowMenu = () => {
     toggleMenu();
   };
+
   return (
     <div className="z-[300] flex justify-between items-center h-[10vh] w-full bg-[#E6F7EE] md:px-7 px-3 transition-element">
       <img src={Logo} alt="logo" className="md:w-[180px] w-[130px]" />

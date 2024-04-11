@@ -4,8 +4,7 @@ const AuthContext = createContext(null);
 
 function AuthContextProvider({ children }) {
   const [user, setUser] = useState({
-    id: 1,
-    name: "Chisom Udonsi",
+    type: "adviser",
   });
 
   const value = {
