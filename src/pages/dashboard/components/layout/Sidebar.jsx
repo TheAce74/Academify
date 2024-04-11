@@ -1,16 +1,15 @@
-import { useState } from "react";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-function Sidebar() {
-  const [active, setActive] = useState("Dashboard");
-  const [activeUser] = useState("student");
-  const [showMenu, setShowMenu] = useState(false);
+import { useState, useEffect } from "react";
+import { useLocation, Link } from "react-router-dom";
+
+function Sidebar({ showMenu = false, toggleMenu = false }) {
+  const location = useLocation();
+  const activeUser = location.pathname.split("/")[1];
+  const currentPath = location.pathname;
 
   const [adviserLinks] = useState([
     {
       name: "Dashboard",
-      path: "/adviser/dashboard",
+      path: "/adviser",
     },
     {
       name: "Semesters",
@@ -22,7 +21,7 @@ function Sidebar() {
     },
     {
       name: "Manage Students",
-      path: "/adviser/manage-students",
+      path: "/adviser/manage",
     },
     {
       name: "Profile",
@@ -32,7 +31,7 @@ function Sidebar() {
   const [studentLinks] = useState([
     {
       name: "Dashboard",
-      path: "/student/dashboard",
+      path: "/student",
     },
     {
       name: "Courses",
@@ -48,17 +47,17 @@ function Sidebar() {
     },
     {
       name: "Notification",
-      path: "/student/notification",
+      path: "/student/notifications",
     },
   ]);
   const [parentLinks] = useState([
     {
       name: "Dashboard",
-      path: "/parent/dashboard",
+      path: "/parent",
     },
     {
       name: "Results",
-      path: "/parent/results",
+      path: "/parent/result",
     },
     {
       name: "Profile",
@@ -66,69 +65,71 @@ function Sidebar() {
     },
     {
       name: "Notification",
-      path: "/parent/notification",
+      path: "/parent/notifications",
     },
   ]);
 
+  useEffect(() => {
+    toggleMenu();
+  }, [location]);
+
   return (
-    <div className="relative w-full h-full ">
-      <div className="absolute top-5 right-5 hidden md:block z-[-1]">
-        <IconButton onClick={() => setShowMenu(!showMenu)}>
-          {!showMenu ? <MenuIcon /> : <CloseIcon />}
-        </IconButton>
-      </div>
+    <div className="fixed w-full h-full top-[10%] left-0 z-[200]">
       <div
-        className={`fixed top-0 bg-white transition-element left-0 overflow-y-auto translate-x-0 w-[300px] h-full border border-r flex flex-col pt-14 md:translate-x-[-300px] ${showMenu ? "md:translate-x-0 shadow-xl" : "md:translate-x-[-300px]"}`}
+        className={`  bg-white transition-element  overflow-y-auto md:translate-x-0 w-[300px] md:w-[260px] xl:w-[300px]  h-full border border-r flex flex-col pt-14  ${showMenu ? "translate-x-[0px] shadow-xl" : "translate-x-[-300px]"}`}
       >
         {/* Course Adviser */}
         {activeUser === "adviser" && (
-          <div>
+          <ul>
             {adviserLinks.map((link, index) => {
               return (
-                <div
-                  onClick={() => setActive(link.name)}
+                <li
                   key={index}
-                  className={`transition-element pl-7 py-3 mb-4 cursor-pointer ${active === link.name ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
+                  className={`w-full  transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
                 >
-                  <p className="">{link.name}</p>
-                </div>
+                  <Link to={link.path}>
+                    <p className="pl-7 py-3">{link.name}</p>
+                  </Link>
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
 
         {/* Student */}
         {activeUser === "student" && (
-          <div>
+          <ul>
             {studentLinks.map((link, index) => {
               return (
-                <div
-                  onClick={() => setActive(link.name)}
+                <li
                   key={index}
-                  className={`transition-element pl-7 py-3 mb-4 cursor-pointer ${active === link.name ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
+                  className={`w-full  transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
                 >
-                  <p className="">{link.name}</p>
-                </div>
+                  <Link to={link.path}>
+                    <p className="pl-7 py-3">{link.name}</p>
+                  </Link>
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
 
         {/* Parent */}
         {activeUser === "parent" && (
-          <div>
+          <ul>
             {parentLinks.map((link, index) => {
               return (
-                <div
-                  onClick={() => setActive(link.name)}
+                <li
                   key={index}
-                  className={`transition-element pl-7 py-3 mb-4 cursor-pointer ${active === link.name ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
+                  className={`w-full  transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
                 >
-                  <p className="">{link.name}</p>
-                </div>
+                  <Link to={link.path}>
+                    <p className="pl-7 py-3">{link.name}</p>
+                  </Link>
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
       </div>
     </div>

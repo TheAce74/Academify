@@ -7,18 +7,18 @@ export default {
         jakarta: ["Plus Jakarta Sans", "sans-serif"],
       },
       screens: {
-        "3xl": { max: "1535px" },
-        // => @media (max-width: 1535px) { ... }
-        "2xl": { max: "1430px" },
-        // => @media (max-width: 1430px) { ... }
-        xl: { max: "1290px" },
-        // => @media (max-width: 1290px) { ... }
-        lg: { max: "1023px" },
-        // => @media (max-width: 1023px) { ... }
-        md: { max: "767px" },
-        // => @media (max-width: 767px) { ... }
-        sm: { max: "539px" },
-        // => @media (max-width: 539px) { ... }
+        "3xl": { min: "1535px" },
+        // => @media (min-width: 1535px) { ... }
+        "2xl": { min: "1430px" },
+        // => @media (min-width: 1430px) { ... }
+        xl: { min: "1290px" },
+        // => @media (min-width: 1290px) { ... }
+        lg: { min: "1023px" },
+        // => @media (min-width: 1023px) { ... }
+        md: { min: "767px" },
+        // => @media (min-width: 767px) { ... }
+        sm: { min: "539px" },
+        // => @media (min-width: 539px) { ... }
       },
       colors: {
         neutral: {

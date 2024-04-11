@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ScrollToTop } from "./utils/ScrollToTop";
 import Error from "./components/layout/Error";
 import { SnackbarProvider } from "notistack";
 import Sidebar from "./pages/dashboard/components/layout/Sidebar";
-import Home from "./pages/dashboard/sections/Home";
-import Profile from "./pages/dashboard/sections/Profile";
+import Header from "./components/ui/Header";
+// import Home from "./pages/dashboard/sections/Home";
+// import Profile from "./pages/dashboard/sections/Profile";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import AuthContextProvider from "./context/AuthContext";
@@ -12,7 +14,28 @@ import Guard from "./helpers/Guard";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./mui/theme";
 
+// Adviser
+import AdviserDashboard from "./pages/dashboard/adviser/sections/Dashboard";
+import AdviserSemester from "./pages/dashboard/adviser/sections/Semester";
+import AdviserResults from "./pages/dashboard/adviser/sections/Results";
+import AdviserManageStudents from "./pages/dashboard/adviser/sections/ManageStudents";
+import AdviserProfile from "./pages/dashboard/adviser/sections/Profile";
+
+// Student
+import StudentDashboard from "./pages/dashboard/student/sections/Dashboard";
+import StudentCourses from "./pages/dashboard/student/sections/Courses";
+import StudentResults from "./pages/dashboard/student/sections/Results";
+import StudentProfile from "./pages/dashboard/student/sections/Profile";
+import StudentNotifications from "./pages/dashboard/student/sections/Notifications";
+
+// Parent
+import ParentDashboard from "./pages/dashboard/parent/sections/Dashboard";
+import ParentResult from "./pages/dashboard/parent/sections/Result";
+import ParentProfile from "./pages/dashboard/parent/sections/Profile";
+import ParentNotification from "./pages/dashboard/parent/sections/Notifications";
+
 function App() {
+  const [showMenu, setShowMenu] = useState(false);
   const router = createBrowserRouter([
     {
       element: (
@@ -31,18 +54,105 @@ function App() {
           path: "/",
           element: (
             <Guard>
-              <Sidebar />
-              <Outlet />
+              <Sidebar
+                showMenu={showMenu}
+                toggleMenu={() => setShowMenu(!showMenu)}
+              />
+              <Header
+                showMenu={showMenu}
+                toggleMenu={() => setShowMenu(!showMenu)}
+              />
+              <div className="w-full p-5 ml-auto 2xl:w-4/5 xl:w-[78%] lg:w-[76%] md:w-[68%] md:p-8">
+                <Outlet />
+              </div>
             </Guard>
           ),
           children: [
             {
-              path: "/",
-              element: <Home />,
+              path: "/adviser",
+              element: (
+                <>
+                  <Outlet />
+                </>
+              ),
+              children: [
+                {
+                  path: "/adviser",
+                  element: <AdviserDashboard />,
+                },
+                {
+                  path: "/adviser/semesters",
+                  element: <AdviserSemester />,
+                },
+                {
+                  path: "/adviser/results",
+                  element: <AdviserResults />,
+                },
+                {
+                  path: "/adviser/manage",
+                  element: <AdviserManageStudents />,
+                },
+                {
+                  path: "/adviser/profile",
+                  element: <AdviserProfile />,
+                },
+              ],
             },
             {
-              path: "/profile",
-              element: <Profile />,
+              path: "/student",
+              element: (
+                <>
+                  <Outlet />
+                </>
+              ),
+              children: [
+                {
+                  path: "/student",
+                  element: <StudentDashboard />,
+                },
+                {
+                  path: "/student/courses",
+                  element: <StudentCourses />,
+                },
+                {
+                  path: "/student/results",
+                  element: <StudentResults />,
+                },
+                {
+                  path: "/student/profile",
+                  element: <StudentProfile />,
+                },
+                {
+                  path: "/student/notifications",
+                  element: <StudentNotifications />,
+                },
+              ],
+            },
+            {
+              path: "/parent",
+              element: (
+                <>
+                  <Outlet />
+                </>
+              ),
+              children: [
+                {
+                  path: "/parent",
+                  element: <ParentDashboard />,
+                },
+                {
+                  path: "/parent/result",
+                  element: <ParentResult />,
+                },
+                {
+                  path: "/parent/profile",
+                  element: <ParentProfile />,
+                },
+                {
+                  path: "/parent/notifications",
+                  element: <ParentNotification />,
+                },
+              ],
             },
           ],
         },
