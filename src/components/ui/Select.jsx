@@ -44,7 +44,6 @@ export default function Select({
           {options.map((option, index) => (
             <MenuItem key={index} value={option?.value ? option.value : option}>
               <span className="text-sm">
-                {" "}
                 {option?.title ? option.title : option}
               </span>
             </MenuItem>

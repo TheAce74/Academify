@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import HistoryIcon from "@mui/icons-material/History";
 
 import Select from "../../../../components/ui/Select";
@@ -52,6 +52,7 @@ const Results = () => {
       checked: false,
     },
   ]);
+
   const columns = [
     {
       key: "name",
@@ -88,7 +89,8 @@ const Results = () => {
     newData[index].checked = value;
     setData(newData);
   };
-  const checkAll = () => {
+
+  const checkAll = useCallback(() => {
     let all = [];
     data.map((item) => {
       if (item.checked === true) {
@@ -104,16 +106,19 @@ const Results = () => {
     } else {
       setAllChecked("none");
     }
-  };
+  }, [data]);
+
   const handleCheckAll = (value) => {
     let newData = [];
     data.forEach((item) => newData.push({ ...item, checked: value }));
     setData(newData);
   };
 
+  const handleSetFile = useCallback((file) => setDocument(file), []);
+
   useEffect(() => {
     checkAll();
-  }, [data]);
+  }, [data, checkAll]);
 
   return (
     <div>
@@ -129,7 +134,7 @@ const Results = () => {
           </div>
           <div className="lg:mt-0 mt-5">
             <h1 className="font-medium pb-2 border-b">Upload Result</h1>
-            <h3 className="text-right mt-3 mb-4 flex items-center justify-start lg:justify-end">
+            <h3 className="text-right mt-3 mb-4 flex items-center justify-start lg:justify-end cursor-pointer hover:text-primary-500">
               <span className="mr-3">View previously uploaded results</span>
               <HistoryIcon />
             </h3>
@@ -152,10 +157,7 @@ const Results = () => {
               options={courses}
             />
 
-            <DocumentUpload
-              className="mt-4 mb-6"
-              setFile={(file) => setDocument(file)}
-            />
+            <DocumentUpload className="mt-4 mb-6" setFile={handleSetFile} />
             <Button className="w-full">Upload Result</Button>
           </div>
         </div>
@@ -180,7 +182,7 @@ const Results = () => {
               className="w-[500px]"
               end
               iconName="search"
-              placeholder="Search student’s name or reg no....."
+              placeholder="Search student's name or reg no....."
             />
           </div>
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import TextField from "../../../../components/ui/TextField";
 import Table from "../../../../components/ui/Table";
 const ManageStudents = () => {
@@ -56,6 +56,7 @@ const ManageStudents = () => {
       checked: false,
     },
   ]);
+
   const columns = [
     {
       key: "name",
@@ -92,7 +93,8 @@ const ManageStudents = () => {
     newData[index].checked = value;
     setData(newData);
   };
-  const checkAll = () => {
+
+  const checkAll = useCallback(() => {
     let all = [];
     data.map((item) => {
       if (item.checked === true) {
@@ -108,7 +110,8 @@ const ManageStudents = () => {
     } else {
       setAllChecked("none");
     }
-  };
+  }, [data]);
+
   const handleCheckAll = (value) => {
     let newData = [];
     data.forEach((item) => newData.push({ ...item, checked: value }));
@@ -117,10 +120,11 @@ const ManageStudents = () => {
 
   useEffect(() => {
     checkAll();
-  }, [data]);
+  }, [data, checkAll]);
+
   return (
     <div>
-      <div className="sm:flex sm:items-center grid grid-cols-2 gap-6">
+      <div className="sm:flex sm:flex-wrap sm:items-center grid grid-cols-2 gap-6">
         {stats.map((item, index) => (
           <div key={index} className="border-r w-max pl-3 pr-14 h-full">
             <h3 className="text-xs">{item.title} Students</h3>
@@ -136,10 +140,10 @@ const ManageStudents = () => {
           value={search}
           setValue={(value) => setSearch(value)}
           size="small"
-          className="w-[500px]"
+          className="w-full"
           end
           iconName="search"
-          placeholder="Search student’s name or reg no....."
+          placeholder="Search student's name or reg no..."
         />
       </div>
 

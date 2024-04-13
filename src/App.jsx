@@ -50,7 +50,7 @@ function App() {
           element: (
             <Guard>
               <MenuTogglerWrapper />
-              <div className="w-full p-5 ml-auto 2xl:w-4/5 xl:w-[78%] lg:w-[76%] md:w-[68%] md:p-8">
+              <div className="w-full p-5 ml-auto xl:w-[calc(100%_-19em)] md:w-[calc(100%_-17em)] md:p-8">
                 <Outlet />
               </div>
             </Guard>

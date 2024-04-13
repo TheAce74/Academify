@@ -13,7 +13,8 @@ export default function DocumentUpload({ setFile, className }) {
 
   useEffect(() => {
     setFile(csvFile);
-  }, [csvFile]);
+  }, [csvFile, setFile]);
+
   return (
     <div className={`${className} transition-element text-sm `}>
       <input

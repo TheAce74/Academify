@@ -1,8 +1,4 @@
 /* for the plain css people */
-
-* {
-  overflow-x: hidden;
-}
 :root {
   --font-jakarta: "Plus Jakarta Sans", sans-serif;
   --clr-neutral-100: #ffffff;

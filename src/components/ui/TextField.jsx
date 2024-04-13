@@ -18,7 +18,7 @@ export default function TextField({
   const icon = getIconFromName(iconName);
   return (
     <div
-      className={`relative border-2 border-neutral-500 rounded-md px-4 py-3 text-sm flex items-center`}
+      className={`relative border-2 border-neutral-500 rounded-md px-4 py-3 text-sm flex items-center w-[min(100%,_500px)]`}
     >
       {start && <div className="mr-2">{icon}</div>}
       <input
