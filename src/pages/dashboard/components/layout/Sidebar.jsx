@@ -75,64 +75,62 @@ function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
   }, [location]);
 
   return (
-    <div className="fixed w-full h-full top-[10%] left-0 z-[200]">
-      <div
-        className={` bg-white transition-element overflow-y-auto md:translate-x-0 w-[300px] md:w-[260px] xl:w-[300px] h-full border border-r flex flex-col pt-14 ${showMenu ? "translate-x-[0px] shadow-xl" : "translate-x-[-300px]"}`}
-      >
-        {/* Course Adviser */}
-        {activeUser === "adviser" && (
-          <ul>
-            {adviserLinks.map((link, index) => {
-              return (
-                <li
-                  key={index}
-                  className={`w-full transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
-                >
-                  <Link to={link.path}>
-                    <p className="pl-7 py-3">{link.name}</p>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+    <div
+      className={`fixed top-[10%] left-0 z-[200] bg-white transition-element overflow-y-auto md:translate-x-0 w-[300px] md:w-[260px] xl:w-[300px] h-full border border-r flex flex-col pt-14 ${showMenu ? "translate-x-[0px] shadow-xl" : "translate-x-[-300px]"}`}
+    >
+      {/* Course Adviser */}
+      {activeUser === "adviser" && (
+        <ul>
+          {adviserLinks.map((link, index) => {
+            return (
+              <li
+                key={index}
+                className={`w-full transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
+              >
+                <Link to={link.path}>
+                  <p className="pl-7 py-3">{link.name}</p>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
-        {/* Student */}
-        {activeUser === "student" && (
-          <ul>
-            {studentLinks.map((link, index) => {
-              return (
-                <li
-                  key={index}
-                  className={`w-full transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
-                >
-                  <Link to={link.path}>
-                    <p className="pl-7 py-3">{link.name}</p>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+      {/* Student */}
+      {activeUser === "student" && (
+        <ul>
+          {studentLinks.map((link, index) => {
+            return (
+              <li
+                key={index}
+                className={`w-full transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
+              >
+                <Link to={link.path}>
+                  <p className="pl-7 py-3">{link.name}</p>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
-        {/* Parent */}
-        {activeUser === "parent" && (
-          <ul>
-            {parentLinks.map((link, index) => {
-              return (
-                <li
-                  key={index}
-                  className={`w-full transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
-                >
-                  <Link to={link.path}>
-                    <p className="pl-7 py-3">{link.name}</p>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
+      {/* Parent */}
+      {activeUser === "parent" && (
+        <ul>
+          {parentLinks.map((link, index) => {
+            return (
+              <li
+                key={index}
+                className={`w-full transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
+              >
+                <Link to={link.path}>
+                  <p className="pl-7 py-3">{link.name}</p>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
