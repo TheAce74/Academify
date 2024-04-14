@@ -16,6 +16,7 @@ import AdviserSemester from "./pages/dashboard/adviser/sections/Semester";
 import AdviserResults from "./pages/dashboard/adviser/sections/Results";
 import AdviserManageStudents from "./pages/dashboard/adviser/sections/ManageStudents";
 import AdviserProfile from "./pages/dashboard/adviser/sections/Profile";
+import AdviserViewSemester from "./pages/dashboard/adviser/sections/ViewSemester";
 
 // Student
 import StudentDashboard from "./pages/dashboard/student/sections/Dashboard";
@@ -71,6 +72,10 @@ function App() {
                 {
                   path: "/adviser/semesters",
                   element: <AdviserSemester />,
+                },
+                {
+                  path: "/adviser/view",
+                  element: <AdviserViewSemester />,
                 },
                 {
                   path: "/adviser/results",
