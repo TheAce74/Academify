@@ -18,6 +18,11 @@
   transition: all 0.2s ease-in-out;
 }
 
+/* active NavLink style */
+li:has(> .active) {
+  @apply bg-primary-300 text-white border-l-4 border-primary-400 hover:bg-primary-300;
+}
+
 /* for the tailwindcss fans */
 @tailwind base;
 @tailwind components;

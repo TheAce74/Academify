@@ -74,7 +74,7 @@ function App() {
                   element: <AdviserSemester />,
                 },
                 {
-                  path: "/adviser/view",
+                  path: "/adviser/semesters/view",
                   element: <AdviserViewSemester />,
                 },
                 {

@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, NavLink } from "react-router-dom";
 
 function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
   const location = useLocation();
   const activeUser = location.pathname.split("/")[1];
-  const currentPath = location.pathname;
 
   const [adviserLinks] = useState([
     {
@@ -28,6 +27,7 @@ function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
       path: "/adviser/profile",
     },
   ]);
+
   const [studentLinks] = useState([
     {
       name: "Dashboard",
@@ -50,6 +50,7 @@ function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
       path: "/student/notifications",
     },
   ]);
+  
   const [parentLinks] = useState([
     {
       name: "Dashboard",
@@ -85,11 +86,11 @@ function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
             return (
               <li
                 key={index}
-                className={`w-full transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
+                className={`w-full transition-element mb-4 cursor-pointer hover:bg-[#ECECEC]`}
               >
-                <Link to={link.path}>
+                <NavLink to={link.path} end={link.name === "Dashboard"}>
                   <p className="pl-7 py-3">{link.name}</p>
-                </Link>
+                </NavLink>
               </li>
             );
           })}
@@ -103,11 +104,11 @@ function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
             return (
               <li
                 key={index}
-                className={`w-full transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
+                className={`w-full transition-element mb-4 cursor-pointer hover:bg-[#ECECEC]`}
               >
-                <Link to={link.path}>
+                <NavLink to={link.path} end={link.name === "Dashboard"}>
                   <p className="pl-7 py-3">{link.name}</p>
-                </Link>
+                </NavLink>
               </li>
             );
           })}
@@ -121,11 +122,11 @@ function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
             return (
               <li
                 key={index}
-                className={`w-full transition-element mb-4 cursor-pointer ${currentPath === link.path ? "bg-primary-300 text-white border-l-4 border-primary-400" : "hover:bg-[#ECECEC]"}`}
+                className={`w-full transition-element mb-4 cursor-pointer hover:bg-[#ECECEC]`}
               >
-                <Link to={link.path}>
+                <NavLink to={link.path} end={link.name === "Dashboard"}>
                   <p className="pl-7 py-3">{link.name}</p>
-                </Link>
+                </NavLink>
               </li>
             );
           })}

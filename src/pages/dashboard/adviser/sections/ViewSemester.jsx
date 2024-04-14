@@ -53,7 +53,7 @@ const ViewSemester = () =>{
     return <div>
         <div className="max-w-sm">
             <p className="text-xl py-2 font-bold">2022/2023 Rain Semester</p>
-            <p className="text-xs">Below are the results fo the semester mentioned above. To view the result for each course, please click on the course.</p>
+            <p className="text-sm">Below are the results fo the semester mentioned above. To view the result for each course, please click on the course.</p>
         </div>
 
         <div className="mt-10">

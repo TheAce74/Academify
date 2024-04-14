@@ -44,7 +44,7 @@ const Dashboard = () => {
 
     <div className="flex flex-col sm:flex-row justify-center gap-10 xl:px-20 px-10 mt-10">
       <div className="flex flex-col gap-10 max-w-md sm:w-1/2">
-        <Link to="/adviser/manage"className='border-2 rounded-lg border-neutral-200 shadow-md h-full hover:-translate-y-2 hover:shadow-lg transition'>
+        <Link to="/adviser/manage" className='border-2 rounded-lg border-neutral-200 shadow-md h-full hover:-translate-y-2 hover:shadow-lg transition'>
         <div className=" pb-12 pt-5 px-4 max-w-md">
               <p className="font-bold text-lg pb-1 text-neutral-600">View Students</p>
               <p className="text-sm text-neutral-500">Oversee student profiles and academic progress</p>

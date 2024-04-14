@@ -1,16 +1,13 @@
-export default function Table2({
-  columns,
-  data
-}) {
+import { Link } from "react-router-dom";
+
+export default function Table2({ columns, data }) {
   const headers = columns.map((column, index) => {
     return (
       <th
         key={`headCell-${index}`}
         className={` items-center !z-0 text-left py-2 px-6 ${index === 0 ? "rounded-l" : index === columns.length ? "rounded-r" : ""}`}
       >
-        <span className="flex items-center font-bold">
-          {column.title}
-        </span>
+        <span className="flex items-center font-bold">{column.title}</span>
       </th>
     );
   });
@@ -42,7 +39,12 @@ export default function Table2({
             );
           })}
           <td>
-            <button className="bg-primary-100 px-2 py-1 rounded-md">View</button>
+            <Link
+              to="/adviser/semesters/view"
+              className="bg-primary-100 px-3 py-2 rounded-md"
+            >
+              View
+            </Link>
           </td>
         </tr>
       );
@@ -56,7 +58,7 @@ export default function Table2({
           <tr>
             {headers}
             <th></th>
-        </tr>
+          </tr>
         </thead>
 
         <tbody className="mt-5">{rows}</tbody>
