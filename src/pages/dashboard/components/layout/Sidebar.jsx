@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, NavLink } from "react-router-dom";
+import { useClickAway } from "../../../../hooks/useClickAway";
 
 function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
   const location = useLocation();
   const activeUser = location.pathname.split("/")[1];
+  const clickAwayRef = useRef(null);
 
   const [adviserLinks] = useState([
     {
@@ -50,7 +52,7 @@ function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
       path: "/student/notifications",
     },
   ]);
-  
+
   const [parentLinks] = useState([
     {
       name: "Dashboard",
@@ -70,6 +72,8 @@ function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
     },
   ]);
 
+  useClickAway(clickAwayRef, () => toggleMenu(false));
+
   useEffect(() => {
     toggleMenu();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,6 +82,7 @@ function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
   return (
     <div
       className={`fixed top-[10%] left-0 z-[200] bg-white transition-element overflow-y-auto md:translate-x-0 w-[300px] md:w-[260px] xl:w-[300px] h-full border border-r flex flex-col pt-14 ${showMenu ? "translate-x-[0px] shadow-xl" : "translate-x-[-300px]"}`}
+      ref={clickAwayRef}
     >
       {/* Course Adviser */}
       {activeUser === "adviser" && (

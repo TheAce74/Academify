@@ -7,7 +7,10 @@ export default function MenuTogglerWrapper() {
 
   return (
     <>
-      <Sidebar showMenu={showMenu} toggleMenu={() => setShowMenu(!showMenu)} />
+      <Sidebar
+        showMenu={showMenu}
+        toggleMenu={(bool) => setShowMenu(bool ?? !showMenu)}
+      />
       <Header showMenu={showMenu} toggleMenu={() => setShowMenu(!showMenu)} />
     </>
   );
