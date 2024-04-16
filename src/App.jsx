@@ -24,6 +24,7 @@ import StudentCourses from "./pages/dashboard/student/sections/Courses";
 import StudentResults from "./pages/dashboard/student/sections/Results";
 import StudentProfile from "./pages/dashboard/student/sections/Profile";
 import StudentNotifications from "./pages/dashboard/student/sections/Notifications";
+import StudentRegisterCourses from "./pages/dashboard/student/sections/RegisterCourses";
 
 // Parent
 import ParentDashboard from "./pages/dashboard/parent/sections/Dashboard";
@@ -106,6 +107,10 @@ function App() {
                 {
                   path: "/student/courses",
                   element: <StudentCourses />,
+                },
+                {
+                  path: "/student/courses/register",
+                  element: <StudentRegisterCourses />,
                 },
                 {
                   path: "/student/results",
