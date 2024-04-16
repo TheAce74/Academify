@@ -115,7 +115,11 @@ const Semester = () => {
         <p className="text-xl pb-2 font-bold">Previous Semesters</p>
 
         <div className="mt-5">
-          <Table2 data={data} columns={columns} />
+          <Table2
+            data={data}
+            columns={columns}
+            link="/adviser/semesters/view"
+          />
         </div>
       </div>
     </div>

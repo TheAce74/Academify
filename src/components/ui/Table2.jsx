@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Table2({ columns, data }) {
+export default function Table2({ columns, data, link }) {
   const headers = columns.map((column, index) => {
     return (
       <th
@@ -39,10 +39,7 @@ export default function Table2({ columns, data }) {
             );
           })}
           <td>
-            <Link
-              to="/adviser/semesters/view"
-              className="bg-primary-100 px-3 py-2 rounded-md"
-            >
+            <Link to={link} className="bg-primary-100 px-3 py-2 rounded-md">
               View
             </Link>
           </td>
