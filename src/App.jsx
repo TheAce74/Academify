@@ -21,6 +21,7 @@ import AdviserViewSemester from "./pages/dashboard/adviser/sections/ViewSemester
 // Student
 import StudentDashboard from "./pages/dashboard/student/sections/Dashboard";
 import StudentCourses from "./pages/dashboard/student/sections/Courses";
+import StudentCoursesView from "./pages/dashboard/student/sections/ViewCourses";
 import StudentResults from "./pages/dashboard/student/sections/Results";
 import StudentProfile from "./pages/dashboard/student/sections/Profile";
 import StudentNotifications from "./pages/dashboard/student/sections/Notifications";
@@ -107,6 +108,10 @@ function App() {
                 {
                   path: "/student/courses",
                   element: <StudentCourses />,
+                },
+                {
+                  path: "/student/courses/view",
+                  element: <StudentCoursesView />,
                 },
                 {
                   path: "/student/courses/register",

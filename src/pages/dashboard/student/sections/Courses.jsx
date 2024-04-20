@@ -77,7 +77,12 @@ const Courses = () => {
         <p className="text-xl pb-2 font-bold">Course Registration</p>
 
         <div className="mt-5">
-          <Table2 data={data} columns={columns} link="/student/courses" />
+          <Table2
+            data={data}
+            columns={columns}
+            link="/student/courses/view"
+            border
+          />
         </div>
       </div>
     </div>

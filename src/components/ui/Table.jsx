@@ -69,7 +69,7 @@ export default function Table({
   return (
     <div className="overflow-x-auto text-sm font-jakarta transition-element">
       <table className="table table-auto w-full">
-        <thead className="bg-[#F4F4F4] text-neutral-600">
+        <thead className="bg-neutral-700 text-neutral-600">
           <tr>{headers}</tr>
         </thead>
 

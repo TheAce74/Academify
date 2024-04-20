@@ -3,6 +3,10 @@ import { createTheme } from "@mui/material";
 const theme = createTheme({
   typography: {
     fontFamily: ['"Plus Jakarta Sans"', "sans-serif"].join(","),
+    button: {
+      textTransform: "none",
+      borderRadius: "10px",
+    },
   },
   palette: {
     neutral: {

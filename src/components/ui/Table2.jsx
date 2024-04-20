@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Table2({ columns, data, link }) {
+export default function Table2({ columns, data, link, border }) {
   const headers = columns.map((column, index) => {
     return (
       <th
@@ -23,7 +23,7 @@ export default function Table2({ columns, data, link }) {
       return (
         <tr
           key={`row-${index}`}
-          className="transition-element hover:bg-slate-100 py-2"
+          className={`transition-element hover:bg-slate-100 py-2 ${border ? "border" : ""}`}
         >
           {columns.map((column, index2) => {
             const value = column.render
@@ -38,11 +38,13 @@ export default function Table2({ columns, data, link }) {
               </td>
             );
           })}
-          <td>
-            <Link to={link} className="bg-primary-100 px-3 py-2 rounded-md">
-              View
-            </Link>
-          </td>
+          {link && (
+            <td>
+              <Link to={link} className="bg-primary-100 px-3 py-2 rounded-md">
+                View
+              </Link>
+            </td>
+          )}
         </tr>
       );
     })
@@ -50,8 +52,10 @@ export default function Table2({ columns, data, link }) {
 
   return (
     <div className="overflow-x-auto text-sm font-jakarta transition-element w-full">
-      <table className="table table-auto w-full px-2 text-neutral-600 ">
-        <thead className="bg-[#F4F4F4]">
+      <table
+        className={`table table-auto w-full px-2 ${border ? "text-neutral-400" : "text-neutral-600"} `}
+      >
+        <thead className={`bg-neutral-700 ${border ? "border" : ""}`}>
           <tr>
             {headers}
             <th></th>
