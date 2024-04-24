@@ -2,6 +2,7 @@ import { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [events] = useState([
@@ -34,10 +35,13 @@ const Dashboard = () => {
   return (
     <div className="grid lg:grid-cols-2 grid-cols-1 gap-7">
       <div>
-        <div className="rounded-lg px-4 py-5 border-[1.5px] border-neutral-800">
+        <Link
+          to="/parent/result"
+          className="rounded-lg block px-4 py-5 border-[1.5px] border-neutral-800"
+        >
           <h1 className="font-semibold text-lg mb-2">Check Results</h1>
           <p>View results that has been uploaded by the course adviser</p>
-        </div>
+        </Link>
 
         {/* Events */}
         <div className="rounded-lg py-5 border-[1.5px] border-neutral-800 mt-7">

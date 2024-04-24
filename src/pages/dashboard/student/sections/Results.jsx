@@ -6,7 +6,6 @@ import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import UndoOutlinedIcon from "@mui/icons-material/UndoOutlined";
 import Table2 from "../../../../components/ui/Table2";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import { Link } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import Dialog from "@mui/material/Dialog";
@@ -247,14 +246,12 @@ const Results = () => {
           </h2>
         </div>
 
-        <Link>
-          <Button className="flex justify-evenly items-center px-1.5 text-sm gap-1">
-            <p className="ps-1">
-              <FileDownloadOutlinedIcon />
-            </p>
-            <p className="pe-1.5">Download result</p>
-          </Button>
-        </Link>
+        <Button className="flex justify-evenly items-center px-1.5 text-sm gap-1">
+          <p className="ps-1">
+            <FileDownloadOutlinedIcon />
+          </p>
+          <p className="pe-1.5">Download result</p>
+        </Button>
       </div>
     </div>
   );
