@@ -1,0 +1,26 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.register-section{
+    flex: 1;
+    margin-right: 35px;
+    padding: 15px;
+
+}
+.social{
+    display: flex;
+    align-items: center;
+    padding:10px;
+    margin: 25px 0 10px 0;
+    
+}
+.terms-and-condition{
+   text-align: center; 
+   padding-bottom: 12px;
+}
+.terms{
+    text-decoration: underline;
+    color: var(--clr-primary-400);
+  }

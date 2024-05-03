@@ -1,0 +1,92 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .react-icons {
+    vertical-align: middle;
+  }
+  
+  body {
+    background: var(--clr-neutral-100);
+    color: var(--clr-neutral-400);
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 50px 5px 0 50px;   
+  }
+  
+  .login-section {
+    flex: 1;
+    margin-right: 35px;
+    padding: 15px;
+  }
+  
+  .container h1 {
+    font-size: 2em; 
+    font-weight: bold;
+  }
+  
+  h1 {
+    color: var(--clr-neutral-900);
+  }
+  
+  .input-box {
+    margin: 30px 12px 30px;
+  }
+  
+  .section {
+    flex: 1;
+  }
+  
+  .social {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin: 25px 10px 10px 0;
+  }
+  
+  .social-icon {
+    margin-left: 4.5px;
+    width: 14.5px;
+    color: black;
+  }
+  
+  .google {
+    width: 15px;
+  }
+  
+  .register {
+    padding: 10px;
+  }
+  
+  .link {
+    text-decoration: underline;
+    color: var(--clr-primary-400);
+  }
+  
+  .btn {
+    margin-left: 12px;
+    width: 97%;
+    margin-bottom: 5px;
+  }
+
+
+  @media only screen and (min-device-width: 414px) and (max-device-width: 896px) and (orientation: portrait) {
+    .container {
+      margin: 50px 20px; 
+      
+    }
+  
+    .login-section {
+      margin-bottom: 20px; 
+    }
+    .section {
+        display: none; 
+    }
+  }
+  
