@@ -32,6 +32,9 @@ import ParentDashboard from "./pages/dashboard/parent/sections/Dashboard";
 import ParentResult from "./pages/dashboard/parent/sections/Result";
 import ParentProfile from "./pages/dashboard/parent/sections/Profile";
 import ParentNotification from "./pages/dashboard/parent/sections/Notifications";
+import AdviserContextProvider from "./context/AdviserContext";
+import StudentContextProvider from "./context/StudentContext";
+import ParentContextProvider from "./context/ParentContext";
 
 function App() {
   const router = createBrowserRouter([
@@ -52,10 +55,16 @@ function App() {
           path: "/",
           element: (
             <Guard>
-              <MenuTogglerWrapper />
-              <div className="w-full p-5 ml-auto xl:w-[calc(100%_-19em)] md:w-[calc(100%_-17em)] md:p-8">
-                <Outlet />
-              </div>
+              <AdviserContextProvider>
+                <StudentContextProvider>
+                  <ParentContextProvider>
+                    <MenuTogglerWrapper />
+                    <div className="w-full p-5 ml-auto xl:w-[calc(100%_-19em)] md:w-[calc(100%_-17em)] md:p-8">
+                      <Outlet />
+                    </div>
+                  </ParentContextProvider>
+                </StudentContextProvider>
+              </AdviserContextProvider>
             </Guard>
           ),
           children: [
