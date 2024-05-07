@@ -1,10 +1,13 @@
 import { createContext, useContext, useState } from "react";
+import { getUser } from "../utils/auth";
 
 const AuthContext = createContext(null);
 
 function AuthContextProvider({ children }) {
+  const { userType } = getUser();
+  const type = userType === "course_advisor" ? "adviser" : userType;
   const [user, setUser] = useState({
-    type: "student",
+    type: type ?? "",
   });
 
   const value = {

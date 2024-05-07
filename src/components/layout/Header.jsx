@@ -12,10 +12,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Logout from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Header({ toggleMenu, showMenu }) {
   const [initials] = useState("PC");
   const [anchorEl, setAnchorEl] = useState(null);
+  const { logout } = useAuth();
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -90,7 +92,12 @@ export default function Header({ toggleMenu, showMenu }) {
                 Notifications
               </MenuItem>
             </div>
-            <MenuItem onClick={handleClose}>
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                logout();
+              }}
+            >
               <ListItemIcon>
                 <Logout fontSize="small" />
               </ListItemIcon>
