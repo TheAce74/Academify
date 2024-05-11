@@ -733,7 +733,7 @@ Fetches all course advisors from the database.
 
 This controller function handles the uploading of results to the database. It expects the uploaded results to be received as JSON in the request body.
 
-- **URL:** Not applicable. This is a controller function and not directly accessible via a URL.
+- **URL:** `/advisors/upload-results`
 - **Method:** `POST`
 - **Auth Required:** Yes
 - **Permissions Required:** None
