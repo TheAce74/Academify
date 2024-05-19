@@ -13,8 +13,9 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { customAxios } from "../../services/axios";
 
 export const Register = () => {
   const [type, setType] = useState("adviser");
@@ -23,12 +24,22 @@ export const Register = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const regRef = useRef(null);
-  const advisorRef = useRef(null);
+  const [advisorRef, setAdvisorRef] = useState(null);
+  const [advisers, setAdvisers] = useState([]);
   const { register } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setType(e.target.value);
+  };
+
+  const getAdvisers = async () => {
+    try {
+      const { data } = await customAxios.get("/advisors/get-all");
+      setAdvisers(data);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -44,13 +55,17 @@ export const Register = () => {
         ? {
             ...generic,
             reg: regRef.current.value,
-            advisor: advisorRef.current.value,
+            advisor: advisorRef,
           }
         : generic;
     setLoading(true);
     await register(type, payload);
     setLoading(false);
   };
+
+  useEffect(() => {
+    getAdvisers();
+  }, []);
 
   return (
     <div className="wrapper lg:p-12">
@@ -235,13 +250,13 @@ export const Register = () => {
                 <InputField
                   icon={<HiOutlineUser />}
                   id="reg"
+                  type="password"
                   placeholder="Enter your reg no"
-                  type="text"
                   required
                   ref={regRef}
                 />
               </div>
-              <div className="input-box mb-6">
+              {/* <div className="input-box mb-6">
                 <label htmlFor="advisor" className="email mb-2 block w-max">
                   Adviser ID
                 </label>
@@ -253,7 +268,32 @@ export const Register = () => {
                   required
                   ref={advisorRef}
                 />
-              </div>
+              </div> */}
+              <Box sx={{ minWidth: 120, marginBottom: "1em" }}>
+                <FormControl fullWidth size="small">
+                  <InputLabel id="adviser-id">Select Adviser</InputLabel>
+
+                  <Select
+                    placeholder="Select"
+                    labelId="adviser-id"
+                    id="adviser-id"
+                    value={advisorRef}
+                    label="Advisor Ref"
+                    onChange={(e) => setAdvisorRef(e.target.value)}
+                    sx={{
+                      padding: "0.2em",
+                    }}
+                  >
+                    {advisers.map((adviser, i) => (
+                      <MenuItem key={i} value={adviser?.user?._id}>
+                        {adviser?.user?.firstName +
+                          " " +
+                          adviser?.user?.lastName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
               <div className="input-box mb-6">
                 <label htmlFor="password" className="password mb-2 block w-max">
                   Password

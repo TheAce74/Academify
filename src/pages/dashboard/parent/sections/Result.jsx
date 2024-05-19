@@ -9,10 +9,24 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import IconButton from "@mui/material/IconButton";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import Dialog from "@mui/material/Dialog";
+import AddIcon from "@mui/icons-material/Add";
+import { useParentContext } from "../../../../context/ParentContext";
+import { customAxios } from "../../../../services/axios";
+import InputField from "../../../../components/ui/InputFieldTwo";
+import Loader from "../../../../components/ui/Loader";
+import { useAlert } from "../../../../hooks/useAlert";
+import { useParent } from "../../../../hooks/useParent";
 
 const Result = () => {
+  const { showAlert } = useAlert();
+  const { parent } = useParentContext();
+  const { getParentProfile } = useParent();
+  const [addChild, setAddChild] = useState(false);
   const [dialog, setDialog] = useState(false);
+  const [regNumber, setRegNumber] = useState("");
   const [FullScreen, setFullscreen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [stats] = useState([
     {
       title: "Current GPA",
@@ -182,6 +196,27 @@ const Result = () => {
     );
   };
 
+  const uploadChild = async () => {
+    console.log(regNumber);
+    try {
+      setLoading(true);
+      const { data } = await customAxios.post("/parent/addChild", {
+        reg: regNumber,
+      });
+      console.log(data);
+      showAlert(data?.message, {
+        variant: "success",
+      });
+      const mainData = getParentProfile();
+      setLoading(false);
+      console.log(mainData);
+    } catch (e) {
+      showAlert(e?.response?.data?.message, {
+        variant: "error",
+      });
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     let ResponsiveModal = () => {
       if (window.innerWidth < 539) {
@@ -194,7 +229,7 @@ const Result = () => {
     window.addEventListener("resize", ResponsiveModal);
   }, []);
 
-  return (
+  return parent && parent?.children.length > 0 ? (
     <div>
       <div className="block sm:hidden">
         <Dialog open={dialog} fullScreen={FullScreen}>
@@ -253,6 +288,49 @@ const Result = () => {
           <p className="pe-1.5">Download result</p>
         </Button>
       </div>
+    </div>
+  ) : (
+    <div>
+      {addChild ? (
+        <div>
+          <p>Add a child</p>
+          <div className="pb-5 w-1/3 my-5">
+            <label
+              htmlFor="number"
+              className="block mb-3 text-sm text-neutral-400"
+            >
+              Child{`'`}s reg no.
+            </label>
+            <InputField
+              value={regNumber}
+              setValue={setRegNumber}
+              id="regNumber"
+              placeholder="2019223334343"
+              type="number"
+            ></InputField>
+            <Button
+              disabled={!regNumber}
+              onClick={uploadChild}
+              className="flex mt-5 justify-center items-center px-1.5 text-sm gap-1"
+            >
+              {loading ? <Loader /> : <p className="pe-1.5">Add Child</p>}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col h-[60vh] justify-center items-center">
+          <p className="my-4">You do not have any children</p>
+          <Button
+            onClick={() => setAddChild(true)}
+            className="flex justify-center items-center px-1.5 text-sm gap-1"
+          >
+            <p className="ps-1">
+              <AddIcon />
+            </p>
+            <p className="pe-1.5">Add Child</p>
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 
 // eslint-disable-next-line react/display-name
 const InputField = forwardRef(
-  ({ placeholder, icon, id, type, required }, ref) => {
+  ({ placeholder, icon, id, type, required, disabled }, ref) => {
     const [inputType, setInputType] = useState(type);
 
     return (
@@ -26,6 +26,7 @@ const InputField = forwardRef(
         )}
 
         <input
+          disabled={disabled}
           type={inputType}
           id={id}
           className=" border border-neutral-200 text-neutral-400 text-sm rounded-md focus:ring-neutral-500 focus:neutral-blue-500 block w-full p-2.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"

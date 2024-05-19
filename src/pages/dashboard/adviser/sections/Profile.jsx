@@ -1,13 +1,37 @@
+import { useState, useRef, useEffect } from "react";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import Button from "../../../../components/ui/Button";
-import InputField from "../../../../components/ui/InputField";
+import Loader from "../../../../components/ui/Loader";
+import InputField from "../../../../components/ui/InputFieldTwo";
 import pic from "../../../../assets/pic.png";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+import { useAdviserContext } from "../../../../context/AdviserContext";
+import { customAxios } from "../../../../services/axios";
+import { useAlert } from "../../../../hooks/useAlert";
 
 const Profile = () => {
-  const handleSubmit = (e) => {
+  const { adviser } = useAdviserContext();
+  const { showAlert } = useAlert();
+  const [passwordDisabled, setPasswordDisabled] = useState(true);
+  const [password, setPassword] = useState({ new: "", confirmNew: "" });
+  const [loading, setLoading] = useState(false);
+  // const [staffName, setStaffName] = useState("");
+  // const [staffEmail, setStaffEmail] = useState("");
+  const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
+    try {
+      const { data } = await customAxios.put("/advisors/update-password", {
+        newPassword: password?.confirmNew,
+      });
+      setLoading(false);
+    } catch (e) {
+      showAlert(e?.response?.data?.message, {
+        variant: "error",
+      });
+      setLoading(false);
+    }
   };
 
   return (
@@ -25,8 +49,12 @@ const Profile = () => {
             </div>
           </div>
           <div className="flex flex-col">
-            <p className="font-bold text-neutral-500">Nwokoma Francisca</p>
-            <p className="text-sm  text-neutral-500">csc@francisca.portal</p>
+            <p className="font-bold text-neutral-500">
+              {adviser?.profile?.name}
+            </p>
+            <p className="text-sm  text-neutral-500">
+              {adviser?.profile?.email}
+            </p>
           </div>
         </div>
 
@@ -40,6 +68,9 @@ const Profile = () => {
                 Staff name
               </label>
               <InputField
+                value={adviser?.profile?.name}
+                // setValue={setStaffName}
+                disabled={true}
                 icon={<BorderColorOutlinedIcon />}
                 id="staffname"
                 placeholder="Dr Nwokoma Fransica"
@@ -54,6 +85,9 @@ const Profile = () => {
                 Staff ID
               </label>
               <InputField
+                value={adviser?.profile?.email}
+                // setValue={staffEmail}
+                disabled={true}
                 id="staffid"
                 placeholder="CSC61726"
                 type="text"
@@ -81,9 +115,17 @@ const Profile = () => {
                 >
                   Password
                 </label>
-                <p className="text-sm text-[#1938DB]">Change password</p>
+                <p
+                  onClick={() => setPasswordDisabled(!passwordDisabled)}
+                  className="text-sm text-[#1938DB] cursor-pointer"
+                >
+                  {passwordDisabled ? "Change Password" : "Cancel"}
+                </p>
               </div>
               <InputField
+                value={password.new}
+                setValue={(value) => setPassword({ ...password, new: value })}
+                disabled={passwordDisabled}
                 icon={<VisibilityOutlinedIcon />}
                 id="password"
                 placeholder="********"
@@ -98,13 +140,25 @@ const Profile = () => {
                 Confirm Password
               </label>
               <InputField
+                value={password.confirmNew}
+                setValue={(value) =>
+                  setPassword({ ...password, confirmNew: value })
+                }
+                disabled={passwordDisabled}
                 icon={<VisibilityOutlinedIcon />}
                 id="password2"
                 placeholder="********"
                 type="password"
               ></InputField>
             </div>
-            <Button className="w-full">Save Changes</Button>
+            <Button
+              disabled={
+                password.new !== password.confirmNew || passwordDisabled
+              }
+              className="w-full"
+            >
+              {loading ? <Loader /> : "Save Changes"}
+            </Button>
           </form>
         </div>
       </div>
