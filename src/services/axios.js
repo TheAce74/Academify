@@ -1,7 +1,8 @@
 import { getUser, removeUser } from "../utils/auth";
 import axios from "axios";
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+// axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+axios.defaults.baseURL = "https://academify-f0qd.onrender.com";
 
 axios.interceptors.request.use((config) => {
   const user = getUser();
