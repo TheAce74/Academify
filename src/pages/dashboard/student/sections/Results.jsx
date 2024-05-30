@@ -9,8 +9,11 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import IconButton from "@mui/material/IconButton";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import Dialog from "@mui/material/Dialog";
+import { customAxios } from "../../../../services/axios";
+import { useAlert } from "../../../../hooks/useAlert";
 
 const Results = () => {
+  const { showAlert } = useAlert();
   const [dialog, setDialog] = useState(false);
   const [FullScreen, setFullscreen] = useState(false);
   const [stats] = useState([
@@ -134,6 +137,17 @@ const Results = () => {
     },
   ]);
 
+  const getResults = async () => {
+    try {
+      const { data } = await customAxios.get("/student/result");
+      console.log(data);
+    } catch (e) {
+      showAlert(e?.response?.data?.message, {
+        variant: "error",
+      });
+    }
+  };
+
   const [messageContent] = useState([
     {
       name: "John Joe",
@@ -147,6 +161,10 @@ const Results = () => {
         "Hello ma, I have an issue with my CSC 411 result. I did the practical, took the test and even sat for the exam but as the result came out I found out I had a missing test and practical score and my exam score was nothing to write home about. Please ma I would appreciate if you can look into this. Thank you!",
     },
   ]);
+
+  useEffect(() => {
+    getResults();
+  }, []);
 
   const DialogContent = () => {
     return (
