@@ -25,6 +25,12 @@ const RegisterCourses = () => {
         courseCodes,
       });
       console.log(data);
+      showAlert(data.message, {
+        variant: "success",
+      });
+      setLoading(false);
+      setReg("");
+      setSelectedCourses([]);
     } catch (e) {
       showAlert(e?.response?.data?.message, {
         variant: "error",

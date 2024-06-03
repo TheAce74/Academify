@@ -285,7 +285,7 @@ export const Register = () => {
                     }}
                   >
                     {advisers.map((adviser, i) => (
-                      <MenuItem key={i} value={adviser?.user?._id}>
+                      <MenuItem key={i} value={adviser?._id}>
                         {adviser?.user?.firstName +
                           " " +
                           adviser?.user?.lastName}
