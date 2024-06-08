@@ -1,14 +1,29 @@
+import { useEffect, useState } from "react";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import Button from "../../../../components/ui/Button";
-import InputField from "../../../../components/ui/InputField";
+import InputField from "../../../../components/ui/InputFieldTwo";
 import chris from "../../../../assets/chris.png";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+import { useStudentContext } from "../../../../context/StudentContext";
 
 const Profile = () => {
+  const { student } = useStudentContext();
+  const [studentInfo, setStudentInfo] = useState({});
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
   };
+
+  useEffect(() => {
+    setStudentInfo(student?.student);
+    console.log(student?.student);
+    setFirstName(student?.student?.user?.firstName);
+    setLastName(student?.student?.user?.lastName);
+  }, [student]);
 
   return (
     <div>
@@ -26,8 +41,12 @@ const Profile = () => {
             </div>
           </div>
           <div className="flex flex-col">
-            <p className="font-bold text-neutral-500">Asor Christopher</p>
-            <p className="text-sm  text-neutral-500">csc@asorchristopher</p>
+            <p className="font-bold text-neutral-500">
+              {studentInfo?.user?.firstName + " " + studentInfo?.user?.lastName}
+            </p>
+            <p className="text-sm  text-neutral-500">
+              {studentInfo?.user?.email}
+            </p>
           </div>
         </div>
 
@@ -41,6 +60,8 @@ const Profile = () => {
                 First name
               </label>
               <InputField
+                value={firstName}
+                setValue={setFirstName}
                 icon={<BorderColorOutlinedIcon />}
                 id="firstname"
                 placeholder="Christopher"
@@ -55,6 +76,8 @@ const Profile = () => {
                 Last name
               </label>
               <InputField
+                value={lastName}
+                setValue={setLastName}
                 icon={<BorderColorOutlinedIcon />}
                 id="lastname"
                 placeholder="Asor"
@@ -74,7 +97,7 @@ const Profile = () => {
                 type="email"
               ></InputField>
             </div>
-            
+
             <div className="pb-5">
               <label
                 htmlFor="level"
