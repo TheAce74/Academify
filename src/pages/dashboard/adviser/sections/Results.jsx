@@ -1,12 +1,17 @@
 import { useState, useEffect, useCallback } from "react";
 import HistoryIcon from "@mui/icons-material/History";
-
 import Select from "../../../../components/ui/Select";
 import DocumentUpload from "../../../../components/ui/DocumentUpload";
 import Button from "../../../../components/ui/Button";
 import TextField from "../../../../components/ui/TextField";
 import Table from "../../../../components/ui/Table";
+import Loader from "../../../../components/ui/Loader";
+import { customAxios } from "../../../../services/axios";
+import { useAlert } from "../../../../hooks/useAlert";
+
 const Results = () => {
+  const { showAlert } = useAlert();
+
   // Dropdown options
   const [academicYears] = useState([2019, 2020, 2021, 2022, 2023]);
   const [semesters] = useState(["HARMATTAN", "RAIN"]);
@@ -16,7 +21,9 @@ const Results = () => {
   const [semester, setSemester] = useState(0);
   const [course, setCourse] = useState(0);
   const [document, setDocument] = useState(null);
+  const [resultResponse, setResultResponse] = useState();
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [allChecked, setAllChecked] = useState("part");
 
@@ -84,6 +91,24 @@ const Results = () => {
     },
   ];
 
+  const uploadResult = async () => {
+    try {
+      setLoading(true);
+      const { data } = await customAxios.post("/advisors/upload-results", {
+        results: document,
+      });
+
+      showAlert(data?.message, {
+        variant: "success",
+      });
+      setLoading(false);
+    } catch (e) {
+      showAlert(e?.response?.data?.message, {
+        variant: "error",
+      });
+      setLoading(false);
+    }
+  };
   const handleCheck = (value, index) => {
     let newData = [...data];
     newData[index].checked = value;
@@ -122,7 +147,7 @@ const Results = () => {
 
   return (
     <div>
-      {!document ? (
+      {!resultResponse ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-1">
           <div className="md:w-9/12 w-full">
             <h1 className="font-medium mb-1">Result</h1>
@@ -157,8 +182,10 @@ const Results = () => {
               options={courses}
             />
 
-            <DocumentUpload className="mt-4 mb-6" setFile={handleSetFile} />
-            <Button className="w-full">Upload Result</Button>
+            <DocumentUpload className="mt-4 mb-6" setJsonData={handleSetFile} />
+            <Button onClick={uploadResult} className="w-full">
+              {loading ? <Loader /> : <p className="pe-1.5">Upload Result</p>}
+            </Button>
           </div>
         </div>
       ) : (

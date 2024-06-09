@@ -11,8 +11,10 @@ import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import Dialog from "@mui/material/Dialog";
 import { customAxios } from "../../../../services/axios";
 import { useAlert } from "../../../../hooks/useAlert";
+import { useStudentContext } from "../../../../context/StudentContext";
 
 const Results = () => {
+  const { student } = useStudentContext();
   const { showAlert } = useAlert();
   const [dialog, setDialog] = useState(false);
   const [FullScreen, setFullscreen] = useState(false);
@@ -139,7 +141,9 @@ const Results = () => {
 
   const getResults = async () => {
     try {
-      const { data } = await customAxios.get("/student/result");
+      const data = await customAxios.get(
+        `/student/result/${student?.student?.user?._id}`
+      );
       console.log(data);
     } catch (e) {
       showAlert(e?.response?.data?.message, {
@@ -164,6 +168,7 @@ const Results = () => {
 
   useEffect(() => {
     getResults();
+    console.log(student.student?.user?._id);
   }, []);
 
   const DialogContent = () => {
