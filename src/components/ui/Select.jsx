@@ -6,6 +6,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 export default function Select({
+  disabled,
   value,
   setValue,
   placeholder = "",
@@ -20,7 +21,9 @@ export default function Select({
   };
 
   return (
-    <div className="transition-element">
+    <div
+      className={`transition-element ${disabled ? "pointer-events-none opacity-60 select-none" : ""}`}
+    >
       <FormControl sx={{ ...style }} fullWidth size="small">
         <SelectField
           onOpen={() => setOpen(true)}

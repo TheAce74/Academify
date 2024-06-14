@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Table2({ columns, data, link, border, linkState }) {
+export default function Table2({ columns, data, link, border, linkState, goToLink }) {
   const headers = columns?.map((column, index) => {
     return (
       <th
@@ -38,7 +38,17 @@ export default function Table2({ columns, data, link, border, linkState }) {
               </td>
             );
           })}
-          {link && (
+          {link && !linkState (
+            <td>
+            <span
+                onClick={() => {
+                  goToLink(data[index]);
+                }}
+                className="bg-primary-100 px-3 py-2 rounded-md cursor-pointer">
+                View
+              </span>
+            </td>)}
+{link && linkState (
             <td>
               <Link
                 to={link}

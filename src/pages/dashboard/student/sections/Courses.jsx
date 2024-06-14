@@ -1,41 +1,17 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Table2 from "../../../../components/ui/Table2";
 import Button from "../../../../components/ui/Button";
+import { useStudent } from "../../../../hooks/useStudent";
+// import { useStudentContext } from "../../../../context/StudentContext";
 import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
 
 const Courses = () => {
-  const data = [
-    {
-      year: "2022/2023",
-      session: "Harmattan semester",
-      level: "400",
-    },
-    {
-      year: "2022/2023",
-      session: "Rain semester",
-      level: "400",
-    },
-    {
-      year: "2021/2022",
-      session: "Harmattan semester",
-      level: "400",
-    },
-    {
-      year: "2021/2022",
-      session: "Rain semester",
-      level: "400",
-    },
-    {
-      year: "2020/2021",
-      session: "Harmattan semester",
-      level: "400",
-    },
-    {
-      year: "2020/2021",
-      session: "Rain semester",
-      level: "400",
-    },
-  ];
+  const navigate = useNavigate();
+  const { getStudentProfile } = useStudent();
+
+  const [tableData, setTableData] = useState([]);
 
   const columns = [
     {
@@ -43,8 +19,8 @@ const Courses = () => {
       title: "Year",
     },
     {
-      key: "session",
-      title: "Session",
+      key: "semester",
+      title: "Semester",
     },
     {
       key: "level",
@@ -52,6 +28,38 @@ const Courses = () => {
     },
   ];
 
+  const goToLink = (value) => {
+    navigate("/student/courses/view", { state: value });
+  };
+
+  useEffect(() => {
+    const getProfile = async () => {
+      const data = await getStudentProfile();
+      if (data) {
+        let mainData = [];
+        data?.student?.sessions.map((session) => {
+          if (session.harmattan.length > 0) {
+            mainData.push({
+              year: session?.session,
+              semester: "Harmattan",
+              level: session?.level,
+              courses: session?.harmattan,
+            });
+          }
+          if (session.rain.length > 0) {
+            mainData.push({
+              year: session?.session,
+              semester: "Rain",
+              level: session?.level,
+              courses: session?.rain,
+            });
+          }
+        });
+        setTableData(mainData);
+      }
+    };
+    getProfile();
+  }, []);
   return (
     <div>
       <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-y-5 sm:px-5 py-2">
@@ -78,8 +86,9 @@ const Courses = () => {
 
         <div className="mt-5">
           <Table2
-            data={data}
+            data={tableData}
             columns={columns}
+            goToLink={goToLink}
             link="/student/courses/view"
             border
           />
