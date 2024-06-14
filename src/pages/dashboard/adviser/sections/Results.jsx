@@ -125,6 +125,10 @@ const Results = () => {
         semester: fetchedSemester._id,
         results: document,
       });
+      setSemester(0);
+      setCourse(0);
+      setAcademicYear(0);
+      setDocument(null);
       showAlert(data?.message, {
         variant: "success",
       });
