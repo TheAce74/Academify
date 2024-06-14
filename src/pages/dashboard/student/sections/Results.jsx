@@ -141,9 +141,7 @@ const Results = () => {
 
   const getResults = async () => {
     try {
-      const data = await customAxios.get(
-        `/student/result/${student?.student?.user?._id}`
-      );
+      const data = await customAxios.get(`/student/result`);
       console.log(data);
     } catch (e) {
       showAlert(e?.response?.data?.message, {
@@ -168,7 +166,7 @@ const Results = () => {
 
   useEffect(() => {
     getResults();
-    console.log(student.student?.user?._id);
+    console.log(student.student);
   }, []);
 
   const DialogContent = () => {

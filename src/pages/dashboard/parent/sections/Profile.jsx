@@ -7,12 +7,14 @@ import chris from "../../../../assets/chris.png";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import { customAxios } from "../../../../services/axios";
 import { useAlert } from "../../../../hooks/useAlert";
+import { useParent } from "../../../../hooks/useParent";
 import Loader from "../../../../components/ui/Loader";
 import { useParentContext } from "../../../../context/ParentContext";
 
 const Profile = () => {
   const { showAlert } = useAlert();
   const { parent } = useParentContext();
+  const { getParentProfile } = useParent();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -38,6 +40,7 @@ const Profile = () => {
         variant: "success",
       });
       setLoading(false);
+      getParentProfile();
     } catch (e) {
       showAlert(e?.response?.data?.message, {
         variant: "error",
@@ -174,7 +177,7 @@ const Profile = () => {
                 type="password"
               ></InputField>
             </div>
-            <Button className="w-full">
+            <Button disabled={password !== passwordConfirm} className="w-full">
               {loading ? <Loader /> : "Save Changes"}
             </Button>
           </form>

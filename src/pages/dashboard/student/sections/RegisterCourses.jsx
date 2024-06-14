@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Select from "../../../../components/ui/Select";
 import Button from "../../../../components/ui/Button";
 import InputField from "../../../../components/ui/InputFieldTwo";
@@ -9,12 +10,23 @@ import Loader from "../../../../components/ui/Loader";
 import { useAlert } from "../../../../hooks/useAlert";
 
 const RegisterCourses = () => {
+  const navigate = useNavigate();
   const { showAlert } = useAlert();
   const [reg, setReg] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [courses] = useState(["MTH 101", "PHY 101", "CHM 101"]);
+  const [courses, setCourses] = useState(["CSC 201", "CHM 201", "ENG 203"]);
   const [courseCodes, setSelectedCourses] = useState([]);
+  const [level, setLevel] = useState(0);
+  const [session, setSession] = useState(0);
+  const [allSessions] = useState([
+    "2021/2022",
+    "2022/2023",
+    "2023/2024",
+    "2024/2025",
+    "2025/2026",
+  ]);
+  const [semester, setSemester] = useState("HARMATTAN");
 
   const handleSubmit = async (e) => {
     setLoading(true);
@@ -22,6 +34,9 @@ const RegisterCourses = () => {
     try {
       const { data } = await customAxios.post("/course/register", {
         reg,
+        level,
+        session,
+        semester: semester.toLowerCase(),
         courseCodes,
       });
       console.log(data);
@@ -31,6 +46,7 @@ const RegisterCourses = () => {
       setLoading(false);
       setReg("");
       setSelectedCourses([]);
+      navigate("/student/courses");
     } catch (e) {
       showAlert(e?.response?.data?.message, {
         variant: "error",
@@ -39,11 +55,33 @@ const RegisterCourses = () => {
     }
   };
 
+  const getCourses = async () => {
+    try {
+      const { data } = await customAxios.get(
+        `/courses/${level}/${semester.toLowerCase()}`
+      );
+      console.log(data?.courses);
+      let mainData = data?.courses.map((course) => {
+        return `${course?.code}`;
+        // return `${course?.code} (${course.credits} units)`;
+      });
+      setCourses(mainData);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const selectCourse = (value) => {
     console.log(value);
     let values = [...courseCodes];
-    values.push(value);
-    setSelectedCourses(values);
+    const mainCourse = values.find((course) => value === course);
+    if (mainCourse) {
+      return;
+    } else {
+      values.push(value);
+      setSelectedCourses(values);
+    }
+    console.log(mainCourse);
   };
 
   const deleteCourse = (index) => {
@@ -57,9 +95,16 @@ const RegisterCourses = () => {
     console.log(values);
   };
 
+  useEffect(() => {
+    if (level && semester) {
+      getCourses();
+    }
+    setSelectedCourses([]);
+  }, [level, semester]);
+
   return (
     <div>
-      <div className="max-w-md transition-element">
+      <div className="max-w-lg transition-element">
         <div>
           <p className="text-xl font-bold pb-2">Course Registration</p>
           <p className="text-sm">
@@ -85,7 +130,42 @@ const RegisterCourses = () => {
               id="regNumber"
               placeholder="Reg Number..."
             ></InputField>
-            <div className="my-4 flex items-center transition-element">
+
+            <p className="mb-2 mt-4 text-sm opacity-60">Choose Level</p>
+            <Select
+              value={level}
+              setValue={setLevel}
+              placeholder="Select level"
+              options={["100", "200", "300", "400", "500"]}
+            />
+            <p className="mb-2 mt-3 text-sm opacity-60">Choose Session</p>
+            <Select
+              value={session}
+              setValue={setSession}
+              placeholder="Select session"
+              options={allSessions}
+            />
+            <p className="mb-2 mt-3 text-sm opacity-60">Choose Semester</p>
+            <Select
+              value={semester}
+              setValue={setSemester}
+              placeholder="Select semester"
+              options={["HARMATTAN", "RAIN"]}
+            />
+
+            <p className="mb-2 text-sm opacity-60">Courses</p>
+
+            <Select
+              disabled={!level || !semester}
+              setValue={selectCourse}
+              placeholder="Select course"
+              options={courses}
+            />
+            {!level && (
+              <p className="mb-2 text-xs text-red-300 italic">Select level</p>
+            )}
+
+            <div className="my-4 grid md:grid-cols-4 grid-cols-3 gap-1.5 transition-element">
               {courseCodes.map((course, i) => (
                 <div
                   key={i}
@@ -98,17 +178,7 @@ const RegisterCourses = () => {
                 </div>
               ))}
             </div>
-            <Select
-              setValue={selectCourse}
-              placeholder="Select course"
-              options={courses}
-            />
-            {/* <Select
-              value={level}
-              setValue={(e) => setLevel(e)}
-              placeholder="Select Level"
-              options={levels}
-            /> */}
+
             <Button className="w-full mt-4">
               {loading ? <Loader /> : "Register Courses"}
             </Button>

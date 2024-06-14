@@ -201,7 +201,7 @@ const Result = () => {
     try {
       setLoading(true);
       const { data } = await customAxios.post("/parent/addChild", {
-        reg: regNumber,
+        regNo: regNumber,
       });
       console.log(data);
       showAlert(data?.message, {
