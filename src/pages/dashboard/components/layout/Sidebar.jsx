@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import { useClickAway } from "../../../../hooks/useClickAway";
 
-function Sidebar({ showMenu = false, toggleMenu = () => "" }) {
+function Sidebar({ showMenu = false, toggleMenu = () => false }) {
   const location = useLocation();
   const activeUser = location.pathname.split("/")[1];
   const clickAwayRef = useRef(null);

@@ -10,22 +10,55 @@ import { useAlert } from "../../../../hooks/useAlert";
 import { useParent } from "../../../../hooks/useParent";
 import Loader from "../../../../components/ui/Loader";
 import { useParentContext } from "../../../../context/ParentContext";
+import AddIcon from "@mui/icons-material/Add";
+import Dialog from "@mui/material/Dialog";
+import IconButton from "@mui/material/IconButton";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import Select from "../../../../components/ui/Select";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 
 const Profile = () => {
   const { showAlert } = useAlert();
   const { parent } = useParentContext();
   const { getParentProfile } = useParent();
+  const [FullScreen, setFullscreen] = useState(false);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loading, setLoading] = useState(false);
+  const [dialog, setDialog] = useState(false);
+  const [regNumber, setRegNumber] = useState("");
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     editProfile();
   };
+
+  useEffect(() => {
+    let ResponsiveModal = () => {
+      if (window.innerWidth < 539) {
+        setFullscreen(true);
+      } else {
+        setFullscreen(false);
+      }
+    };
+    ResponsiveModal();
+    window.addEventListener("resize", ResponsiveModal);
+  }, []);
 
   const editProfile = async () => {
     setLoading(true);
@@ -49,34 +82,165 @@ const Profile = () => {
     }
   };
 
+  const uploadChild = async () => {
+    console.log(regNumber);
+    try {
+      setLoading(true);
+      const { data } = await customAxios.post("/parent/addChild", {
+        regNo: regNumber,
+      });
+      console.log(data);
+      showAlert(data?.message, {
+        variant: "success",
+      });
+      const mainData = getParentProfile();
+      setLoading(false);
+      console.log(mainData);
+    } catch (e) {
+      showAlert(e?.response?.data?.message, {
+        variant: "error",
+      });
+      setLoading(false);
+    }
+  };
+
+  const DialogContent = () => {
+    return (
+      <div className="relative p-5 overflow-y-auto">
+        <div className="absolute top-2 right-2">
+          <IconButton onClick={() => setDialog(false)}>
+            <HighlightOffOutlinedIcon fontSize="small" />
+          </IconButton>
+        </div>
+        <div>
+          <p className="font-bold">Add a child</p>
+          <div className="w-full my-5">
+            <label
+              htmlFor="number"
+              className="block mb-3 text-sm text-neutral-400"
+            >
+              Child{`'`}s reg no.
+            </label>
+            <InputField
+              value={regNumber}
+              setValue={setRegNumber}
+              id="regNumber"
+              placeholder="20191111111"
+              type="number"
+            ></InputField>
+            <Button
+              disabled={!regNumber}
+              onClick={uploadChild}
+              className="flex mt-5 justify-center items-center px-1.5 text-sm gap-1"
+            >
+              {loading ? <Loader /> : <p className="pe-1.5">Add Child</p>}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   useEffect(() => {
     console.log(parent);
     setFirstName(parent?.profile?.firstName);
     setLastName(parent?.profile?.lastName);
   }, [parent]);
 
+  
+
   return (
     <div>
+      <div className="block sm:hidden">
+        <Dialog open={dialog} fullScreen={FullScreen}>
+          <DialogContent />
+        </Dialog>
+      </div>
       <div className="max-w-lg ">
         <p className="text-xl font-bold sm:hidden text-center mb-3">Profile</p>
-        <div className="flex items-center">
-          <div className="mr-8">
-            <div className="relative">
-              <div>
-                <img src={chris} alt="" />
-              </div>
-              <div className="absolute top-[35%] start-[35%] text-white">
-                <CameraAltOutlinedIcon />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="mr-8">
+              <div className="relative">
+                <div>
+                  <img src={chris} alt="" />
+                </div>
+                <div className="absolute top-[35%] start-[35%] text-white">
+                  <CameraAltOutlinedIcon />
+                </div>
               </div>
             </div>
+            <div className="flex flex-col">
+              <p className="font-bold text-neutral-500">
+                {parent?.profile?.firstName + " " + parent?.profile?.lastName}
+              </p>
+              <p className="text-sm  text-neutral-500">
+                {parent?.profile?.email}
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <p className="font-bold text-neutral-500">
-              {parent?.profile?.firstName + " " + parent?.profile?.lastName}
-            </p>
-            <p className="text-sm  text-neutral-500">
-              {parent?.profile?.email}
-            </p>
+          <div>
+            {parent && parent?.children?.length > 0 ? 
+            <div>
+              <div>
+                <Button
+                  id="basic-button"
+                  aria-controls={open ? 'basic-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                  onClick={handleClick}
+                  className='flex items-center justify-center'
+                >
+                  <p>My Children</p>
+                  <KeyboardArrowDownIcon/>
+                </Button>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                  
+                >
+                  {parent?.children.map((child)=>(
+                    <MenuItem className>
+                      <div className="flex items-center justify-between gap-12 pb-2">
+                        <div>
+                          <p className="text-neutral-400 font-medium text-lg">{child.user.firstName + ' ' + child.user.lastName}</p>
+                          <p className="text-neutral-400 font-light">{child.reg}</p>
+                        </div>
+                        <div>
+                          <p className="text-neutral-400">500L</p>
+                        </div>
+                      </div>
+                    </MenuItem>
+                  ))}
+                  <MenuItem>
+                    <div className="flex items-center justify-end w-full">
+                      <button className="flex justify-center items-center text-[#1B3DF1]" onClick={() => setDialog(true)}>
+                        <p className="ps-1">
+                          <AddIcon />
+                        </p>
+                        <p className="pe-1.5">Add Child</p>
+                      </button>
+                    </div>
+                  </MenuItem>
+                </Menu>
+              </div>
+            </div> : 
+            <div>
+              <Button
+                onClick={() => setDialog(true)}
+                className="flex justify-center items-center px-1 py-1 text-sm gap-1"
+              >
+                <p className="ps-1">
+                  <AddIcon />
+                </p>
+                <p className="pe-1.5">Add Child</p>
+              </Button>
+            </div> }
           </div>
         </div>
 
@@ -113,35 +277,7 @@ const Profile = () => {
                 placeholder="Asor"
                 type="text"
               ></InputField>
-            </div>
-            <div className="pb-5">
-              <label
-                htmlFor="number"
-                className="block mb-3 text-sm text-neutral-400"
-              >
-                Child{`'`}s reg no.
-              </label>
-              <InputField
-                id="regNumber"
-                placeholder="2019223334343"
-                type="number"
-              ></InputField>
-            </div>
-
-            <div className="pb-5">
-              <label
-                htmlFor="level"
-                className="block mb-3 text-sm text-neutral-400"
-              >
-                Level
-              </label>
-              <InputField
-                icon={<BorderColorOutlinedIcon />}
-                id="level"
-                placeholder="400"
-                type="text"
-              ></InputField>
-            </div>
+            </div>            
             <div className="pb-5">
               <div className="flex justify-between">
                 <label
@@ -184,6 +320,7 @@ const Profile = () => {
         </div>
       </div>
     </div>
+    
   );
 };
 

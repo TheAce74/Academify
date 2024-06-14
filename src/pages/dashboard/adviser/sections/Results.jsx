@@ -8,14 +8,23 @@ import Table from "../../../../components/ui/Table";
 import Loader from "../../../../components/ui/Loader";
 import { customAxios } from "../../../../services/axios";
 import { useAlert } from "../../../../hooks/useAlert";
+import { eachYearOfInterval } from "date-fns";
+import { combineYears } from "../../../../utils/functions";
+import { useAdviser } from "../../../../hooks/useAdviser";
 
 const Results = () => {
   const { showAlert } = useAlert();
 
   // Dropdown options
-  const [academicYears] = useState([2019, 2020, 2021, 2022, 2023]);
-  const [semesters] = useState(["HARMATTAN", "RAIN"]);
-  const [courses] = useState(["MTH501", "CSC401", "CSC407"]);
+  const years = eachYearOfInterval({
+    start: new Date(2019, 1, 6),
+    end: new Date(),
+  }).map((year) => year.getFullYear());
+  const [academicYears] = useState(
+    combineYears(years.concat(years[years.length - 1] + 1))
+  );
+  const [semesters] = useState(["Harmattan", "Rain"]);
+  const [courses, setCourses] = useState([]);
 
   const [academicYear, setAcademicYear] = useState(0);
   const [semester, setSemester] = useState(0);
@@ -91,13 +100,35 @@ const Results = () => {
     },
   ];
 
+  const { getSemesters } = useAdviser();
+  const [fetchedSemester, setFetchedSemester] = useState({});
+
+  const fetchSemesters = async (semester) => {
+    const response = await getSemesters(academicYear, semester);
+    setFetchedSemester(response[0]);
+    setCourses(response[0].courses.map((course) => course.code));
+  };
+
   const uploadResult = async () => {
+    if (!academicYear || !semester || !course) {
+      showAlert("All fields are required", {
+        variant: "error",
+      });
+      return;
+    }
     try {
       setLoading(true);
       const { data } = await customAxios.post("/advisors/upload-results", {
+        course: fetchedSemester.courses
+          .filter((item) => item.code === course)
+          .map((item) => item._id)[0],
+        semester: fetchedSemester._id,
         results: document,
       });
-
+      setSemester(0);
+      setCourse(0);
+      setAcademicYear(0);
+      setDocument(null);
       showAlert(data?.message, {
         variant: "success",
       });
@@ -171,7 +202,10 @@ const Results = () => {
             />
             <Select
               value={semester}
-              setValue={(e) => setSemester(e)}
+              setValue={(e) => {
+                setSemester(e);
+                fetchSemesters(e);
+              }}
               placeholder="Select Semester"
               options={semesters}
             />
@@ -183,7 +217,11 @@ const Results = () => {
             />
 
             <DocumentUpload className="mt-4 mb-6" setJsonData={handleSetFile} />
-            <Button onClick={uploadResult} className="w-full">
+            <Button
+              onClick={uploadResult}
+              disabled={loading || document === null}
+              className="w-full"
+            >
               {loading ? <Loader /> : <p className="pe-1.5">Upload Result</p>}
             </Button>
           </div>

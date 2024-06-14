@@ -153,6 +153,7 @@ const ManageStudents = () => {
         columns={columns}
         handleCheck={handleCheck}
         handleCheckAll={handleCheckAll}
+        hidden
       />
     </div>
   );

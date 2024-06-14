@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CloudSyncOutlinedIcon from "@mui/icons-material/CloudSyncOutlined";
 import * as XLSX from "xlsx";
+import { getGrade } from "../../utils/functions";
 export default function DocumentUpload({ setJsonData, className }) {
   const [csvFile, setCsvFile] = useState(null);
 
@@ -19,9 +20,24 @@ export default function DocumentUpload({ setJsonData, className }) {
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const json = XLSX.utils.sheet_to_json(worksheet);
-        console.log(json);
-        setJsonData(json);
-        console.log(JSON.stringify(json, null));
+        const filteredJson = json
+          .filter((item) => item.REGNO)
+          .map((item) => ({
+            regno: typeof item.REGNO === "number" ? item.REGNO : 0,
+            test: typeof item.TEST === "number" ? item.TEST : 0,
+            lab: typeof item.LAB === "number" ? item.LAB : 0,
+            exam: typeof item.EXAM === "number" ? item.EXAM : 0,
+            total:
+              Number(typeof item.TEST === "number" ? item.TEST : 0) +
+              Number(typeof item.LAB === "number" ? item.LAB : 0) +
+              Number(typeof item.EXAM === "number" ? item.EXAM : 0),
+            grade: getGrade(
+              Number(typeof item.TEST === "number" ? item.TEST : 0) +
+                Number(typeof item.LAB === "number" ? item.LAB : 0) +
+                Number(typeof item.EXAM === "number" ? item.EXAM : 0)
+            ),
+          }));
+        setJsonData(filteredJson);
       };
       reader.readAsArrayBuffer(file);
     }

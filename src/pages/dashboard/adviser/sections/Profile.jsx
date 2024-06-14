@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
+import { useState } from "react";
+// import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import Button from "../../../../components/ui/Button";
 import Loader from "../../../../components/ui/Loader";
@@ -14,23 +14,45 @@ const Profile = () => {
   const { adviser } = useAdviserContext();
   const { showAlert } = useAlert();
   const [passwordDisabled, setPasswordDisabled] = useState(true);
+  const [detailsDisabled, setDetailsDisabled] = useState(true);
   const [password, setPassword] = useState({ new: "", confirmNew: "" });
   const [loading, setLoading] = useState(false);
-  // const [staffName, setStaffName] = useState("");
-  // const [staffEmail, setStaffEmail] = useState("");
+  const [staffName, setStaffName] = useState(adviser?.profile?.name);
+  const [staffEmail, setStaffEmail] = useState(adviser?.profile?.email);
+
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    try {
-      const { data } = await customAxios.put("/advisors/update-password", {
-        newPassword: password?.confirmNew,
-      });
-      setLoading(false);
-    } catch (e) {
-      showAlert(e?.response?.data?.message, {
-        variant: "error",
-      });
-      setLoading(false);
+    if (!detailsDisabled) {
+      try {
+        await customAxios.put("/advisors/update", {
+          firstName: staffName.split(" ")[0],
+          lastName: staffName.split(" ")[1],
+          email: staffEmail,
+          level: adviser?.profile?.level,
+        });
+        setDetailsDisabled(true);
+        setLoading(false);
+      } catch (e) {
+        showAlert(e?.response?.data?.message, {
+          variant: "error",
+        });
+        setLoading(false);
+      }
+    } else {
+      try {
+        await customAxios.put("/advisors/update-password", {
+          newPassword: password?.confirmNew,
+        });
+        setPassword({ new: "", confirmNew: "" });
+        setPasswordDisabled(true);
+        setLoading(false);
+      } catch (e) {
+        showAlert(e?.response?.data?.message, {
+          variant: "error",
+        });
+        setLoading(false);
+      }
     }
   };
 
@@ -61,19 +83,27 @@ const Profile = () => {
         <div className="mt-14">
           <form onSubmit={handleSubmit}>
             <div className="pb-5">
-              <label
-                htmlFor="staffname"
-                className="block mb-3 text-sm text-neutral-400"
-              >
-                Staff name
-              </label>
+              <div className="flex justify-between">
+                <label
+                  htmlFor="staffname"
+                  className="block mb-3 text-sm text-neutral-400"
+                >
+                  Staff name
+                </label>
+                <p
+                  onClick={() => setDetailsDisabled(!detailsDisabled)}
+                  className="text-sm text-[#1938DB] cursor-pointer"
+                >
+                  {detailsDisabled ? "Edit profile" : "Cancel"}
+                </p>
+              </div>
               <InputField
-                value={adviser?.profile?.name}
-                // setValue={setStaffName}
-                disabled={true}
-                icon={<BorderColorOutlinedIcon />}
+                value={staffName}
+                setValue={setStaffName}
+                disabled={detailsDisabled}
+                // icon={<BorderColorOutlinedIcon />}
                 id="staffname"
-                placeholder="Dr Nwokoma Fransica"
+                placeholder="Name"
                 type="text"
               ></InputField>
             </div>
@@ -85,11 +115,11 @@ const Profile = () => {
                 Staff ID
               </label>
               <InputField
-                value={adviser?.profile?.email}
-                // setValue={staffEmail}
-                disabled={true}
+                value={staffEmail}
+                setValue={setStaffEmail}
+                disabled={detailsDisabled}
                 id="staffid"
-                placeholder="CSC61726"
+                placeholder="Id"
                 type="text"
               ></InputField>
             </div>
@@ -101,8 +131,9 @@ const Profile = () => {
                 Level
               </label>
               <InputField
-                icon={<BorderColorOutlinedIcon />}
+                // icon={<BorderColorOutlinedIcon />}
                 id="level"
+                disabled
                 placeholder="400"
                 type="text"
               ></InputField>
@@ -153,7 +184,8 @@ const Profile = () => {
             </div>
             <Button
               disabled={
-                password.new !== password.confirmNew || passwordDisabled
+                (passwordDisabled || password.new !== password.confirmNew) &&
+                detailsDisabled
               }
               className="w-full"
             >

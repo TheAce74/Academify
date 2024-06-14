@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
-export default function Table2({ columns, data, link, border, goToLink }) {
-  const headers = columns.map((column, index) => {
+export default function Table2({ columns, data, link, border, linkState, goToLink }) {
+  const headers = columns?.map((column, index) => {
     return (
       <th
         key={`headCell-${index}`}
@@ -15,7 +15,7 @@ export default function Table2({ columns, data, link, border, goToLink }) {
   const rows = !data?.length ? (
     <tr>
       <td colSpan={columns.length} className="text-center">
-        No data
+        <span className="block my-8">No data</span>
       </td>
     </tr>
   ) : (
@@ -25,7 +25,7 @@ export default function Table2({ columns, data, link, border, goToLink }) {
           key={`row-${index}`}
           className={`transition-element hover:bg-slate-100 py-2 ${border ? "border" : ""}`}
         >
-          {columns.map((column, index2) => {
+          {columns?.map((column, index2) => {
             const value = column.render
               ? column.render(column, row)
               : row[column.key];
@@ -38,16 +38,31 @@ export default function Table2({ columns, data, link, border, goToLink }) {
               </td>
             );
           })}
-          {link && (
+          {link && !linkState (
             <td>
-              <span
+            <span
                 onClick={() => {
                   goToLink(data[index]);
                 }}
-                className="bg-primary-100 px-3 py-2 rounded-md cursor-pointer"
-              >
+                className="bg-primary-100 px-3 py-2 rounded-md cursor-pointer">
                 View
               </span>
+            </td>)}
+{link && linkState (
+            <td>
+              <Link
+                to={link}
+                state={
+                  linkState.filter(
+                    (data) =>
+                      data?.year === row?.year &&
+                      data?.semester === row?.semester
+                  )[0]
+                }
+                className="bg-primary-100 px-3 py-2 rounded-md"
+              >
+                View
+              </Link>
             </td>
           )}
         </tr>
