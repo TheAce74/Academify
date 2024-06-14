@@ -19,7 +19,37 @@ function useAdviser() {
     }
   }, [setAdviser, showAlert]);
 
-  return { getAdviserProfile };
+  const createSemester = async (semester, session, courses) => {
+    try {
+      const response = await customAxios.post(`/advisors/semesters`, {
+        name: semester,
+        session,
+        courses,
+      });
+      showAlert("Created successfully");
+      return response.data;
+    } catch (e) {
+      showAlert(e?.response?.data?.message, {
+        variant: "error",
+      });
+    }
+  };
+
+  const getSemesters = useCallback(async (year, semester) => {
+    try {
+      const response = await customAxios.get(`/advisors/semesters`, {
+        params: {
+          session: year,
+          name: semester,
+        },
+      });
+      return response.data;
+    } catch (e) {
+      console.log(e?.response?.data?.message);
+    }
+  }, []);
+
+  return { getAdviserProfile, createSemester, getSemesters };
 }
 
 export { useAdviser };

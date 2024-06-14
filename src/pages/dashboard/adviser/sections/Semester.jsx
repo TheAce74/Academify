@@ -1,45 +1,33 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Select from "../../../../components/ui/Select";
 import Button from "../../../../components/ui/Button";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import Table2 from "../../../../components/ui/Table2";
+import { eachYearOfInterval } from "date-fns";
+import { combineYears } from "../../../../utils/functions";
+import { useAdviser } from "../../../../hooks/useAdviser";
+import { useAdviserContext } from "../../../../context/AdviserContext";
+import Loader from "../../../../components/ui/Loader";
 
 const Semester = () => {
-  const [courses] = useState(["CSC403", "CSC401", "CSC407", "CSC411"]);
+  const years = eachYearOfInterval({
+    start: new Date(2019, 1, 6),
+    end: new Date(),
+  }).map((year) => year.getFullYear());
+  const [academicYears] = useState(
+    combineYears(years.concat(years[years.length - 1] + 1))
+  );
+  const [semesters] = useState(["Harmattan", "Rain"]);
+  // TODO: fetch this from the backend
+  const [courses] = useState(["CSC 403", "CSC 401", "CSC 407", "CSC 411"]);
   const [course, setCourse] = useState(0);
-
-  const data = [
-    {
-      year: "2022/2023",
-      session: "Harmattan semester",
-      level: "400",
-    },
-    {
-      year: "2022/2023",
-      session: "Rain semester",
-      level: "400",
-    },
-    {
-      year: "2021/2022",
-      session: "Harmattan semester",
-      level: "400",
-    },
-    {
-      year: "2021/2022",
-      session: "Rain semester",
-      level: "400",
-    },
-    {
-      year: "2020/2021",
-      session: "Harmattan semester",
-      level: "400",
-    },
-    {
-      year: "2020/2021",
-      session: "Rain semester",
-      level: "400",
-    },
-  ];
+  const [year, setYear] = useState(0);
+  const [semester, setSemester] = useState(0);
+  const [selectedCourses, setSelectedCourses] = useState([]);
+  const { createSemester, getSemesters } = useAdviser();
+  const [loading, setLoading] = useState(false);
+  const [fetchedSemesters, setFetchedSemesters] = useState([]);
+  const { adviser } = useAdviserContext();
 
   const columns = [
     {
@@ -47,8 +35,8 @@ const Semester = () => {
       title: "Year",
     },
     {
-      key: "session",
-      title: "Session",
+      key: "semester",
+      title: "Semester",
     },
     {
       key: "level",
@@ -56,9 +44,31 @@ const Semester = () => {
     },
   ];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSelectCourses = async (e) => {
+    setSelectedCourses((prev) => (!prev.includes(e) ? [...prev, e] : prev));
+    setCourse(e);
   };
+
+  const fetchSemesters = useCallback(async () => {
+    const response = await getSemesters();
+    setFetchedSemesters(response);
+  }, [getSemesters]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await createSemester(semester, year, selectedCourses);
+    setLoading(false);
+    setSemester(0);
+    setYear(0);
+    setCourse(0);
+    setSelectedCourses([]);
+    await fetchSemesters();
+  };
+
+  useEffect(() => {
+    fetchSemesters();
+  }, [fetchSemesters]);
 
   return (
     <div>
@@ -69,34 +79,45 @@ const Semester = () => {
           </p>
           <form onSubmit={handleSubmit} className="mt-5">
             <Select
-              value={course}
-              setValue={(e) => setCourse(e)}
-              placeholder="Select Course"
-              options={courses}
+              value={year}
+              setValue={setYear}
+              placeholder="Select academic year"
+              options={academicYears}
+            />
+            <Select
+              value={semester}
+              setValue={setSemester}
+              placeholder="Select semester"
+              options={semesters}
             />
             <Select
               value={course}
-              setValue={(e) => setCourse(e)}
-              placeholder="Select Course"
+              setValue={handleSelectCourses}
+              placeholder="Select course"
               options={courses}
             />
-            <Select
-              value={course}
-              setValue={(e) => setCourse(e)}
-              placeholder="Select Course"
-              options={courses}
-            />
-            <div className="flex gap-x-2 text-neutral-300 pb-6">
-              <span className="flex justify-center items-center border rounded-md py-2 px-3 gap-x-2">
-                <CloseOutlinedIcon />
-                <p>CSC 401</p>
-              </span>
-              <span className="flex justify-center items-center border rounded-md py-2 px-3 gap-x-2">
-                <CloseOutlinedIcon />
-                <p>CSC 403</p>
-              </span>
+            <div className="flex flex-wrap gap-2 text-neutral-300 pb-6">
+              {selectedCourses.map((course) => (
+                <span
+                  key={course}
+                  className="flex justify-center items-center border rounded-md py-2 px-3 gap-x-2"
+                >
+                  <CloseOutlinedIcon
+                    className="cursor-pointer hover:text-primary-300 transition-colors"
+                    onClick={() =>
+                      setSelectedCourses((prev) => [
+                        ...prev.slice(0, prev.indexOf(course)),
+                        ...prev.slice(prev.indexOf(course) + 1),
+                      ])
+                    }
+                  />
+                  <p>{course}</p>
+                </span>
+              ))}
             </div>
-            <Button className="w-full">Create Semester</Button>
+            <Button disabled={loading} className="w-full">
+              {loading ? <Loader /> : "Create Semester"}
+            </Button>
           </form>
         </div>
 
@@ -116,9 +137,18 @@ const Semester = () => {
 
         <div className="mt-5">
           <Table2
-            data={data}
+            data={fetchedSemesters?.map((semester) => ({
+              year: semester?.session,
+              semester: semester?.name,
+              level: adviser?.profile?.level,
+            }))}
             columns={columns}
             link="/adviser/semesters/view"
+            linkState={fetchedSemesters?.map((semester) => ({
+              year: semester?.session,
+              semester: semester?.name,
+              courses: semester?.courses,
+            }))}
           />
         </div>
       </div>

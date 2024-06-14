@@ -1,10 +1,12 @@
 import Checkbox from "@mui/material/Checkbox";
+import clsx from "clsx";
 export default function Table({
   allChecked,
   columns,
   data,
   handleCheck,
   handleCheckAll,
+  hidden,
 }) {
   const headers = columns.map((column, index) => {
     return (
@@ -14,13 +16,15 @@ export default function Table({
       >
         <span className="flex items-center font-bold">
           {index === 0 && (
-            <Checkbox
-              checked={allChecked === "all"}
-              indeterminate={allChecked === "part"}
-              size="small"
-              onChange={(e) => handleCheckAll(e.target.checked)}
-              sx={{ color: "#808080" }}
-            />
+            <span className={clsx(hidden && "opacity-0")}>
+              <Checkbox
+                checked={allChecked === "all"}
+                indeterminate={allChecked === "part"}
+                size="small"
+                onChange={(e) => handleCheckAll(e.target.checked)}
+                sx={{ color: "#808080" }}
+              />
+            </span>
           )}
           {column.title}
         </span>
@@ -50,11 +54,13 @@ export default function Table({
               <td key={`cell-${index2}`} className="p-2">
                 <span className="flex items-center font-semibold">
                   {index2 === 0 && (
-                    <Checkbox
-                      checked={row.checked}
-                      size="small"
-                      onChange={(e) => handleCheck(e.target.checked, index)}
-                    />
+                    <span className={clsx(hidden && "opacity-0")}>
+                      <Checkbox
+                        checked={row.checked}
+                        size="small"
+                        onChange={(e) => handleCheck(e.target.checked, index)}
+                      />
+                    </span>
                   )}
                   {value}
                 </span>
