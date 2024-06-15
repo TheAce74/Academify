@@ -355,10 +355,10 @@ const Results = () => {
 
           <Table
             allChecked={allChecked}
-            data={data.filter((datum) =>
-              // TODO: backend guys should attach a name
-              // datum?.name?.toLowerCase().includes(search?.toLowerCase()) ||
-              datum?.regno.toLowerCase().includes(search?.toLowerCase())
+            data={data.filter(
+              (datum) =>
+                datum?.name?.toLowerCase().includes(search?.toLowerCase()) ||
+                datum?.regno.toLowerCase().includes(search?.toLowerCase())
             )}
             columns={columns}
             handleCheck={handleCheck}

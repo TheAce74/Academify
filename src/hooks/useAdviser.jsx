@@ -63,7 +63,22 @@ function useAdviser() {
     }
   }, []);
 
-  return { getAdviserProfile, createSemester, getSemesters, getResult };
+  const getStudents = useCallback(async () => {
+    try {
+      const response = await customAxios.get(`/advisors/students`);
+      return response.data;
+    } catch (e) {
+      console.log(e?.response?.data?.message);
+    }
+  }, []);
+
+  return {
+    getAdviserProfile,
+    createSemester,
+    getSemesters,
+    getResult,
+    getStudents,
+  };
 }
 
 export { useAdviser };

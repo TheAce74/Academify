@@ -23,6 +23,7 @@ export default function DocumentUpload({ setJsonData, className }) {
         const filteredJson = json
           .filter((item) => item.REGNO)
           .map((item) => ({
+            name: item.NAMES,
             regno: typeof item.REGNO === "number" ? item.REGNO : 0,
             test: typeof item.TEST === "number" ? item.TEST : 0,
             lab: typeof item.LAB === "number" ? item.LAB : 0,

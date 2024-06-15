@@ -1,61 +1,33 @@
 import { useState, useEffect, useCallback } from "react";
 import TextField from "../../../../components/ui/TextField";
 import Table from "../../../../components/ui/Table";
+import { useAdviser } from "../../../../hooks/useAdviser";
+
 const ManageStudents = () => {
   const [search, setSearch] = useState("");
   const [allChecked, setAllChecked] = useState("part");
+  const { getStudents } = useAdviser();
 
-  const [stats] = useState([
+  const [stats, setStats] = useState([
     {
       title: "Total",
-      value: 20,
+      value: 0,
     },
     {
       title: "Suspended",
-      value: 20,
+      value: 0,
     },
     {
       title: "Withdrawn",
-      value: 20,
+      value: 0,
     },
     {
       title: "Active",
-      value: 20,
+      value: 0,
     },
   ]);
 
-  const [data, setData] = useState([
-    {
-      name: "Johnson Zakariah",
-      regNumber: "20191145772",
-      status: "Active",
-      gpaPrevious: 4.21,
-      gpaCurrent: 4.45,
-      cgpa: 4.06,
-      remark: "Pass",
-      checked: true,
-    },
-    {
-      name: "Johnson Madison",
-      regNumber: "20191325472",
-      status: "Active",
-      gpaPrevious: 3.17,
-      gpaCurrent: 4.05,
-      cgpa: 3.98,
-      remark: "Pass",
-      checked: true,
-    },
-    {
-      name: "Johnson Zakariah",
-      regNumber: "20191145772",
-      status: "Active",
-      gpaPrevious: 2.01,
-      gpaCurrent: 3.45,
-      cgpa: 3.06,
-      remark: "Pass",
-      checked: false,
-    },
-  ]);
+  const [data, setData] = useState([]);
 
   const columns = [
     {
@@ -122,6 +94,32 @@ const ManageStudents = () => {
     checkAll();
   }, [data, checkAll]);
 
+  useEffect(() => {
+    const fetchStudents = async () => {
+      const response = await getStudents();
+      setData(
+        response.map((student) => ({
+          name: `${student?.user?.firstName} ${student?.user?.lastName}`,
+          regNumber: student.reg,
+          status: "Active",
+          gpaPrevious: 4.21,
+          gpaCurrent: 4.45,
+          cgpa: 4.06,
+          remark: "Pass",
+          checked: false,
+        }))
+      );
+      setStats((prev) =>
+        prev.map((stat) =>
+          stat.title === "Total" || stat.title === "Active"
+            ? { ...stat, value: response.length }
+            : stat
+        )
+      );
+    };
+    fetchStudents();
+  }, [getStudents]);
+
   return (
     <div>
       <div className="sm:flex sm:flex-wrap sm:items-center grid grid-cols-2 gap-6">
@@ -149,7 +147,11 @@ const ManageStudents = () => {
 
       <Table
         allChecked={allChecked}
-        data={data}
+        data={data.filter(
+          (datum) =>
+            datum?.name?.toLowerCase().includes(search?.toLowerCase()) ||
+            datum?.regNumber.toLowerCase().includes(search?.toLowerCase())
+        )}
         columns={columns}
         handleCheck={handleCheck}
         handleCheckAll={handleCheckAll}
