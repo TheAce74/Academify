@@ -19,7 +19,13 @@ const Semester = () => {
   );
   const [semesters] = useState(["Harmattan", "Rain"]);
   // TODO: fetch this from the backend
-  const [courses] = useState(["CSC 403", "CSC 401", "CSC 407", "CSC 411"]);
+  const [courses] = useState([
+    "CSC 401",
+    "CSC 403",
+    "CSC 407",
+    "CSC 411",
+    "CSC 415",
+  ]);
   const [course, setCourse] = useState(0);
   const [year, setYear] = useState(0);
   const [semester, setSemester] = useState(0);

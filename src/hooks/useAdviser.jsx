@@ -49,7 +49,21 @@ function useAdviser() {
     }
   }, []);
 
-  return { getAdviserProfile, createSemester, getSemesters };
+  const getResult = useCallback(async (semester, course) => {
+    try {
+      const response = await customAxios.get(`/advisors/view-results`, {
+        params: {
+          semester,
+          course,
+        },
+      });
+      return response.data;
+    } catch (e) {
+      console.log(e?.response?.data?.message);
+    }
+  }, []);
+
+  return { getAdviserProfile, createSemester, getSemesters, getResult };
 }
 
 export { useAdviser };

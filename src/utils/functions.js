@@ -26,3 +26,31 @@ export const getGrade = (value) => {
     return "F";
   }
 };
+
+export const getGrades = (idx) => {
+  switch (idx) {
+    case 0:
+      return "A";
+    case 1:
+      return "B";
+    case 2:
+      return "C";
+    case 3:
+      return "D";
+    case 4:
+      return "E";
+    default:
+      return "F";
+  }
+};
+
+export const countStudents = (results) => {
+  return [
+    results.filter((result) => result.grade === "A").length,
+    results.filter((result) => result.grade === "B").length,
+    results.filter((result) => result.grade === "C").length,
+    results.filter((result) => result.grade === "D").length,
+    results.filter((result) => result.grade === "E").length,
+    results.filter((result) => result.grade === "F").length,
+  ];
+};

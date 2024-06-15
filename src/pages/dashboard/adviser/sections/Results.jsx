@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import HistoryIcon from "@mui/icons-material/History";
 import Select from "../../../../components/ui/Select";
 import DocumentUpload from "../../../../components/ui/DocumentUpload";
@@ -9,8 +9,13 @@ import Loader from "../../../../components/ui/Loader";
 import { customAxios } from "../../../../services/axios";
 import { useAlert } from "../../../../hooks/useAlert";
 import { eachYearOfInterval } from "date-fns";
-import { combineYears } from "../../../../utils/functions";
+import {
+  combineYears,
+  countStudents,
+  getGrades,
+} from "../../../../utils/functions";
 import { useAdviser } from "../../../../hooks/useAdviser";
+import Table2 from "../../../../components/ui/Table2";
 
 const Results = () => {
   const { showAlert } = useAlert();
@@ -30,44 +35,13 @@ const Results = () => {
   const [semester, setSemester] = useState(0);
   const [course, setCourse] = useState(0);
   const [document, setDocument] = useState(null);
-  const [resultResponse, setResultResponse] = useState();
+  const [resultResponse, setResultResponse] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [allChecked, setAllChecked] = useState("part");
 
-  const [data, setData] = useState([
-    {
-      name: "Johnson Zakariah",
-      regNumber: "20191145772",
-      test: 20,
-      practical: 20,
-      exam: 20,
-      total: 20,
-      grade: "A",
-      checked: true,
-    },
-    {
-      name: "Johnson Madison",
-      regNumber: "20191325472",
-      test: 60,
-      practical: 10,
-      exam: 20,
-      total: 20,
-      grade: "B",
-      checked: true,
-    },
-    {
-      name: "Johnson Zakariah",
-      regNumber: "20191145772",
-      test: 20,
-      practical: 20,
-      exam: 20,
-      total: 20,
-      grade: "A",
-      checked: false,
-    },
-  ]);
+  const [data, setData] = useState([]);
 
   const columns = [
     {
@@ -75,7 +49,7 @@ const Results = () => {
       title: "Student Name",
     },
     {
-      key: "regNumber",
+      key: "regno",
       title: "Registration Number",
     },
     {
@@ -83,8 +57,8 @@ const Results = () => {
       title: "Test",
     },
     {
-      key: "practical",
-      title: "Practical",
+      key: "lab",
+      title: "Lab",
     },
     {
       key: "exam",
@@ -100,14 +74,58 @@ const Results = () => {
     },
   ];
 
-  const { getSemesters } = useAdviser();
-  const [fetchedSemester, setFetchedSemester] = useState({});
+  const columns2 = [
+    {
+      key: "year",
+      title: "Year",
+    },
+    {
+      key: "semester",
+      title: "Semester",
+    },
+    {
+      key: "courses",
+      title: "Number of courses",
+    },
+  ];
 
-  const fetchSemesters = async (semester) => {
-    const response = await getSemesters(academicYear, semester);
-    setFetchedSemester(response[0]);
-    setCourses(response[0].courses.map((course) => course.code));
-  };
+  const columns3 = [
+    {
+      key: "title",
+      title: "Course title",
+    },
+    {
+      key: "code",
+      title: "Course code",
+    },
+    {
+      key: "credits",
+      title: "Credits",
+    },
+    {
+      key: "type",
+      title: "Type",
+    },
+  ];
+
+  const { getSemesters, getResult } = useAdviser();
+  const [fetchedSemester, setFetchedSemester] = useState({});
+  const [fetchedSemesters, setFetchedSemesters] = useState([]);
+  const sessionRef = useRef({});
+
+  const fetchSemesters = useCallback(
+    async (semester) => {
+      if (!semester) {
+        const response = await getSemesters();
+        setFetchedSemesters(response);
+      } else {
+        const response = await getSemesters(academicYear, semester);
+        setFetchedSemester(response[0]);
+        setCourses(response[0].courses.map((course) => course.code));
+      }
+    },
+    [academicYear, getSemesters]
+  );
 
   const uploadResult = async () => {
     if (!academicYear || !semester || !course) {
@@ -140,6 +158,16 @@ const Results = () => {
       setLoading(false);
     }
   };
+
+  const fetchResult = async (semester, course) => {
+    showAlert("Fetching result...");
+    const response = await getResult(semester, course);
+    setData(response.map((datum) => ({ ...datum, checked: false })));
+    showAlert("Results fetched", {
+      variant: "success",
+    });
+  };
+
   const handleCheck = (value, index) => {
     let newData = [...data];
     newData[index].checked = value;
@@ -176,12 +204,16 @@ const Results = () => {
     checkAll();
   }, [data, checkAll]);
 
+  useEffect(() => {
+    fetchSemesters();
+  }, [fetchSemesters]);
+
   return (
     <div>
-      {!resultResponse ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-1">
-          <div className="md:w-9/12 w-full">
-            <h1 className="font-medium mb-1">Result</h1>
+      {resultResponse === 0 ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 lg:gap-16">
+          <div className="md:w-9/12 w-full lg:order-1">
+            <h1 className="font-bold text-xl mb-1">Result</h1>
             <p>
               Lorem ipsum dolor sit amet consectetur. Imperdiet eleifend aenean
               pellentesque nunc convallis purus. Pretium nisl rhoncus congue
@@ -189,8 +221,11 @@ const Results = () => {
             </p>
           </div>
           <div className="lg:mt-0 mt-5">
-            <h1 className="font-medium pb-2 border-b">Upload Result</h1>
-            <h3 className="text-right mt-3 mb-4 flex items-center justify-start lg:justify-end cursor-pointer hover:text-primary-500">
+            <h1 className="font-bold text-xl pb-2 border-b">Upload Result</h1>
+            <h3
+              onClick={() => setResultResponse(1)}
+              className="text-right mt-3 mb-4 flex items-center justify-start lg:justify-end cursor-pointer hover:text-primary-500"
+            >
               <span className="mr-3">View previously uploaded results</span>
               <HistoryIcon />
             </h3>
@@ -226,14 +261,81 @@ const Results = () => {
             </Button>
           </div>
         </div>
+      ) : resultResponse === 1 ? (
+        <div>
+          <button
+            onClick={() => setResultResponse(0)}
+            className="text-sm font-semibold text-[#1938DB] transition-colors hover:text-primary-300 focus-visible:text-primary-300 cursor-pointer"
+          >
+            Go back
+          </button>
+          <p className="text-xl pb-2 font-bold">Previous Results</p>
+
+          <div className="mt-5">
+            <Table2
+              data={fetchedSemesters?.map((semester) => ({
+                year: semester?.session,
+                semester: semester?.name,
+                courses: semester?.courses.length,
+                id: semester?._id,
+                courseList: semester?.courses,
+              }))}
+              columns={columns2}
+              link="/adviser/semesters/results"
+              goToLink={(semester) => {
+                sessionRef.current = semester;
+                setResultResponse(2);
+              }}
+            />
+          </div>
+        </div>
+      ) : resultResponse === 2 ? (
+        <div>
+          <button
+            onClick={() => setResultResponse(1)}
+            className="text-sm font-semibold text-[#1938DB] transition-colors hover:text-primary-300 focus-visible:text-primary-300 cursor-pointer"
+          >
+            Go back
+          </button>
+          <p className="text-xl pb-2 font-bold">
+            {sessionRef.current?.year} {sessionRef.current?.semester} Semester
+            Results
+          </p>
+
+          <div className="mt-5">
+            <Table2
+              data={sessionRef.current?.courseList?.map((course) => ({
+                title: course?.name,
+                code: course?.code,
+                credits: course?.credits,
+                type: course?.type,
+                id: course?._id,
+              }))}
+              columns={columns3}
+              link="/adviser/results/view"
+              goToLink={(course) => {
+                fetchResult(sessionRef.current?.id, course?.id);
+                setResultResponse(3);
+              }}
+            />
+          </div>
+        </div>
       ) : (
         <div>
+          <button
+            onClick={() => setResultResponse(2)}
+            className="text-sm font-semibold text-[#1938DB] transition-colors hover:text-primary-300 focus-visible:text-primary-300 cursor-pointer"
+          >
+            Go back
+          </button>
           <div className="grid grid-cols-2 gap-3 2xl:grid-cols-6 lg:grid-cols-3">
-            {Array.from({ length: 6 }, (_, i) => (
-              <div key={i} className="border-r w-max px-3 h-full">
-                <h3 className="text-xs">Number of students who got A</h3>
+            {[0, 1, 2, 3, 4, 5].map((item) => (
+              <div key={item} className="border-r w-max px-3 h-full">
+                <h3 className="text-xs">
+                  Number of students who got {getGrades(item)}
+                </h3>
                 <h1 className="font-semibold text-2xl mt-2 overflow-hidden">
-                  20
+                  {countStudents(data)[item]}
                 </h1>
               </div>
             ))}
@@ -253,10 +355,15 @@ const Results = () => {
 
           <Table
             allChecked={allChecked}
-            data={data}
+            data={data.filter((datum) =>
+              // TODO: backend guys should attach a name
+              // datum?.name?.toLowerCase().includes(search?.toLowerCase()) ||
+              datum?.regno.toLowerCase().includes(search?.toLowerCase())
+            )}
             columns={columns}
             handleCheck={handleCheck}
             handleCheckAll={handleCheckAll}
+            hidden
           />
         </div>
       )}
