@@ -12,6 +12,9 @@ import Dialog from "@mui/material/Dialog";
 import { customAxios } from "../../../../services/axios";
 import { useAlert } from "../../../../hooks/useAlert";
 import { useStudentContext } from "../../../../context/StudentContext";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { format } from "date-fns";
 
 const Results = () => {
   const { student } = useStudentContext();
@@ -45,54 +48,10 @@ const Results = () => {
     },
   ]);
   const [semester, setSemester] = useState(0);
-  const [semesters] = useState([
-    "2022/2023 Harmattan (1st) Semester",
-    "2022/2023 Rain (2nd) Semester",
-  ]);
+  const [semesters, setSemesters] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
 
-  const [data] = useState([
-    {
-      courseCode: "CSC401",
-      courseTitle: "Survey of Computer programming",
-      unit: 3,
-      lab: 20,
-      test: 20,
-      exam: 100,
-      grade: "A",
-      remark: "Pass",
-      render: <div>test</div>,
-    },
-    {
-      courseCode: "CSC401",
-      courseTitle: "Survey of Computer programming",
-      unit: 3,
-      lab: 20,
-      test: 20,
-      exam: 100,
-      grade: "A",
-      remark: "Pass",
-    },
-    {
-      courseCode: "CSC401",
-      courseTitle: "Survey of Computer programming",
-      unit: 3,
-      lab: 20,
-      test: 20,
-      exam: 100,
-      grade: "A",
-      remark: "Pass",
-    },
-    {
-      courseCode: "CSC401",
-      courseTitle: "Survey of Computer programming",
-      unit: 3,
-      lab: 20,
-      test: 20,
-      exam: 100,
-      grade: "A",
-      remark: "Pass",
-    },
-  ]);
+  const [tableData, setTableData] = useState([]);
 
   const [columns] = useState([
     {
@@ -140,14 +99,140 @@ const Results = () => {
   ]);
 
   const getResults = async () => {
+    let semesters = [];
     try {
-      const data = await customAxios.get(`/student/result`);
+      const { data } = await customAxios.get(`/student/result`);
       console.log(data);
+      let newResults = data?.results.map((result) => {
+        return {
+          ...result,
+          displayName: `${result?.semester?.session} ${result?.semester?.name} Semester`,
+        };
+      });
+      data?.results.map((detail) => {
+        const value = semesters.find(
+          (item) =>
+            item ===
+            `${detail?.semester?.session} ${detail?.semester?.name} Semester`
+        );
+        if (value) {
+          return;
+        } else {
+          semesters.push(
+            `${detail?.semester?.session} ${detail?.semester?.name} Semester`
+          );
+        }
+      });
+      setSemesters(semesters);
+      setSemester(semesters[0]);
+      setAllCourses(newResults);
     } catch (e) {
       showAlert(e?.response?.data?.message, {
         variant: "error",
       });
     }
+  };
+
+  const downloadResult = () => {
+    // Sample items data
+    const itemsData = [...tableData];
+
+    // Create a new jsPDF instance
+    const pdf = new jsPDF();
+
+    // Set document properties
+    pdf.setProperties({
+      title: `${student?.student?.user?.firstName} ${student?.student?.user?.lastName}`,
+    });
+
+    // Generate the vendor-specific content
+    pdf.setFontSize(12);
+    pdf.text(
+      `Name: ${student?.student?.user?.firstName} ${student?.student?.user?.lastName}`,
+      8,
+      14
+    );
+    pdf.setFontSize(12);
+    pdf.text(`Reg No: ${student?.student?.reg}`, 8, 22);
+    // Generate AutoTable for item details
+    const itemDetailsRows = itemsData?.map((item, index) => [
+      (index + 1).toString(),
+      item.courseCode.toString(),
+      item.unit?.toString(),
+      item.lab?.toString(),
+      item.test?.toString(),
+      item.exam?.toString(),
+      item.grade?.toString(),
+      item.remark?.toString(),
+    ]);
+
+    const itemDetailsHeaders = [
+      "S.No",
+      "Course Code",
+      "Unit",
+      "Lab",
+      "Test",
+      "Exam",
+      "Grade",
+      "Remark",
+    ];
+    // Define table styles
+    const headerStyles = {
+      fillColor: [240, 240, 240],
+      textColor: [0],
+      // fontFamily: "Newsreader",
+      fontStyle: "bold",
+    };
+
+    // pdf.setFont("Newsreader");
+    const itemDetailsYStart = 58;
+    pdf.autoTable({
+      head: [itemDetailsHeaders],
+      body: itemDetailsRows,
+      startY: itemDetailsYStart, // Adjust the Y position as needed
+      headStyles: {
+        fillColor: headerStyles.fillColor,
+        textColor: headerStyles.textColor,
+        fontStyle: headerStyles.fontStyle,
+        fontSize: 10, // Adjust the font size as needed
+        // font: "Newsreader", // Set the font family
+        halign: "left",
+      },
+
+      alternateRowStyles: { fillColor: [255, 255, 255] },
+      bodyStyles: {
+        fontSize: 10, // Adjust the font size for the body
+        // font: "Newsreader", // Set the font family for the body
+        cellPadding: { top: 1, right: 5, bottom: 1, left: 2 }, // Adjust cell padding
+        textColor: [0, 0, 0], // Set text color for the body
+        rowPageBreak: "avoid", // Avoid row page breaks
+      },
+      margin: { top: 10, left: 13 },
+    });
+
+    const totalPages = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.line(10, 283, 200, 283);
+      pdf.setPage(i);
+      // pdf.setFont("Newsreader");
+      pdf.text(
+        `Page ${i} of ${totalPages}`,
+        185,
+        pdf.internal.pageSize.getHeight() - 5
+      );
+    }
+
+    // Save the PDF
+    pdf.save(
+      `${student?.student?.user?.firstName} ${student?.student?.user?.lastName}_${semester}`
+    );
+
+    // pdf open in a new tab
+    const pdfDataUri = pdf.output("datauristring");
+    const newTab = window.open();
+    newTab?.document.write(
+      `<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`
+    );
   };
 
   const [messageContent] = useState([
@@ -168,6 +253,25 @@ const Results = () => {
     getResults();
     console.log(student.student);
   }, []);
+
+  useEffect(() => {
+    let tableData = [];
+    allCourses.map((course) => {
+      if (course?.displayName === semester) {
+        tableData.push({
+          courseCode: course?.course?.code,
+          courseTitle: course?.course?.name,
+          unit: course?.course?.credits,
+          lab: course?.lab,
+          test: course?.test,
+          exam: course?.exam,
+          grade: course?.grade,
+          remark: "Pass",
+        });
+      }
+    });
+    setTableData(tableData);
+  }, [semester]);
 
   const DialogContent = () => {
     return (
@@ -254,7 +358,7 @@ const Results = () => {
       </div>
 
       <div className="mt-5">
-        <Table2 data={data} columns={columns} border />
+        <Table2 data={tableData} columns={columns} border />
       </div>
 
       <div className="flex flex-col justify-center items-end w-full my-5">
@@ -267,7 +371,10 @@ const Results = () => {
           </h2>
         </div>
 
-        <Button className="flex justify-evenly items-center px-1.5 text-sm gap-1">
+        <Button
+          onClick={downloadResult}
+          className="flex justify-evenly items-center px-1.5 text-sm gap-1"
+        >
           <p className="ps-1">
             <FileDownloadOutlinedIcon />
           </p>
