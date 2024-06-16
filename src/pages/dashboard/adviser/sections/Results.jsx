@@ -358,7 +358,9 @@ const Results = () => {
             data={data.filter(
               (datum) =>
                 datum?.name?.toLowerCase().includes(search?.toLowerCase()) ||
-                datum?.regno.toLowerCase().includes(search?.toLowerCase())
+                String(datum?.regno)
+                  ?.toLowerCase()
+                  .includes(search?.toLowerCase())
             )}
             columns={columns}
             handleCheck={handleCheck}
