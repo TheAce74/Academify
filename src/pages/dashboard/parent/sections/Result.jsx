@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Select from "../../../../components/ui/Select";
+import Select2 from "../../../../components/ui/Select2";
 import Button2 from "@mui/material/Button";
 import Button from "../../../../components/ui/Button";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
@@ -16,6 +16,14 @@ import InputField from "../../../../components/ui/InputFieldTwo";
 import Loader from "../../../../components/ui/Loader";
 import { useAlert } from "../../../../hooks/useAlert";
 import { useParent } from "../../../../hooks/useParent";
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 
 const Result = () => {
   const { showAlert } = useAlert();
@@ -23,9 +31,9 @@ const Result = () => {
   const { getParentProfile } = useParent();
   const [addChild, setAddChild] = useState(false);
   const [dialog, setDialog] = useState(false);
-  const [regNumber, setRegNumber] = useState("");
   const [FullScreen, setFullscreen] = useState(false);
   const [loading, setLoading] = useState(false);
+  
 
   const [stats] = useState([
     {
@@ -53,55 +61,26 @@ const Result = () => {
       value: "2",
     },
   ]);
-  const [semester, setSemester] = useState(0);
-  const [semesters] = useState([
-    "2022/2023 Harmattan (1st) Semester",
-    "2022/2023 Rain (2nd) Semester",
-  ]);
+  
 
-  const [data] = useState([
-    {
-      courseCode: "CSC401",
-      courseTitle: "Survey of Computer programming",
-      unit: 3,
-      lab: 20,
-      test: 20,
-      exam: 100,
-      grade: "A",
-      remark: "Pass",
-      render: <div>test</div>,
-    },
-    {
-      courseCode: "CSC401",
-      courseTitle: "Survey of Computer programming",
-      unit: 3,
-      lab: 20,
-      test: 20,
-      exam: 100,
-      grade: "A",
-      remark: "Pass",
-    },
-    {
-      courseCode: "CSC401",
-      courseTitle: "Survey of Computer programming",
-      unit: 3,
-      lab: 20,
-      test: 20,
-      exam: 100,
-      grade: "A",
-      remark: "Pass",
-    },
-    {
-      courseCode: "CSC401",
-      courseTitle: "Survey of Computer programming",
-      unit: 3,
-      lab: 20,
-      test: 20,
-      exam: 100,
-      grade: "A",
-      remark: "Pass",
-    },
-  ]);
+  const parentChildren = parent?.children?.length > 0 ? (parent?.children?.map((child) => (child.reg))) : []
+  // console.log(parentChildren[0])
+
+  const [reg, setReg] = useState(parentChildren[0])
+
+
+  const handleSelectChange = (event) => {
+    setReg(event.target.value);
+    // console.log(event.target.value, reg)
+    const regNumber = event.target.value
+    getResults(regNumber)
+  };
+
+
+  const [semester, setSemester] = useState(0);
+  const [semesters, setSemesters] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
+  const [tableData, setTableData] = useState([]);
 
   const [columns] = useState([
     {
@@ -148,6 +127,197 @@ const Result = () => {
     },
   ]);
 
+  const getDisplayName = (value) => {
+    return `${value?.semester?.session} ${value?.semester?.name} (${value?.semester?.name == "Rain" ? "2nd" : "1st"}) Semester`;
+  };
+
+  const getResults = async (regNumber) => {
+    let semesters = [];
+    try {
+      setLoading(true)
+      const { data } = await customAxios.post("/parent/getChildResult", {
+        regNo: regNumber,
+      });
+      console.log(data);
+      console.log(regNumber);
+      let newResults = data?.results.map((result) => {
+        return {
+          ...result,
+          displayName: getDisplayName(result),
+        };
+      });
+      data?.results.map((detail) => {
+        const value = semesters.find(
+          (item) => item === `${getDisplayName(item)}`
+        );
+        if (value) {
+          return;
+        } else {
+          semesters.push(
+            `${detail?.semester?.session} ${detail?.semester?.name} (${detail?.semester?.name == "Rain" ? "2nd" : "1st"}) Semester`
+          );
+        }
+      });
+      setSemesters(semesters);
+      setSemester(semesters[0]);
+      setAllCourses(newResults);
+      // console.log(semesters)
+      // console.log(newResults)
+      console.log(allCourses)
+      // console.log(reg)
+    } catch (e) {
+      showAlert(e?.response?.data?.message, {
+        variant: "error",
+      });
+    }
+    setLoading(false)
+  };
+
+  const downloadResult = () => {
+    // Sample items data
+    const itemsData = [...tableData];
+
+    // Create a new jsPDF instance
+    const pdf = new jsPDF();
+
+    // Set document properties
+    pdf.setProperties({
+      title: `${allCourses[0].name}`,
+    });
+
+    // Generate the vendor-specific content
+    pdf.setFontSize(13);
+    pdf.text(`${semester} Result`, 67, 11);
+    pdf.setFontSize(11);
+    pdf.text("Name:", 8, 34);
+    pdf.setFont(undefined, "bold");
+    pdf.text(
+      `${allCourses[0].name}`,
+      20,
+      34
+    );
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, "normal");
+    pdf.text("Registration Number:", 8, 42);
+    pdf.setFont(undefined, "bold");
+    pdf.text(
+      `${allCourses[0].regno}`,
+       46, 
+       42);
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, "normal");
+    pdf.text("Department:", 8, 50);
+    pdf.setFont(undefined, "bold");
+    pdf.text("Computer Science", 31, 50);
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, "normal");
+    pdf.text("Level:", 8, 58);
+    pdf.setFont(undefined, "bold");
+    pdf.text("500", 19, 58);
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, "normal");
+    pdf.text("GPA:", 138, 42);
+    pdf.setFont(undefined, "bold");
+    pdf.text("5.0", 148, 42);
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, "normal");
+    pdf.text("CGPA:", 160, 42);
+    pdf.setFont(undefined, "bold");
+    pdf.text("4.2", 173, 42);
+
+    // Generate AutoTable for item details
+    const itemDetailsRows = itemsData?.map((item, index) => [
+      (index + 1).toString(),
+      item.courseCode.toString(),
+      item.unit?.toString(),
+      item.lab?.toString(),
+      item.test?.toString(),
+      item.exam?.toString(),
+      item.grade?.toString(),
+      item.remark?.toString(),
+    ]);
+
+    const itemDetailsHeaders = [
+      "S.No",
+      "Course Code",
+      "Unit",
+      "Lab",
+      "Test",
+      "Exam",
+      "Grade",
+      "Remark",
+    ];
+    // Define table styles
+    const headerStyles = {
+      fillColor: [236, 236, 236],
+      textColor: [128, 128, 128],
+      // fontFamily: "Newsreader",
+      fontStyle: "bold",
+    };
+
+    // pdf.setFont("Newsreader");
+    const itemDetailsYStart = 70;
+    pdf.autoTable({
+      head: [itemDetailsHeaders],
+      body: itemDetailsRows,
+      startY: itemDetailsYStart, // Adjust the Y position as needed
+      headStyles: {
+        fillColor: headerStyles.fillColor,
+        textColor: headerStyles.textColor,
+        fontStyle: headerStyles.fontStyle,
+        fontSize: 10, // Adjust the font size as needed
+        // font: "Newsreader", // Set the font family
+        halign: "left",
+      },
+      alternateRowStyles: { fillColor: [255, 255, 255] },
+      bodyStyles: {
+        fontSize: 10, // Adjust the font size for the body
+        // font: "Newsreader", // Set the font family for the body
+        cellPadding: { top: 3, right: 5, bottom: 2, left: 2 }, // Adjust cell padding
+        textColor: [0, 0, 0], // Set text color for the body
+        rowPageBreak: "avoid", // Avoid row page breaks
+      },
+      margin: { top: 10, left: 13 },
+    });
+
+    const totalPages = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.line(10, 283, 200, 283);
+      pdf.setPage(i);
+      // pdf.setFont("Newsreader");
+      pdf.setFont(undefined, "normal");
+      pdf.setFontSize(9);
+      pdf.text(
+        "Course Adviser Remarks:",
+        8,
+        pdf.internal.pageSize.getHeight() - 5
+      );
+      pdf.setFont(undefined, "bold");
+      pdf.text(
+        "Stellar semester - keep up the fantastic work",
+        45,
+        pdf.internal.pageSize.getHeight() - 5
+      );
+      pdf.text(
+        `Page ${i} of ${totalPages}`,
+        185,
+        pdf.internal.pageSize.getHeight() - 5
+      );
+    }
+
+    // Save the PDF
+    // pdf.save(
+    //   `${student?.student?.user?.firstName} ${student?.student?.user?.lastName}_${semester}`
+    // );
+
+    // pdf open in a new tab
+    const pdfDataUri = pdf.output("datauristring");
+    const newTab = window.open();
+    newTab?.document.write(
+      `<iframe width='100%' height='100%' src='${pdfDataUri}'></iframe>`
+    );
+  };
+
   const [messageContent] = useState([
     {
       name: "John Joe",
@@ -161,6 +331,31 @@ const Result = () => {
         "Hello ma, I have an issue with my CSC 411 result. I did the practical, took the test and even sat for the exam but as the result came out I found out I had a missing test and practical score and my exam score was nothing to write home about. Please ma I would appreciate if you can look into this. Thank you!",
     },
   ]);
+
+  useEffect(() => {
+    getResults(parentChildren[0]);
+  }, [parentChildren[0]]);
+
+  useEffect(() => {
+    let tableData2 = [];
+      allCourses.map((course) => {
+        if (course?.displayName === semester) {
+          tableData2.push({
+            courseCode: course?.course?.code,
+            courseTitle: course?.course?.name,
+            unit: course?.course?.credits,
+            lab: course?.lab,
+            test: course?.test,
+            exam: course?.exam,
+            grade: course?.grade,
+            remark: "Pass",
+          });
+        }
+      });
+      setTableData(tableData2);
+      console.log(tableData2)
+  }, [allCourses]);
+
 
   const DialogContent = () => {
     return (
@@ -229,7 +424,7 @@ const Result = () => {
     window.addEventListener("resize", ResponsiveModal);
   }, []);
 
-  return parent && parent?.children.length > 0 ? (
+  return parent && parent?.children?.length > 0 ? (
     <div>
       <div className="block sm:hidden">
         <Dialog open={dialog} fullScreen={FullScreen}>
@@ -251,6 +446,24 @@ const Result = () => {
       </div>
 
       <div className="flex sm:flex-row flex-col justify-between sm:items-center my-4">
+      <div className="w-max sm:mt-0 mt-4">
+          <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Select Child</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={reg}
+              label="Select Child"
+              onChange={handleSelectChange}
+            >
+              {parent?.children.map((child)=>(
+                <MenuItem value={child.reg}>{child.user.firstName + ' ' + child.user.lastName}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        </div>
         <div>
           <Button2 variant="text" sx={{ color: "#808080" }}>
             <ChatOutlinedIcon />
@@ -258,18 +471,25 @@ const Result = () => {
           </Button2>
         </div>
         <div className="w-max sm:mt-0 mt-4">
-          <Select
+          <Select2
             value={semester}
             setValue={(e) => setSemester(e)}
             placeholder="Select Semester"
             options={semesters}
           />
         </div>
+        
       </div>
 
-      <div className="mt-5">
-        <Table2 data={data} columns={columns} border />
-      </div>
+      {loading ? (
+        <div className="mt-5">
+          <Table2 data='loading' columns={columns} border />
+        </div>
+      ):(
+        <div className="mt-5">
+          <Table2 data={tableData} columns={columns} border />
+        </div>
+      )}
 
       <div className="flex flex-col justify-center items-end w-full my-5">
         <div className="flex items-center mb-4">
@@ -281,7 +501,10 @@ const Result = () => {
           </h2>
         </div>
 
-        <Button className="flex justify-evenly items-center px-1.5 text-sm gap-1">
+        <Button
+          onClick={downloadResult}
+          className="flex justify-evenly items-center px-1.5 text-sm gap-1"
+        >
           <p className="ps-1">
             <FileDownloadOutlinedIcon />
           </p>
