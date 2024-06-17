@@ -206,7 +206,7 @@ const Profile = () => {
                 >
                   {parent?.children.map((child)=>(
                     <MenuItem className>
-                      <div className="flex items-center justify-between gap-12 pb-2">
+                      <div className="flex items-center justify-between gap-12 pb-2 w-full">
                         <div>
                           <p className="text-neutral-400 font-medium text-lg">{child.user.firstName + ' ' + child.user.lastName}</p>
                           <p className="text-neutral-400 font-light">{child.reg}</p>

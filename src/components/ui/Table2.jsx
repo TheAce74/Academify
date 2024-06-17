@@ -19,13 +19,22 @@ export default function Table2({
     );
   });
 
-  const rows = !data?.length ? (
+  const rows = data == 'loading' ?
+  (
+    <tr>
+      <td colSpan={columns.length} className="text-center">
+        <span className="block my-8">Loading ....</span>
+      </td>
+    </tr>
+  ) : !data?.length ? 
+  (
     <tr>
       <td colSpan={columns.length} className="text-center">
         <span className="block my-8">No data</span>
       </td>
     </tr>
-  ) : (
+  ) :
+  (
     data?.map((row, index) => {
       return (
         <tr
