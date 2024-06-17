@@ -250,7 +250,7 @@ export const Register = () => {
                 <InputField
                   icon={<HiOutlineUser />}
                   id="reg"
-                  type="password"
+                  type="text"
                   placeholder="Enter your reg no"
                   required
                   ref={regRef}
