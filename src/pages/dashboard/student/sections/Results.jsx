@@ -14,7 +14,7 @@ import { useAlert } from "../../../../hooks/useAlert";
 import { useStudentContext } from "../../../../context/StudentContext";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import { format } from "date-fns";
+// import { format } from "date-fns";
 
 const Results = () => {
   const { student } = useStudentContext();
@@ -98,6 +98,10 @@ const Results = () => {
     },
   ]);
 
+  const getDisplayName = (value) => {
+    return `${value?.semester?.session} ${value?.semester?.name} (${value?.semester?.name == "Rain" ? "2nd" : "1st"}) Semester`;
+  };
+
   const getResults = async () => {
     let semesters = [];
     try {
@@ -106,20 +110,18 @@ const Results = () => {
       let newResults = data?.results.map((result) => {
         return {
           ...result,
-          displayName: `${result?.semester?.session} ${result?.semester?.name} Semester`,
+          displayName: getDisplayName(result),
         };
       });
       data?.results.map((detail) => {
         const value = semesters.find(
-          (item) =>
-            item ===
-            `${detail?.semester?.session} ${detail?.semester?.name} Semester`
+          (item) => item === `${getDisplayName(item)}`
         );
         if (value) {
           return;
         } else {
           semesters.push(
-            `${detail?.semester?.session} ${detail?.semester?.name} Semester`
+            `${detail?.semester?.session} ${detail?.semester?.name} (${detail?.semester?.name == "Rain" ? "2nd" : "1st"}) Semester`
           );
         }
       });
@@ -146,14 +148,42 @@ const Results = () => {
     });
 
     // Generate the vendor-specific content
-    pdf.setFontSize(12);
+    pdf.setFontSize(13);
+    pdf.text(`${semester} Result`, 67, 11);
+    pdf.setFontSize(11);
+    pdf.text("Name:", 8, 34);
+    pdf.setFont(undefined, "bold");
     pdf.text(
-      `Name: ${student?.student?.user?.firstName} ${student?.student?.user?.lastName}`,
-      8,
-      14
+      `${student?.student?.user?.firstName} ${student?.student?.user?.lastName}`,
+      20,
+      34
     );
-    pdf.setFontSize(12);
-    pdf.text(`Reg No: ${student?.student?.reg}`, 8, 22);
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, "normal");
+    pdf.text("Registration Number:", 8, 42);
+    pdf.setFont(undefined, "bold");
+    pdf.text(`20191123633`, 46, 42);
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, "normal");
+    pdf.text("Department:", 8, 50);
+    pdf.setFont(undefined, "bold");
+    pdf.text("Computer Science", 31, 50);
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, "normal");
+    pdf.text("Level:", 8, 58);
+    pdf.setFont(undefined, "bold");
+    pdf.text("500", 19, 58);
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, "normal");
+    pdf.text("GPA:", 138, 42);
+    pdf.setFont(undefined, "bold");
+    pdf.text("5.0", 148, 42);
+    pdf.setFontSize(11);
+    pdf.setFont(undefined, "normal");
+    pdf.text("CGPA:", 160, 42);
+    pdf.setFont(undefined, "bold");
+    pdf.text("4.2", 173, 42);
+
     // Generate AutoTable for item details
     const itemDetailsRows = itemsData?.map((item, index) => [
       (index + 1).toString(),
@@ -178,14 +208,14 @@ const Results = () => {
     ];
     // Define table styles
     const headerStyles = {
-      fillColor: [240, 240, 240],
-      textColor: [0],
+      fillColor: [236, 236, 236],
+      textColor: [128, 128, 128],
       // fontFamily: "Newsreader",
       fontStyle: "bold",
     };
 
     // pdf.setFont("Newsreader");
-    const itemDetailsYStart = 58;
+    const itemDetailsYStart = 70;
     pdf.autoTable({
       head: [itemDetailsHeaders],
       body: itemDetailsRows,
@@ -198,12 +228,11 @@ const Results = () => {
         // font: "Newsreader", // Set the font family
         halign: "left",
       },
-
       alternateRowStyles: { fillColor: [255, 255, 255] },
       bodyStyles: {
         fontSize: 10, // Adjust the font size for the body
         // font: "Newsreader", // Set the font family for the body
-        cellPadding: { top: 1, right: 5, bottom: 1, left: 2 }, // Adjust cell padding
+        cellPadding: { top: 3, right: 5, bottom: 2, left: 2 }, // Adjust cell padding
         textColor: [0, 0, 0], // Set text color for the body
         rowPageBreak: "avoid", // Avoid row page breaks
       },
@@ -215,6 +244,19 @@ const Results = () => {
       pdf.line(10, 283, 200, 283);
       pdf.setPage(i);
       // pdf.setFont("Newsreader");
+      pdf.setFont(undefined, "normal");
+      pdf.setFontSize(9);
+      pdf.text(
+        "Course Adviser Remarks:",
+        8,
+        pdf.internal.pageSize.getHeight() - 5
+      );
+      pdf.setFont(undefined, "bold");
+      pdf.text(
+        "Stellar semester - keep up the fantastic work",
+        45,
+        pdf.internal.pageSize.getHeight() - 5
+      );
       pdf.text(
         `Page ${i} of ${totalPages}`,
         185,
@@ -223,9 +265,9 @@ const Results = () => {
     }
 
     // Save the PDF
-    pdf.save(
-      `${student?.student?.user?.firstName} ${student?.student?.user?.lastName}_${semester}`
-    );
+    // pdf.save(
+    //   `${student?.student?.user?.firstName} ${student?.student?.user?.lastName}_${semester}`
+    // );
 
     // pdf open in a new tab
     const pdfDataUri = pdf.output("datauristring");
