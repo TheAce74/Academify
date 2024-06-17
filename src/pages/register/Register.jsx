@@ -231,19 +231,6 @@ export const Register = () => {
                 />
               </div>
               <div className="input-box mb-6">
-                <label htmlFor="email" className="email mb-2 block w-max">
-                  Email
-                </label>
-                <InputField
-                  icon={<MdOutlineEmail />}
-                  id="email"
-                  placeholder="Enter your email"
-                  type="email"
-                  required
-                  ref={emailRef}
-                />
-              </div>
-              <div className="input-box mb-6">
                 <label htmlFor="reg" className="email mb-2 block w-max">
                   Registration number
                 </label>
@@ -256,19 +243,6 @@ export const Register = () => {
                   ref={regRef}
                 />
               </div>
-              {/* <div className="input-box mb-6">
-                <label htmlFor="advisor" className="email mb-2 block w-max">
-                  Adviser ID
-                </label>
-                <InputField
-                  icon={<HiOutlineUser />}
-                  id="advisor"
-                  placeholder="Enter your class adviser's unique ID"
-                  type="text"
-                  required
-                  ref={advisorRef}
-                />
-              </div> */}
               <Box sx={{ minWidth: 120, marginBottom: "1em" }}>
                 <FormControl fullWidth size="small">
                   <InputLabel id="adviser-id">Select Adviser</InputLabel>
@@ -294,6 +268,32 @@ export const Register = () => {
                   </Select>
                 </FormControl>
               </Box>
+              <div className="input-box mb-6">
+                <label htmlFor="email" className="email mb-2 block w-max">
+                  Email
+                </label>
+                <InputField
+                  icon={<MdOutlineEmail />}
+                  id="email"
+                  placeholder="Enter your email"
+                  type="email"
+                  required
+                  ref={emailRef}
+                />
+              </div>
+              {/* <div className="input-box mb-6">
+                <label htmlFor="advisor" className="email mb-2 block w-max">
+                  Adviser ID
+                </label>
+                <InputField
+                  icon={<HiOutlineUser />}
+                  id="advisor"
+                  placeholder="Enter your class adviser's unique ID"
+                  type="text"
+                  required
+                  ref={advisorRef}
+                />
+              </div> */}
               <div className="input-box mb-6">
                 <label htmlFor="password" className="password mb-2 block w-max">
                   Password
