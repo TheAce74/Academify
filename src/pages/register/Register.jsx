@@ -93,7 +93,7 @@ export const Register = () => {
             </FormControl>
           </Box>
           {type === "adviser" ? (
-            <>
+            <div key="adviser">
               <div className="input-box mb-6">
                 <label htmlFor="firstName" className="name mb-2 block w-max">
                   First name
@@ -146,9 +146,9 @@ export const Register = () => {
                   ref={passwordRef}
                 />
               </div>
-            </>
+            </div>
           ) : type === "parent" ? (
-            <>
+            <div key="parent">
               <div className="input-box mb-6">
                 <label htmlFor="firstName" className="name mb-2 block w-max">
                   First name
@@ -201,9 +201,9 @@ export const Register = () => {
                   ref={passwordRef}
                 />
               </div>
-            </>
+            </div>
           ) : (
-            <>
+            <div key="student">
               <div className="input-box mb-6">
                 <label htmlFor="firstName" className="name mb-2 block w-max">
                   First name
@@ -307,7 +307,7 @@ export const Register = () => {
                   ref={passwordRef}
                 />
               </div>
-            </>
+            </div>
           )}
           {/* <p className="terms-and-condition">
             <span>I agree with</span>
