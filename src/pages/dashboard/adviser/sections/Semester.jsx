@@ -78,11 +78,9 @@ const Semester = () => {
 
   return (
     <div>
-      <div className="flex flex-col lg:flex-row justify-center lg:gap-16 px-5">
+      <div className="flex flex-col lg:flex-row justify-center lg:gap-16">
         <div className="w-full lg:w-1/2 order-2 lg:order-1">
-          <p className="text-xl border-b border-neutral-200 py-2 font-bold">
-            Create Semester
-          </p>
+          <p className="text-xl py-2 font-bold">Create Semester</p>
           <form onSubmit={handleSubmit} className="mt-5">
             <Select
               value={year}
@@ -102,7 +100,7 @@ const Semester = () => {
               placeholder="Select course"
               options={courses}
             />
-            <div className="flex flex-wrap gap-2 text-neutral-300 pb-6">
+            <div className="flex flex-wrap gap-2 text-neutral-300 pb-2">
               {selectedCourses.map((course) => (
                 <span
                   key={course}
@@ -121,7 +119,7 @@ const Semester = () => {
                 </span>
               ))}
             </div>
-            <Button disabled={loading} className="w-full">
+            <Button disabled={loading} className="w-full py-3">
               {loading ? <Loader /> : "Create Semester"}
             </Button>
           </form>

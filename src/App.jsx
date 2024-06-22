@@ -59,7 +59,7 @@ function App() {
                 <StudentContextProvider>
                   <ParentContextProvider>
                     <MenuTogglerWrapper />
-                    <div className="w-full p-5 ml-auto xl:w-[calc(100%_-26em)] md:w-[calc(100%_-17em)] md:p-8">
+                    <div className="w-full p-5 ml-auto xl:w-[calc(100%_-22em)] md:w-[calc(100%_-17em)] md:p-8 md:pr-20 md:pt-[3.5em]">
                       <Outlet />
                     </div>
                   </ParentContextProvider>

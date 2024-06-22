@@ -35,7 +35,7 @@ export default function Table({
   const rows = !data?.length ? (
     <tr>
       <td colSpan={columns.length} className="text-center">
-        No data
+        <span className="block my-8">No data</span>
       </td>
     </tr>
   ) : (

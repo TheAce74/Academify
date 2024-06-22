@@ -18,7 +18,12 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       removeUser();
-      window.location.href = "/login";
+      if (
+        !window.location.href.includes("login") &&
+        !window.location.href.includes("register")
+      ) {
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }

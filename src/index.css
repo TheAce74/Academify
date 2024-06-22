@@ -18,6 +18,10 @@
   transition: all 0.2s ease-in-out;
 }
 
+body {
+  font-family: var(--font-jakarta);
+}
+
 /* active NavLink style */
 li:has(> .active) {
   @apply bg-primary-300 text-white border-l-4 border-primary-400 hover:bg-primary-300;

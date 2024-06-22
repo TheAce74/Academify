@@ -65,7 +65,7 @@ export default function DocumentUpload({ setJsonData, className }) {
           <span>
             <CloudSyncOutlinedIcon sx={{ color: "#424242" }} />{" "}
             <span className="ml-3 -mt-0.5">
-              Drag .xlsx document here or choose file to upload new results
+              Click to choose an .xlsx file to upload new results
             </span>
           </span>
         )}

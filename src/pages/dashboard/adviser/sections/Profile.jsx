@@ -57,8 +57,8 @@ const Profile = () => {
   };
 
   return (
-    <div>
-      <div className="max-w-lg ">
+    <div className="font-jakarta">
+      <div className="max-w-lg">
         <div className="flex items-center">
           <div className="mr-8">
             <div className="relative">

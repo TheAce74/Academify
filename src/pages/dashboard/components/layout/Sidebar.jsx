@@ -81,7 +81,7 @@ function Sidebar({ showMenu = false, toggleMenu = () => false }) {
 
   return (
     <div
-      className={`fixed top-[10%] left-0 z-[200] bg-white transition-element overflow-y-auto md:translate-x-0 w-[300px] md:w-[260px] xl:w-[300px] h-full border border-r flex flex-col pt-14 ${showMenu ? "translate-x-[0px] shadow-xl" : "translate-x-[-300px]"}`}
+      className={`fixed top-[10%] font-jakarta left-0 z-[200] bg-white transition-element overflow-y-auto md:translate-x-0 w-[300px] md:w-[260px] xl:w-[300px] h-full border border-r flex flex-col pt-14 ${showMenu ? "translate-x-[0px] shadow-xl" : "translate-x-[-300px]"}`}
       ref={clickAwayRef}
     >
       {/* Course Adviser */}
@@ -94,7 +94,7 @@ function Sidebar({ showMenu = false, toggleMenu = () => false }) {
                 className={`w-full transition-element mb-4 cursor-pointer hover:bg-[#ECECEC]`}
               >
                 <NavLink to={link.path} end={link.name === "Dashboard"}>
-                  <p className="pl-7 py-3">{link.name}</p>
+                  <p className="pl-10 lg:pl-16 py-3">{link.name}</p>
                 </NavLink>
               </li>
             );

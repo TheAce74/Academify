@@ -212,16 +212,17 @@ const Results = () => {
     <div>
       {resultResponse === 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 lg:gap-16">
-          <div className="md:w-9/12 w-full lg:order-1">
+          <div className="w-full lg:order-1">
             <h1 className="font-bold text-xl mb-1">Result</h1>
             <p>
-              Lorem ipsum dolor sit amet consectetur. Imperdiet eleifend aenean
-              pellentesque nunc convallis purus. Pretium nisl rhoncus congue
-              lacinia non habitant laoreet dui.
+              This screen helps you upload results for various courses for
+              different semesters. You are to correctly fill in the required
+              fields and click to select a .xlsx file for the desired result you
+              wish to upload.
             </p>
           </div>
           <div className="lg:mt-0 mt-5">
-            <h1 className="font-bold text-xl pb-2 border-b">Upload Result</h1>
+            <h1 className="font-bold text-xl pb-2">Upload Result</h1>
             <h3
               onClick={() => setResultResponse(1)}
               className="text-right mt-3 mb-4 flex items-center justify-start lg:justify-end cursor-pointer hover:text-primary-500"
@@ -251,11 +252,11 @@ const Results = () => {
               options={courses}
             />
 
-            <DocumentUpload className="mt-4 mb-6" setJsonData={handleSetFile} />
+            <DocumentUpload className="mb-6" setJsonData={handleSetFile} />
             <Button
               onClick={uploadResult}
               disabled={loading || document === null}
-              className="w-full"
+              className="w-full py-3"
             >
               {loading ? <Loader /> : <p className="pe-1.5">Upload Result</p>}
             </Button>

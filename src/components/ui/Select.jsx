@@ -40,6 +40,10 @@ export default function Select({
           )}
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          className="mb-2"
+          sx={{
+            padding: "0.2em",
+          }}
         >
           <MenuItem disabled value={0}>
             <span className="text-neutral-500 text-sm">{placeholder}</span>

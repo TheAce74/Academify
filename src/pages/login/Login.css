@@ -3,11 +3,11 @@
   justify-content: center;
   padding: 2em;
   min-height: 100dvh;
-  gap: 4em;
+  gap: 8em;
 }
 
 .login-section {
-  flex: 1;
+  flex: 1.1;
 }
 
 .wrapper h1 {

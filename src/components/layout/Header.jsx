@@ -75,7 +75,7 @@ export default function Header({ toggleMenu, showMenu }) {
   }, [user.type, getAdviserProfile, getParentProfile, getStudentProfile]);
 
   return (
-    <div className="z-[300] flex justify-between items-center h-[10vh] w-full bg-[#E6F7EE] md:px-7 px-3 transition-element sticky top-0">
+    <div className="z-[300] flex justify-between items-center h-[10vh] w-full bg-[#E7EBFE] md:px-16 px-4 transition-element sticky top-0">
       <img src={Logo} alt="logo" className="md:w-[180px] w-[130px]" />
 
       <div className="flex justify-between items-center">

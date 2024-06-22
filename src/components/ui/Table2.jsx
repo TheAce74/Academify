@@ -12,7 +12,7 @@ export default function Table2({
     return (
       <th
         key={`headCell-${index}`}
-        className={` items-center !z-0 text-left py-2 px-6 ${index === 0 ? "rounded-l" : index === columns.length ? "rounded-r" : ""}`}
+        className={` items-center !z-0 text-left py-4 px-6 ${index === 0 ? "rounded-l" : index === columns.length ? "rounded-r" : ""}`}
       >
         <span className="flex items-center font-bold">{column.title}</span>
       </th>
