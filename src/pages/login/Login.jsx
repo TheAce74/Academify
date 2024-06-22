@@ -90,7 +90,7 @@ const Login = () => {
           </div>
           <Button
             disabled={loading}
-            className="w-full font-semibold disabled:opacity-70"
+            className="w-full !p-3.5 mt-8 font-semibold disabled:opacity-70"
           >
             {!loading ? (
               <span>Login</span>
