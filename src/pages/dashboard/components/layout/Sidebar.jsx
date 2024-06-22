@@ -112,7 +112,7 @@ function Sidebar({ showMenu = false, toggleMenu = () => false }) {
                 className={`w-full transition-element mb-4 cursor-pointer hover:bg-[#ECECEC]`}
               >
                 <NavLink to={link.path} end={link.name === "Dashboard"}>
-                  <p className="pl-7 py-3">{link.name}</p>
+                  <p className="pl-10 lg:pl-16 py-3">{link.name}</p>
                 </NavLink>
               </li>
             );
@@ -130,7 +130,7 @@ function Sidebar({ showMenu = false, toggleMenu = () => false }) {
                 className={`w-full transition-element mb-4 cursor-pointer hover:bg-[#ECECEC]`}
               >
                 <NavLink to={link.path} end={link.name === "Dashboard"}>
-                  <p className="pl-7 py-3">{link.name}</p>
+                  <p className="pl-10 lg:pl-16 py-3">{link.name}</p>
                 </NavLink>
               </li>
             );

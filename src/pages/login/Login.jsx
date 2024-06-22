@@ -1,7 +1,5 @@
 import { MdCircle, MdOutlineEmail } from "react-icons/md";
 import { FiEye } from "react-icons/fi";
-// import { FcGoogle } from "react-icons/fc";
-// import { GrApple } from "react-icons/gr";
 import { FiArrowUpRight } from "react-icons/fi";
 import Button from "../../components/ui/Button";
 import InputField from "../../components/ui/InputField";
@@ -122,13 +120,6 @@ const Login = () => {
               )}
             </Button>
           </form>
-
-          {/* <div className="social">
-          <p>Or Continue with</p>
-          <FcGoogle className="social-icon google" />{" "}
-          <GrApple className="social-icon" />
-        </div> */}
-
           <div className="register">
             <p className="flex items-center gap-2 justify-center">
               <span>Don&apos;t have an account?</span>

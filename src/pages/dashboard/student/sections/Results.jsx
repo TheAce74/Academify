@@ -405,11 +405,8 @@ const Results = () => {
 
       <div className="flex flex-col justify-center items-end w-full my-5">
         <div className="flex items-center mb-4">
-          <h2 className="mr-12">
-            <span className="font-semibold">GPA:</span> 4.12
-          </h2>
           <h2>
-            <span className="font-semibold">CGPA:</span> 4.24
+            <span className="font-semibold">GPA:</span> 4.12
           </h2>
         </div>
 

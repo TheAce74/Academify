@@ -108,14 +108,14 @@ const Dashboard = () => {
                   </p>
                   <p className="text-xs text-neutral-500">{item.time}</p>
                 </span>
-                <span>
+                {/* <span>
                   <MoreHorizIcon />
-                </span>
+                </span> */}
               </li>
             ))}
-            <li className="flex justify-end items-center px-4 py-2">
+            {/* <li className="flex justify-end items-center px-4 py-2">
               <p className="font-bold">Show all</p>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

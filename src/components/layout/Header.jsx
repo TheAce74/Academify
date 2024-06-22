@@ -68,7 +68,11 @@ export default function Header({ toggleMenu, showMenu }) {
         );
       } else {
         const data = await getStudentProfile();
-        setInitials(getInitials(`${data?.firstName} ${data?.lastName}`));
+        setInitials(
+          getInitials(
+            `${data?.student?.user?.firstName} ${data?.student?.user?.lastName}`
+          )
+        );
       }
     };
     getProfiles();

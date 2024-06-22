@@ -37,14 +37,14 @@ const Dashboard = () => {
       <div>
         <Link
           to="/parent/result"
-          className="rounded-lg block px-4 py-5 border-[1.5px] border-neutral-800"
+          className="hover:scale-[1.05] transition block px-4 py-5 border-[1px] border-neutral-200 rounded-lg shadow-[0_4px_5px_0] shadow-neutral-200/50"
         >
           <h1 className="font-semibold text-lg mb-2">Check Results</h1>
           <p>View results that has been uploaded by the course adviser</p>
         </Link>
 
         {/* Events */}
-        <div className="rounded-lg py-5 border-[1.5px] border-neutral-800 mt-7">
+        <div className="py-5 border-[1px] border-neutral-200 rounded-lg shadow-[0_4px_5px_0] shadow-neutral-200/50 mt-7">
           <h1 className="font-semibold text-lg mb-2 border-b-2 pb-4 px-4">
             Events
           </h1>
@@ -63,7 +63,7 @@ const Dashboard = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className="rounded-lg py-5 border-[1.5px] border-neutral-800">
+      <div className="py-5 border-[1px] border-neutral-200 rounded-lg shadow-[0_4px_5px_0] shadow-neutral-200/50">
         <h1 className="font-semibold text-lg mb-2 border-b-2 pb-4 px-4">
           Recent Activity
         </h1>
@@ -85,11 +85,11 @@ const Dashboard = () => {
             </div>
           ))}
 
-          <div className="flex justify-end m-4">
+          {/* <div className="flex justify-end m-4">
             <Button variant="text" sx={{ color: "#000", fontWeight: "bold" }}>
               Show all
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

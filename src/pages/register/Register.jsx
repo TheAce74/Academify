@@ -1,7 +1,5 @@
 import { MdOutlineEmail } from "react-icons/md";
 import { FiEye } from "react-icons/fi";
-// import { FcGoogle } from "react-icons/fc";
-// import { GrApple } from "react-icons/gr";
 import { HiOutlineUser } from "react-icons/hi";
 import { FiArrowUpRight } from "react-icons/fi";
 import Button from "../../components/ui/Button";
@@ -290,19 +288,6 @@ export const Register = () => {
                     ref={emailRef}
                   />
                 </div>
-                {/* <div className="input-box mb-6">
-                <label htmlFor="advisor" className="email mb-2 block w-max">
-                  Adviser ID
-                </label>
-                <InputField
-                  icon={<HiOutlineUser />}
-                  id="advisor"
-                  placeholder="Enter your class adviser's unique ID"
-                  type="text"
-                  required
-                  ref={advisorRef}
-                />
-              </div> */}
                 <div className="input-box mb-6">
                   <label
                     htmlFor="password"
@@ -321,16 +306,6 @@ export const Register = () => {
                 </div>
               </div>
             )}
-            {/* <p className="terms-and-condition">
-            <span>I agree with</span>
-            <Link to="/register" className="terms">
-              Terms of Use
-            </Link>
-            <span>and</span>
-            <Link to="/register" className="terms">
-              Privacy Policy
-            </Link>
-          </p> */}
             <Button
               disabled={loading}
               className="w-full !p-3.5 mt-8 font-semibold disabled:opacity-70"
@@ -362,11 +337,6 @@ export const Register = () => {
               )}
             </Button>
           </form>
-          {/* <div className="social">
-          <p>Or Continue with</p>
-          <FcGoogle className="social-icon" />{" "}
-          <GrApple className="social-icon" />
-        </div> */}
           <div className="login">
             <p className="flex items-center gap-2 justify-center">
               <span>Already have an account?</span>

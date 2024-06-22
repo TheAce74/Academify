@@ -114,7 +114,7 @@ const RegisterCourses = () => {
         </div>
 
         <div className="mt-14 sm:mt-10 transition-element">
-          <p className="text-xl font-bold pb-2 border-b border-neutral-200">
+          <p className="text-xl font-bold pb-2">
             Register Courses
           </p>
           <form onSubmit={handleSubmit} className="mt-2">

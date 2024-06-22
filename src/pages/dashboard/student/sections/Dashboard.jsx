@@ -32,10 +32,10 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row justify-center gap-10 xl:px-20 px-10">
+      <div className="flex flex-col sm:flex-row justify-center gap-10">
         <Link
           to="/student/results"
-          className="border-2 rounded-lg border-neutral-200 shadow-md sm:w-1/2 h-full hover:-translate-y-2 hover:shadow-lg transition"
+          className="border-[1px] border-neutral-200 rounded-lg shadow-[0_4px_5px_0] shadow-neutral-200/50 hover:scale-[1.05] sm:w-1/2 h-full transition"
         >
           <div className=" pb-12 pt-5 px-4 max-w-md">
             <p className="font-bold text-lg pb-1 text-neutral-600">
@@ -48,7 +48,7 @@ const Dashboard = () => {
         </Link>
         <Link
           to="/student/courses"
-          className="border-2 rounded-lg border-neutral-200 shadow-md sm:w-1/2 h-full hover:-translate-y-2 hover:shadow-lg transition"
+          className="border-[1px] border-neutral-200 rounded-lg shadow-[0_4px_5px_0] shadow-neutral-200/50 hover:scale-[1.05] sm:w-1/2 h-full transition"
         >
           <div className=" pb-12 pt-5 px-4 max-w-md">
             <p className="font-bold text-lg pb-1 text-neutral-600">
@@ -61,9 +61,9 @@ const Dashboard = () => {
         </Link>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-center gap-10 xl:px-20 px-10 mt-10">
-        <div className="flex flex-col gap-10 max-w-md sm:w-1/2">
-          <div className="border-2 rounded-lg border-neutral-200  pb-12 max-w-md">
+      <div className="flex flex-col sm:flex-row justify-center gap-10 mt-10">
+        <div className="flex flex-col gap-10 lg:w-full">
+          <div className="border-[1px] border-neutral-200 rounded-lg shadow-[0_4px_5px_0] shadow-neutral-200/50 pb-12">
             <p className="font-bold text-lg py-2 text-neutral-600 border-b-2 border-neutral-200 px-4">
               Events
             </p>
@@ -79,7 +79,7 @@ const Dashboard = () => {
             </ul>
           </div>
         </div>
-        <div className="border-2 rounded-lg border-neutral-200 max-w-md sm:w-1/2 max-h-fit">
+        <div className="border-[1px] border-neutral-200 rounded-lg shadow-[0_4px_5px_0] shadow-neutral-200/50 lg:w-full max-h-fit">
           <p className="font-bold text-lg py-2 text-neutral-600 border-b-2 border-neutral-200 px-4">
             Recent Activity
           </p>
@@ -100,9 +100,9 @@ const Dashboard = () => {
                 </span>
               </li>
             ))}
-            <li className="flex justify-end items-center px-4 py-2">
+            {/* <li className="flex justify-end items-center px-4 py-2">
               <p className="font-bold">Show all</p>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>
