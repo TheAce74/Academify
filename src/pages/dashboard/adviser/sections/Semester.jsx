@@ -18,19 +18,12 @@ const Semester = () => {
     combineYears(years.concat(years[years.length - 1] + 1))
   );
   const [semesters] = useState(["Harmattan", "Rain"]);
-  // TODO: fetch this from the backend
-  const [courses] = useState([
-    "CSC 401",
-    "CSC 403",
-    "CSC 407",
-    "CSC 411",
-    "CSC 415",
-  ]);
+  const [courses, setCourses] = useState([]);
   const [course, setCourse] = useState(0);
   const [year, setYear] = useState(0);
   const [semester, setSemester] = useState(0);
   const [selectedCourses, setSelectedCourses] = useState([]);
-  const { createSemester, getSemesters } = useAdviser();
+  const { createSemester, getSemesters, getCourses } = useAdviser();
   const [loading, setLoading] = useState(false);
   const [fetchedSemesters, setFetchedSemesters] = useState([]);
   const { adviser } = useAdviserContext();
@@ -59,6 +52,12 @@ const Semester = () => {
     const response = await getSemesters();
     setFetchedSemesters(response);
   }, [getSemesters]);
+
+  const handleChangeSemester = async (e) => {
+    setSemester(e);
+    const response = await getCourses(adviser?.profile?.level ?? 400, e);
+    setCourses(response);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,7 +89,7 @@ const Semester = () => {
             />
             <Select
               value={semester}
-              setValue={setSemester}
+              setValue={handleChangeSemester}
               placeholder="Select semester"
               options={semesters}
             />

@@ -72,12 +72,28 @@ function useAdviser() {
     }
   }, []);
 
+  const getCourses = useCallback(async (level, semester) => {
+    try {
+      const { data } = await customAxios.get(
+        `/courses/${level}/${semester.toLowerCase()}`
+      );
+      console.log(data?.courses);
+      const mainData = data?.courses.map((course) => {
+        return `${course?.code}`;
+      });
+      return mainData;
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
   return {
     getAdviserProfile,
     createSemester,
     getSemesters,
     getResult,
     getStudents,
+    getCourses,
   };
 }
 
