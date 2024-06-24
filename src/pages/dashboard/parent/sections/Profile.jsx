@@ -159,22 +159,22 @@ const Profile = () => {
       <div className="max-w-lg ">
         <p className="text-xl font-bold sm:hidden text-center mb-3">Profile</p>
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="mr-8">
+          <div className="flex items-center gap-1">
+            <div className="pr-2 sm:pr-8">
               <div className="relative">
                 <div>
                   <img src={chris} alt="" />
                 </div>
-                <div className="absolute top-[35%] start-[35%] text-white">
+                <div className="absolute top-[35%] start-[35%] sm:top-[35%] sm:start-[35%] text-white">
                   <CameraAltOutlinedIcon />
                 </div>
               </div>
             </div>
             <div className="flex flex-col">
-              <p className="font-bold text-neutral-500">
+              <p className="max-sm:text-sm font-bold text-neutral-500">
                 {parent?.profile?.firstName + " " + parent?.profile?.lastName}
               </p>
-              <p className="text-sm  text-neutral-500">
+              <p className="text-xs sm:text-sm  text-neutral-500">
                 {parent?.profile?.email}
               </p>
             </div>
@@ -189,10 +189,12 @@ const Profile = () => {
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
                   onClick={handleClick}
-                  className='flex items-center justify-center'
+                  className='px-0'
                 >
-                  <p>My Children</p>
-                  <KeyboardArrowDownIcon/>
+                  <div className="flex items-center justify-between px-1">
+                    <p className="text-xs">My Children</p>
+                    <KeyboardArrowDownIcon/>
+                  </div>
                 </Button>
                 <Menu
                   id="basic-menu"

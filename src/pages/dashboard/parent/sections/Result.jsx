@@ -33,6 +33,7 @@ const Result = () => {
   const [dialog, setDialog] = useState(false);
   const [FullScreen, setFullscreen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [regNumber, setRegNumber] = useState()
   
 
   const [stats] = useState([
@@ -528,7 +529,7 @@ const Result = () => {
               value={regNumber}
               setValue={setRegNumber}
               id="regNumber"
-              placeholder="2019223334343"
+              placeholder="201911111"
               type="number"
             ></InputField>
             <Button
