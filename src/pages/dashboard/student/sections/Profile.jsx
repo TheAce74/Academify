@@ -6,6 +6,8 @@ import InputField from "../../../../components/ui/InputFieldTwo";
 import chris from "../../../../assets/chris.png";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import { useStudentContext } from "../../../../context/StudentContext";
+import Avatar from "@mui/material/Avatar";
+import { getInitials } from "../../../../utils/functions";
 
 const Profile = () => {
   const { student } = useStudentContext();
@@ -13,6 +15,11 @@ const Profile = () => {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [initials] = useState(
+    getInitials(
+      student?.student?.user?.firstName + " " + student?.student?.user?.lastName
+    )
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -33,11 +40,22 @@ const Profile = () => {
           <div className="mr-8">
             <div className="relative">
               <div>
-                <img src={chris} alt="" />
+                {/* <img src={chris} alt="" /> */}
+                <Avatar
+                  sx={{
+                    bgcolor: "#1D4ED8",
+                    width: "59px",
+                    height: "59px",
+                    fontSize: "22px",
+                    marginLeft: "1rem",
+                  }}
+                >
+                  {initials}
+                </Avatar>
               </div>
-              <div className="absolute top-[35%] start-[35%] text-white">
+              {/* <div className="absolute top-[35%] start-[35%] text-white">
                 <CameraAltOutlinedIcon />
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="flex flex-col">
