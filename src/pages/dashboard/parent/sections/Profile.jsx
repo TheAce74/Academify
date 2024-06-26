@@ -3,8 +3,8 @@ import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import Button from "../../../../components/ui/Button";
 import InputField from "../../../../components/ui/InputFieldTwo";
-import chris from "../../../../assets/chris.png";
-import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+// import chris from "../../../../assets/chris.png";
+// import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import { customAxios } from "../../../../services/axios";
 import { useAlert } from "../../../../hooks/useAlert";
 import { useParent } from "../../../../hooks/useParent";
@@ -161,8 +161,8 @@ const Profile = () => {
       <div className="max-w-lg ">
         <p className="text-xl font-bold sm:hidden text-center mb-3">Profile</p>
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="mr-8">
+          <div className="flex items-center gap-1">
+            <div className="pr-2 sm:pr-8">
               <div className="relative">
                 <div>
                   {/* <img src={chris} alt="" /> */}
@@ -184,10 +184,10 @@ const Profile = () => {
               </div>
             </div>
             <div className="flex flex-col">
-              <p className="font-bold text-neutral-500">
+              <p className="max-sm:text-sm font-bold text-neutral-500">
                 {parent?.profile?.firstName + " " + parent?.profile?.lastName}
               </p>
-              <p className="text-sm  text-neutral-500">
+              <p className="text-xs sm:text-sm  text-neutral-500">
                 {parent?.profile?.email}
               </p>
             </div>
@@ -195,59 +195,57 @@ const Profile = () => {
           <div>
             {parent && parent?.children?.length > 0 ? (
               <div>
-                <div>
-                  <Button
-                    id="basic-button"
-                    aria-controls={open ? "basic-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? "true" : undefined}
-                    onClick={handleClick}
-                    className="flex items-center justify-center"
-                  >
-                    <p>My Children</p>
-                    <KeyboardArrowDownIcon />
-                  </Button>
-                  <Menu
-                    id="basic-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    MenuListProps={{
-                      "aria-labelledby": "basic-button",
-                    }}
-                  >
-                    {parent?.children.map((child, index) => (
-                      <MenuItem key={index} className>
-                        <div className="flex items-center justify-between gap-12 pb-2 w-full">
-                          <div>
-                            <p className="text-neutral-400 font-medium text-lg">
-                              {child.user.firstName + " " + child.user.lastName}
-                            </p>
-                            <p className="text-neutral-400 font-light">
-                              {child.reg}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-neutral-400">500L</p>
-                          </div>
-                        </div>
-                      </MenuItem>
-                    ))}
-                    <MenuItem>
-                      <div className="flex items-center justify-end w-full">
-                        <button
-                          className="flex justify-center items-center text-[#1B3DF1]"
-                          onClick={() => setDialog(true)}
-                        >
-                          <p className="ps-1">
-                            <AddIcon />
+                <Button
+                  id="basic-button"
+                  aria-controls={open ? "basic-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                  onClick={handleClick}
+                  className="flex items-center justify-center"
+                >
+                  <p>My Children</p>
+                  <KeyboardArrowDownIcon />
+                </Button>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  {parent?.children.map((child, index) => (
+                    <MenuItem key={index} className>
+                      <div className="flex items-center justify-between gap-12 pb-2 w-full">
+                        <div>
+                          <p className="text-neutral-400 font-medium text-lg">
+                            {child.user.firstName + " " + child.user.lastName}
                           </p>
-                          <p className="pe-1.5">Add Child</p>
-                        </button>
+                          <p className="text-neutral-400 font-light">
+                            {child.reg}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-neutral-400">500L</p>
+                        </div>
                       </div>
                     </MenuItem>
-                  </Menu>
-                </div>
+                  ))}
+                  <MenuItem>
+                    <div className="flex items-center justify-end w-full">
+                      <button
+                        className="flex justify-center items-center text-[#1B3DF1]"
+                        onClick={() => setDialog(true)}
+                      >
+                        <p className="ps-1">
+                          <AddIcon />
+                        </p>
+                        <p className="pe-1.5">Add Child</p>
+                      </button>
+                    </div>
+                  </MenuItem>
+                </Menu>
               </div>
             ) : (
               <div>
