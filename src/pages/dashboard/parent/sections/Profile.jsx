@@ -3,8 +3,8 @@ import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import Button from "../../../../components/ui/Button";
 import InputField from "../../../../components/ui/InputFieldTwo";
-import chris from "../../../../assets/chris.png";
-import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+// import chris from "../../../../assets/chris.png";
+// import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import { customAxios } from "../../../../services/axios";
 import { useAlert } from "../../../../hooks/useAlert";
 import { useParent } from "../../../../hooks/useParent";
@@ -15,10 +15,11 @@ import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import Select from "../../../../components/ui/Select";
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import Avatar from "@mui/material/Avatar";
+import { getInitials } from "../../../../utils/functions";
 
 const Profile = () => {
   const { showAlert } = useAlert();
@@ -33,6 +34,9 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [regNumber, setRegNumber] = useState("");
+  const [initials] = useState(
+    getInitials(parent?.profile?.firstName + " " + parent?.profile?.lastName)
+  );
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -147,8 +151,6 @@ const Profile = () => {
     setLastName(parent?.profile?.lastName);
   }, [parent]);
 
-  
-
   return (
     <div>
       <div className="block sm:hidden">
@@ -163,11 +165,22 @@ const Profile = () => {
             <div className="pr-2 sm:pr-8">
               <div className="relative">
                 <div>
-                  <img src={chris} alt="" />
+                  {/* <img src={chris} alt="" /> */}
+                  <Avatar
+                    sx={{
+                      bgcolor: "#1D4ED8",
+                      width: "59px",
+                      height: "59px",
+                      fontSize: "22px",
+                      marginLeft: "1rem",
+                    }}
+                  >
+                    {initials}
+                  </Avatar>
                 </div>
-                <div className="absolute top-[35%] start-[35%] sm:top-[35%] sm:start-[35%] text-white">
+                {/* <div className="absolute top-[35%] start-[35%] text-white">
                   <CameraAltOutlinedIcon />
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="flex flex-col">
@@ -180,21 +193,18 @@ const Profile = () => {
             </div>
           </div>
           <div>
-            {parent && parent?.children?.length > 0 ? 
-            <div>
+            {parent && parent?.children?.length > 0 ? (
               <div>
                 <Button
                   id="basic-button"
-                  aria-controls={open ? 'basic-menu' : undefined}
+                  aria-controls={open ? "basic-menu" : undefined}
                   aria-haspopup="true"
-                  aria-expanded={open ? 'true' : undefined}
+                  aria-expanded={open ? "true" : undefined}
                   onClick={handleClick}
-                  className='px-0'
+                  className="flex items-center justify-center"
                 >
-                  <div className="flex items-center justify-between px-1">
-                    <p className="text-xs">My Children</p>
-                    <KeyboardArrowDownIcon/>
-                  </div>
+                  <p>My Children</p>
+                  <KeyboardArrowDownIcon />
                 </Button>
                 <Menu
                   id="basic-menu"
@@ -202,16 +212,19 @@ const Profile = () => {
                   open={open}
                   onClose={handleClose}
                   MenuListProps={{
-                    'aria-labelledby': 'basic-button',
+                    "aria-labelledby": "basic-button",
                   }}
-                  
                 >
-                  {parent?.children.map((child)=>(
-                    <MenuItem className>
+                  {parent?.children.map((child, index) => (
+                    <MenuItem key={index} className>
                       <div className="flex items-center justify-between gap-12 pb-2 w-full">
                         <div>
-                          <p className="text-neutral-400 font-medium text-lg">{child.user.firstName + ' ' + child.user.lastName}</p>
-                          <p className="text-neutral-400 font-light">{child.reg}</p>
+                          <p className="text-neutral-400 font-medium text-lg">
+                            {child.user.firstName + " " + child.user.lastName}
+                          </p>
+                          <p className="text-neutral-400 font-light">
+                            {child.reg}
+                          </p>
                         </div>
                         <div>
                           <p className="text-neutral-400">500L</p>
@@ -221,7 +234,10 @@ const Profile = () => {
                   ))}
                   <MenuItem>
                     <div className="flex items-center justify-end w-full">
-                      <button className="flex justify-center items-center text-[#1B3DF1]" onClick={() => setDialog(true)}>
+                      <button
+                        className="flex justify-center items-center text-[#1B3DF1]"
+                        onClick={() => setDialog(true)}
+                      >
                         <p className="ps-1">
                           <AddIcon />
                         </p>
@@ -231,18 +247,19 @@ const Profile = () => {
                   </MenuItem>
                 </Menu>
               </div>
-            </div> : 
-            <div>
-              <Button
-                onClick={() => setDialog(true)}
-                className="flex justify-center items-center px-1 py-1 text-sm gap-1"
-              >
-                <p className="ps-1">
-                  <AddIcon />
-                </p>
-                <p className="pe-1.5">Add Child</p>
-              </Button>
-            </div> }
+            ) : (
+              <div>
+                <Button
+                  onClick={() => setDialog(true)}
+                  className="flex justify-center items-center px-1 py-1 text-sm gap-1"
+                >
+                  <p className="ps-1">
+                    <AddIcon />
+                  </p>
+                  <p className="pe-1.5">Add Child</p>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -279,7 +296,7 @@ const Profile = () => {
                 placeholder="Asor"
                 type="text"
               ></InputField>
-            </div>            
+            </div>
             <div className="pb-5">
               <div className="flex justify-between">
                 <label
@@ -322,7 +339,6 @@ const Profile = () => {
         </div>
       </div>
     </div>
-    
   );
 };
 
