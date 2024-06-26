@@ -8,7 +8,9 @@ import pic from "../../../../assets/pic.png";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import { useAdviserContext } from "../../../../context/AdviserContext";
 import { customAxios } from "../../../../services/axios";
+import { getInitials } from "../../../../utils/functions";
 import { useAlert } from "../../../../hooks/useAlert";
+import Avatar from "@mui/material/Avatar";
 
 const Profile = () => {
   const { adviser } = useAdviserContext();
@@ -19,6 +21,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [staffName, setStaffName] = useState(adviser?.profile?.name);
   const [staffEmail, setStaffEmail] = useState(adviser?.profile?.email);
+  const [initials] = useState(getInitials(adviser?.profile?.name));
 
   const handleSubmit = async (e) => {
     setLoading(true);
@@ -63,11 +66,22 @@ const Profile = () => {
           <div className="mr-8">
             <div className="relative">
               <div>
-                <img src={pic} alt="" />
+                {/* <img src={pic} alt="" /> */}
+                <Avatar
+                  sx={{
+                    bgcolor: "#1D4ED8",
+                    width: "59px",
+                    height: "59px",
+                    fontSize: "22px",
+                    marginLeft: "1rem",
+                  }}
+                >
+                  {initials}
+                </Avatar>
               </div>
-              <div className="absolute top-[35%] start-[35%] text-white">
+              {/* <div className="absolute top-[35%] start-[35%] text-white">
                 <CameraAltOutlinedIcon />
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="flex flex-col">
