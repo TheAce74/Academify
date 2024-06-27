@@ -70,9 +70,9 @@ const Profile = () => {
                 <Avatar
                   sx={{
                     bgcolor: "#1D4ED8",
-                    width: "59px",
-                    height: "59px",
-                    fontSize: "22px",
+                    width: "56px",
+                    height: "56px",
+                    fontSize: "17px",
                     marginLeft: "1rem",
                   }}
                 >
