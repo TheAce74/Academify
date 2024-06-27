@@ -54,3 +54,30 @@ export const countStudents = (results) => {
     results.filter((result) => result.grade === "F").length,
   ];
 };
+
+export const getCredit = (grade) => {
+  switch (grade) {
+    case "A":
+      return 5;
+    case "B":
+      return 4;
+    case "C":
+      return 3;
+    case "D":
+      return 2;
+    case "E":
+      return 1;
+    default:
+      return 0;
+  }
+};
+
+export const getGPA = (results) => {
+  let totalCredits = 0;
+  let totalQualityPoints = 0;
+  results.forEach((result) => {
+    totalCredits += result.course.credits;
+    totalQualityPoints += getCredit(result.grade) * result.course.credits;
+  });
+  return (totalQualityPoints / totalCredits).toFixed(2);
+};

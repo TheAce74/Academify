@@ -19,7 +19,18 @@ function useStudent() {
     }
   }, [showAlert, setStudent]);
 
-  return { getStudentProfile };
+  const getLastResults = useCallback(async () => {
+    try {
+      const response = await customAxios.get(`/student/latest-result`);
+      return response.data;
+    } catch (e) {
+      showAlert(e?.response?.data?.message, {
+        variant: "error",
+      });
+    }
+  }, [showAlert]);
+
+  return { getStudentProfile, getLastResults };
 }
 
 export { useStudent };

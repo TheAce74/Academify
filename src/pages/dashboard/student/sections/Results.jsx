@@ -14,6 +14,8 @@ import { useAlert } from "../../../../hooks/useAlert";
 import { useStudentContext } from "../../../../context/StudentContext";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { getGPA } from "../../../../utils/functions";
+import { useStudent } from "../../../../hooks/useStudent";
 // import { format } from "date-fns";
 
 const Results = () => {
@@ -21,30 +23,31 @@ const Results = () => {
   const { showAlert } = useAlert();
   const [dialog, setDialog] = useState(false);
   const [FullScreen, setFullscreen] = useState(false);
-  const [stats] = useState([
+  const { getLastResults } = useStudent();
+  const [stats, setStats] = useState([
     {
       title: "Current GPA",
-      value: "4.31",
+      value: "0.00",
     },
     {
       title: "Last semester GPA",
-      value: "3.91",
+      value: "0.00",
     },
     {
       title: "CGPA",
-      value: "4.23",
+      value: "0.00",
     },
-    {
-      title: "% difference from last result",
-      value: "-21%",
-    },
+    // {
+    //   title: "% difference from last result",
+    //   value: "-21%",
+    // },
     {
       title: "Number of A",
-      value: "5",
+      value: 0,
     },
     {
       title: "Number of F",
-      value: "2",
+      value: 0,
     },
   ]);
   const [semester, setSemester] = useState(0);
@@ -86,17 +89,19 @@ const Results = () => {
       key: "remark",
       title: "Remark",
     },
-    {
-      key: "action",
-      render: () => (
-        <div>
-          <IconButton onClick={() => setDialog(true)}>
-            <ChatOutlinedIcon fontSize="small" />
-          </IconButton>
-        </div>
-      ),
-    },
+    // {
+    //   key: "action",
+    //   render: () => (
+    //     <div>
+    //       <IconButton onClick={() => setDialog(true)}>
+    //         <ChatOutlinedIcon fontSize="small" />
+    //       </IconButton>
+    //     </div>
+    //   ),
+    // },
   ]);
+
+  const [localGPA, setLocalGPA] = useState([]);
 
   const getDisplayName = (value) => {
     return `${value?.semester?.session} ${value?.semester?.name} (${value?.semester?.name == "Rain" ? "2nd" : "1st"}) Semester`;
@@ -128,6 +133,28 @@ const Results = () => {
       setSemesters(semesters);
       setSemester(semesters[0]);
       setAllCourses(newResults);
+      setStats((prev) =>
+        prev.map((stat) =>
+          stat.title === "CGPA"
+            ? {
+                title: "CGPA",
+                value: getGPA(newResults),
+              }
+            : stat.title === "Number of A"
+              ? {
+                  title: "Number of A",
+                  value: newResults.filter((result) => result.grade === "A")
+                    .length,
+                }
+              : stat.title === "Number of F"
+                ? {
+                    title: "Number of F",
+                    value: newResults.filter((result) => result.grade === "F")
+                      .length,
+                  }
+                : stat
+        )
+      );
     } catch (e) {
       showAlert(e?.response?.data?.message, {
         variant: "error",
@@ -162,7 +189,7 @@ const Results = () => {
     pdf.setFont(undefined, "normal");
     pdf.text("Registration Number:", 8, 42);
     pdf.setFont(undefined, "bold");
-    pdf.text(`20191123633`, 46, 42);
+    pdf.text(`${student?.student?.reg}`, 46, 42);
     pdf.setFontSize(11);
     pdf.setFont(undefined, "normal");
     pdf.text("Department:", 8, 50);
@@ -172,17 +199,17 @@ const Results = () => {
     pdf.setFont(undefined, "normal");
     pdf.text("Level:", 8, 58);
     pdf.setFont(undefined, "bold");
-    pdf.text("500", 19, 58);
+    pdf.text(`${student?.student?.level}`, 19, 58);
     pdf.setFontSize(11);
     pdf.setFont(undefined, "normal");
     pdf.text("GPA:", 138, 42);
     pdf.setFont(undefined, "bold");
-    pdf.text("5.0", 148, 42);
+    pdf.text(isNaN(getGPA(localGPA)) ? "0.00" : getGPA(localGPA), 148, 42);
     pdf.setFontSize(11);
     pdf.setFont(undefined, "normal");
     pdf.text("CGPA:", 160, 42);
     pdf.setFont(undefined, "bold");
-    pdf.text("4.2", 173, 42);
+    pdf.text(stats.filter((stat) => stat.title === "CGPA")[0].value, 173, 42);
 
     // Generate AutoTable for item details
     const itemDetailsRows = itemsData?.map((item, index) => [
@@ -291,13 +318,34 @@ const Results = () => {
     },
   ]);
 
+  const getLatestResults = async () => {
+    const response = await getLastResults();
+    setStats((prev) =>
+      prev.map((stat) =>
+        stat.title === "Last semester GPA"
+          ? {
+              title: "Last semester GPA",
+              value: getGPA(response.firstSemester),
+            }
+          : stat.title === "Current GPA"
+            ? {
+                title: "Current GPA",
+                value: getGPA(response.secondSemester),
+              }
+            : stat
+      )
+    );
+  };
+
   useEffect(() => {
     getResults();
+    getLatestResults();
     console.log(student.student);
   }, []);
 
   useEffect(() => {
     let tableData = [];
+    const localGPA = [];
     allCourses.map((course) => {
       if (course?.displayName === semester) {
         tableData.push({
@@ -310,9 +358,11 @@ const Results = () => {
           grade: course?.grade,
           remark: "Pass",
         });
+        localGPA.push(course);
       }
     });
     setTableData(tableData);
+    setLocalGPA(localGPA);
   }, [semester]);
 
   const DialogContent = () => {
@@ -382,13 +432,13 @@ const Results = () => {
         ))}
       </div>
 
-      <div className="flex sm:flex-row flex-col justify-between sm:items-center my-4">
-        <div>
+      <div className="flex sm:flex-row flex-col justify-end sm:items-center my-4">
+        {/* <div>
           <Button2 variant="text" sx={{ color: "#808080" }}>
             <ChatOutlinedIcon />
             <span className="ml-2">View Comments</span>
           </Button2>
-        </div>
+        </div> */}
         <div className="w-max sm:mt-0 mt-4">
           <Select
             value={semester}
@@ -406,7 +456,8 @@ const Results = () => {
       <div className="flex flex-col justify-center items-end w-full my-5">
         <div className="flex items-center mb-4">
           <h2>
-            <span className="font-semibold">GPA:</span> 4.12
+            <span className="font-semibold">GPA:</span>{" "}
+            {isNaN(getGPA(localGPA)) ? "0.00" : getGPA(localGPA)}
           </h2>
         </div>
 
