@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Select2 from "../../../../components/ui/Select2";
 import Button2 from "@mui/material/Button";
 import Button from "../../../../components/ui/Button";
@@ -12,18 +12,17 @@ import Dialog from "@mui/material/Dialog";
 import AddIcon from "@mui/icons-material/Add";
 import { useParentContext } from "../../../../context/ParentContext";
 import { customAxios } from "../../../../services/axios";
-import InputField from "../../../../components/ui/InputFieldTwo";
+import InputField from "../../../../components/ui/InputField";
 import Loader from "../../../../components/ui/Loader";
 import { useAlert } from "../../../../hooks/useAlert";
 import { useParent } from "../../../../hooks/useParent";
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+// import Box from "@mui/material/Box";
+// import InputLabel from "@mui/material/InputLabel";
+// import MenuItem from "@mui/material/MenuItem";
+// import FormControl from "@mui/material/FormControl";
+// import Select from "@mui/material/Select";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
 
 const Result = () => {
   const { showAlert } = useAlert();
@@ -33,8 +32,7 @@ const Result = () => {
   const [dialog, setDialog] = useState(false);
   const [FullScreen, setFullscreen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [regNumber, setRegNumber] = useState()
-  
+  const regNumber = useRef(null);
 
   const [stats] = useState([
     {
@@ -62,26 +60,19 @@ const Result = () => {
       value: "2",
     },
   ]);
-  
 
-  const parentChildren = parent?.children?.length > 0 ? (parent?.children?.map((child) => (child.reg))) : []
+  const parentChildren =
+    parent?.children?.length > 0
+      ? parent?.children?.map((child) => child.reg)
+      : [];
   // console.log(parentChildren[0])
 
-  const [reg, setReg] = useState(parentChildren[0])
-
-
-  const handleSelectChange = (event) => {
-    setReg(event.target.value);
-    // console.log(event.target.value, reg)
-    const regNumber = event.target.value
-    getResults(regNumber)
-  };
-
-
+  const [reg, setReg] = useState(parentChildren[0]);
   const [semester, setSemester] = useState(0);
   const [semesters, setSemesters] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const [childrenDisplay, setChildrenDisplay] = useState([]);
 
   const [columns] = useState([
     {
@@ -128,6 +119,17 @@ const Result = () => {
     },
   ]);
 
+  // const handleSelectChange = (event) => {
+  //   setReg(event.target.value);
+  //   // console.log(event.target.value, reg)
+  //   const regNumber = event.target.value;
+  //   getResults(regNumber);
+  // };
+
+  useEffect(() => {
+    getResults(reg);
+  }, [reg]);
+
   const getDisplayName = (value) => {
     return `${value?.semester?.session} ${value?.semester?.name} (${value?.semester?.name == "Rain" ? "2nd" : "1st"}) Semester`;
   };
@@ -135,7 +137,7 @@ const Result = () => {
   const getResults = async (regNumber) => {
     let semesters = [];
     try {
-      setLoading(true)
+      setLoading(true);
       const { data } = await customAxios.post("/parent/getChildResult", {
         regNo: regNumber,
       });
@@ -164,14 +166,14 @@ const Result = () => {
       setAllCourses(newResults);
       // console.log(semesters)
       // console.log(newResults)
-      console.log(allCourses)
+      console.log(allCourses);
       // console.log(reg)
     } catch (e) {
       showAlert(e?.response?.data?.message, {
         variant: "error",
       });
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   const downloadResult = () => {
@@ -192,19 +194,12 @@ const Result = () => {
     pdf.setFontSize(11);
     pdf.text("Name:", 8, 34);
     pdf.setFont(undefined, "bold");
-    pdf.text(
-      `${allCourses[0].name}`,
-      20,
-      34
-    );
+    pdf.text(`${allCourses[0].name}`, 20, 34);
     pdf.setFontSize(11);
     pdf.setFont(undefined, "normal");
     pdf.text("Registration Number:", 8, 42);
     pdf.setFont(undefined, "bold");
-    pdf.text(
-      `${allCourses[0].regno}`,
-       46, 
-       42);
+    pdf.text(`${allCourses[0].regno}`, 46, 42);
     pdf.setFontSize(11);
     pdf.setFont(undefined, "normal");
     pdf.text("Department:", 8, 50);
@@ -339,24 +334,65 @@ const Result = () => {
 
   useEffect(() => {
     let tableData2 = [];
-      allCourses.map((course) => {
-        if (course?.displayName === semester) {
-          tableData2.push({
-            courseCode: course?.course?.code,
-            courseTitle: course?.course?.name,
-            unit: course?.course?.credits,
-            lab: course?.lab,
-            test: course?.test,
-            exam: course?.exam,
-            grade: course?.grade,
-            remark: "Pass",
-          });
-        }
-      });
-      setTableData(tableData2);
-      console.log(tableData2)
+    allCourses.map((course) => {
+      if (course?.displayName === semester) {
+        tableData2.push({
+          courseCode: course?.course?.code,
+          courseTitle: course?.course?.name,
+          unit: course?.course?.credits,
+          lab: course?.lab,
+          test: course?.test,
+          exam: course?.exam,
+          grade: course?.grade,
+          remark: "Pass",
+        });
+      }
+    });
+    setTableData(tableData2);
+    console.log(tableData2);
   }, [allCourses]);
 
+  const uploadChild = async () => {
+    console.log(regNumber.current.value);
+    try {
+      setLoading(true);
+      const { data } = await customAxios.post("/parent/addChild", {
+        regNo: regNumber.current.value,
+      });
+      console.log(data);
+      showAlert(data?.message, {
+        variant: "success",
+      });
+      const mainData = getParentProfile();
+      setLoading(false);
+      setAddChild(false);
+      console.log(mainData);
+    } catch (e) {
+      showAlert(e?.response?.data?.message, {
+        variant: "error",
+      });
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    let ResponsiveModal = () => {
+      if (window.innerWidth < 539) {
+        setFullscreen(true);
+      } else {
+        setFullscreen(false);
+      }
+    };
+    ResponsiveModal();
+    window.addEventListener("resize", ResponsiveModal);
+    setChildrenDisplay(
+      parent?.children.map((child) => {
+        return {
+          title: child.user.firstName + " " + child.user.lastName,
+          value: child?.reg,
+        };
+      })
+    );
+  }, []);
 
   const DialogContent = () => {
     return (
@@ -392,45 +428,59 @@ const Result = () => {
     );
   };
 
-  const uploadChild = async () => {
-    console.log(regNumber);
-    try {
-      setLoading(true);
-      const { data } = await customAxios.post("/parent/addChild", {
-        regNo: regNumber,
-      });
-      console.log(data);
-      showAlert(data?.message, {
-        variant: "success",
-      });
-      const mainData = getParentProfile();
-      setLoading(false);
-      console.log(mainData);
-    } catch (e) {
-      showAlert(e?.response?.data?.message, {
-        variant: "error",
-      });
-      setLoading(false);
-    }
+  const AddChildModal = () => {
+    return (
+      <div className="relative p-5 overflow-y-auto">
+        <div className="absolute top-2 right-2">
+          <IconButton onClick={() => setAddChild(false)}>
+            <HighlightOffOutlinedIcon fontSize="small" />
+          </IconButton>
+        </div>
+        <div>
+          <p className="font-bold">Add a child</p>
+          <div className="w-full my-5">
+            <label className="block mb-3 text-sm text-neutral-400">
+              Child{`'`}s reg no.
+            </label>
+            <InputField
+              ref={regNumber}
+              // setValue={setRegNumber}
+              placeholder="20191111111"
+              type="number"
+            ></InputField>
+            <Button
+              disabled={!regNumber}
+              onClick={uploadChild}
+              className="flex mt-5 justify-center items-center px-1.5 text-sm gap-1"
+            >
+              {loading ? <Loader /> : <p className="pe-1.5">Proceed</p>}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   };
-  useEffect(() => {
-    let ResponsiveModal = () => {
-      if (window.innerWidth < 539) {
-        setFullscreen(true);
-      } else {
-        setFullscreen(false);
-      }
-    };
-    ResponsiveModal();
-    window.addEventListener("resize", ResponsiveModal);
-  }, []);
 
   return parent && parent?.children?.length > 0 ? (
     <div>
+      <Dialog open={addChild}>
+        <AddChildModal />
+      </Dialog>
       <div className="block sm:hidden">
         <Dialog open={dialog} fullScreen={FullScreen}>
           <DialogContent />
         </Dialog>
+      </div>
+      <div className="mb-4">
+        <Button
+          onClick={() => setAddChild(true)}
+          className="flex justify-center items-center px-1.5 text-sm gap-1"
+        >
+          <p className="ps-1">
+            <AddIcon />
+          </p>
+          <p className="pe-1.5">Add Child</p>
+        </Button>
       </div>
       <div className="grid grid-cols-2 xl:gap-0 gap-3 xl:grid-cols-6 border p-5 border-neutral-200 rounded-xl">
         {stats.map((stat, i) => (
@@ -447,31 +497,42 @@ const Result = () => {
       </div>
 
       <div className="flex sm:flex-row flex-col justify-between sm:items-center my-4">
-      <div className="w-max sm:mt-0 mt-4">
-          <Box sx={{ minWidth: 120 }}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Select Child</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+        <div className="flex justify-between items-center w-full">
+          <div className="w-max">
+            {/* <FormControl>
+              <InputLabel id="demo-simple-select-label">
+                Select Child
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={reg}
+                label="Select Child"
+                onChange={handleSelectChange}
+              >
+                {parent?.children.map((child, i) => (
+                  <MenuItem key={i} value={child.reg}>
+                    {child.user.firstName + " " + child.user.lastName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl> */}
+            <Select2
               value={reg}
-              label="Select Child"
-              onChange={handleSelectChange}
-            >
-              {parent?.children.map((child)=>(
-                <MenuItem value={child.reg}>{child.user.firstName + ' ' + child.user.lastName}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
+              setValue={(e) => setReg(e)}
+              placeholder="Select Child"
+              options={childrenDisplay}
+            />
+          </div>
+          <div className="flex justify-center w-full -mt-4">
+            <Button2 variant="text" sx={{ color: "#808080" }}>
+              <ChatOutlinedIcon />
+              <span className="ml-2">View Comments</span>
+            </Button2>
+          </div>
         </div>
-        <div>
-          <Button2 variant="text" sx={{ color: "#808080" }}>
-            <ChatOutlinedIcon />
-            <span className="ml-2">View Comments</span>
-          </Button2>
-        </div>
-        <div className="w-max sm:mt-0 mt-4">
+
+        <div className="w-max">
           <Select2
             value={semester}
             setValue={(e) => setSemester(e)}
@@ -479,14 +540,13 @@ const Result = () => {
             options={semesters}
           />
         </div>
-        
       </div>
 
       {loading ? (
         <div className="mt-5">
-          <Table2 data='loading' columns={columns} border />
+          <Table2 data="loading" columns={columns} border />
         </div>
-      ):(
+      ) : (
         <div className="mt-5">
           <Table2 data={tableData} columns={columns} border />
         </div>
@@ -515,7 +575,22 @@ const Result = () => {
     </div>
   ) : (
     <div>
-      {addChild ? (
+      <Dialog open={addChild}>
+        <AddChildModal />
+      </Dialog>
+      <div className="flex flex-col h-[60vh] justify-center items-center">
+        <p className="my-4">You do not have any children</p>
+        <Button
+          onClick={() => setAddChild(true)}
+          className="flex justify-center items-center px-1.5 text-sm gap-1"
+        >
+          <p className="ps-1">
+            <AddIcon />
+          </p>
+          <p className="pe-1.5">Add Child</p>
+        </Button>
+      </div>
+      {/* {addChild ? (
         <div>
           <p>Add a child</p>
           <div className="pb-5 w-1/3 my-5">
@@ -542,19 +617,8 @@ const Result = () => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col h-[60vh] justify-center items-center">
-          <p className="my-4">You do not have any children</p>
-          <Button
-            onClick={() => setAddChild(true)}
-            className="flex justify-center items-center px-1.5 text-sm gap-1"
-          >
-            <p className="ps-1">
-              <AddIcon />
-            </p>
-            <p className="pe-1.5">Add Child</p>
-          </Button>
-        </div>
-      )}
+        
+      )} */}
     </div>
   );
 };

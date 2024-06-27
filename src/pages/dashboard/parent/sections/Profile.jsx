@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import Button from "../../../../components/ui/Button";
 import InputField from "../../../../components/ui/InputFieldTwo";
+import InputFieldOne from "../../../../components/ui/InputField";
 // import chris from "../../../../assets/chris.png";
 // import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import { customAxios } from "../../../../services/axios";
@@ -25,6 +26,8 @@ const Profile = () => {
   const { showAlert } = useAlert();
   const { parent } = useParentContext();
   const { getParentProfile } = useParent();
+  const regNumber = useRef(null);
+
   const [FullScreen, setFullscreen] = useState(false);
 
   const [firstName, setFirstName] = useState("");
@@ -33,7 +36,6 @@ const Profile = () => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [dialog, setDialog] = useState(false);
-  const [regNumber, setRegNumber] = useState("");
   const [initials] = useState(
     getInitials(parent?.profile?.firstName + " " + parent?.profile?.lastName)
   );
@@ -87,11 +89,11 @@ const Profile = () => {
   };
 
   const uploadChild = async () => {
-    console.log(regNumber);
+    console.log(regNumber.current.value);
     try {
       setLoading(true);
       const { data } = await customAxios.post("/parent/addChild", {
-        regNo: regNumber,
+        regNo: regNumber.current.value,
       });
       console.log(data);
       showAlert(data?.message, {
@@ -125,13 +127,12 @@ const Profile = () => {
             >
               Child{`'`}s reg no.
             </label>
-            <InputField
-              value={regNumber}
-              setValue={setRegNumber}
+            <InputFieldOne
+              ref={regNumber}
               id="regNumber"
               placeholder="20191111111"
               type="number"
-            ></InputField>
+            ></InputFieldOne>
             <Button
               disabled={!regNumber}
               onClick={uploadChild}
