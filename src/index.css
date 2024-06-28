@@ -40,6 +40,9 @@ li:has(> .active) {
   .button-inverted {
     @apply bg-transparent border-primary-400 hover:bg-primary-400 hover:text-neutral-100 focus-visible:bg-primary-400 focus-visible:text-neutral-100;
   }
+  .button-outlined {
+    @apply bg-transparent border-slate-200  focus-visible:bg-slate-400 focus-visible:text-neutral-100;
+  }
 
   .button-accent {
     @apply bg-accent-400 text-neutral-100 border-accent-400 hover:bg-primary-400 hover:border-primary-400 focus-visible:bg-primary-400 focus-visible:border-primary-400;

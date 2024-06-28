@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import Button from "../../../../components/ui/Button";
 import InputField from "../../../../components/ui/InputFieldTwo";
+import InputFieldOne from "../../../../components/ui/InputField";
 // import chris from "../../../../assets/chris.png";
 // import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import { customAxios } from "../../../../services/axios";
@@ -25,6 +26,8 @@ const Profile = () => {
   const { showAlert } = useAlert();
   const { parent } = useParentContext();
   const { getParentProfile } = useParent();
+  const regNumber = useRef(null);
+
   const [FullScreen, setFullscreen] = useState(false);
 
   const [firstName, setFirstName] = useState("");
@@ -33,7 +36,6 @@ const Profile = () => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [dialog, setDialog] = useState(false);
-  const [regNumber, setRegNumber] = useState("");
   const [initials] = useState(
     getInitials(parent?.profile?.firstName + " " + parent?.profile?.lastName)
   );
@@ -87,11 +89,11 @@ const Profile = () => {
   };
 
   const uploadChild = async () => {
-    console.log(regNumber);
+    console.log(regNumber.current.value);
     try {
       setLoading(true);
       const { data } = await customAxios.post("/parent/addChild", {
-        regNo: regNumber,
+        regNo: regNumber.current.value,
       });
       console.log(data);
       showAlert(data?.message, {
@@ -125,13 +127,12 @@ const Profile = () => {
             >
               Child{`'`}s reg no.
             </label>
-            <InputField
-              value={regNumber}
-              setValue={setRegNumber}
+            <InputFieldOne
+              ref={regNumber}
               id="regNumber"
               placeholder="20191111111"
               type="number"
-            ></InputField>
+            ></InputFieldOne>
             <Button
               disabled={!regNumber}
               onClick={uploadChild}
@@ -160,18 +161,18 @@ const Profile = () => {
       </div>
       <div className="max-w-lg ">
         <p className="text-xl font-bold sm:hidden text-center mb-3">Profile</p>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <div className="pr-2 sm:pr-8">
+        <div className="flex sm:items-center justify-between sm:flex-row flex-col">
+          <div className="flex items-center  gap-1 w-full">
+            <div className="flex items-center justify-between ">
               <div className="relative">
-                <div>
+                <div className="pr-2 sm:pr-8">
                   {/* <img src={chris} alt="" /> */}
                   <Avatar
                     sx={{
                       bgcolor: "#1D4ED8",
-                      width: "59px",
-                      height: "59px",
-                      fontSize: "22px",
+                      width: "56px",
+                      height: "56px",
+                      fontSize: "17px",
                       marginLeft: "1rem",
                     }}
                   >
@@ -182,29 +183,30 @@ const Profile = () => {
                   <CameraAltOutlinedIcon />
                 </div> */}
               </div>
-            </div>
-            <div className="flex flex-col">
-              <p className="max-sm:text-sm font-bold text-neutral-500">
-                {parent?.profile?.firstName + " " + parent?.profile?.lastName}
-              </p>
-              <p className="text-xs sm:text-sm  text-neutral-500">
-                {parent?.profile?.email}
-              </p>
+              <div className="flex flex-col">
+                <p className="max-sm:text-sm font-bold text-neutral-500">
+                  {parent?.profile?.firstName + " " + parent?.profile?.lastName}
+                </p>
+                <p className="text-xs sm:text-sm  text-neutral-500">
+                  {parent?.profile?.email}
+                </p>
+              </div>
             </div>
           </div>
-          <div>
+          <div className="sm:mt-0 mt-4 text-sm">
             {parent && parent?.children?.length > 0 ? (
               <div>
                 <Button
+                  variant="outlined"
                   id="basic-button"
                   aria-controls={open ? "basic-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}
                   onClick={handleClick}
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center w-[160px]"
                 >
-                  <p>My Children</p>
-                  <KeyboardArrowDownIcon />
+                  <span className="text-xs">My Children</span>
+                  <KeyboardArrowDownIcon sx={{ color: "gray" }} />
                 </Button>
                 <Menu
                   id="basic-menu"
@@ -219,15 +221,15 @@ const Profile = () => {
                     <MenuItem key={index} className>
                       <div className="flex items-center justify-between gap-12 pb-2 w-full">
                         <div>
-                          <p className="text-neutral-400 font-medium text-lg">
+                          <p className="text-neutral-400 font-medium text-base">
                             {child.user.firstName + " " + child.user.lastName}
                           </p>
-                          <p className="text-neutral-400 font-light">
+                          <p className="text-neutral-400 font-light text-sm">
                             {child.reg}
                           </p>
                         </div>
                         <div>
-                          <p className="text-neutral-400">500L</p>
+                          <p className="text-neutral-400 text-sm">500L</p>
                         </div>
                       </div>
                     </MenuItem>
