@@ -16,11 +16,6 @@ import InputField from "../../../../components/ui/InputField";
 import Loader from "../../../../components/ui/Loader";
 import { useAlert } from "../../../../hooks/useAlert";
 import { useParent } from "../../../../hooks/useParent";
-// import Box from "@mui/material/Box";
-// import InputLabel from "@mui/material/InputLabel";
-// import MenuItem from "@mui/material/MenuItem";
-// import FormControl from "@mui/material/FormControl";
-// import Select from "@mui/material/Select";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
@@ -33,6 +28,7 @@ const Result = () => {
   const [FullScreen, setFullscreen] = useState(false);
   const [loading, setLoading] = useState(false);
   const regNumber = useRef(null);
+  const [mainParent, setMainParent] = useState(parent);
 
   const [stats] = useState([
     {
@@ -62,10 +58,9 @@ const Result = () => {
   ]);
 
   const parentChildren =
-    parent?.children?.length > 0
-      ? parent?.children?.map((child) => child.reg)
+    mainParent?.children?.length > 0
+      ? mainParent?.children?.map((child) => child.reg)
       : [];
-  // console.log(parentChildren[0])
 
   const [reg, setReg] = useState(parentChildren[0]);
   const [semester, setSemester] = useState(0);
@@ -119,16 +114,14 @@ const Result = () => {
     },
   ]);
 
-  // const handleSelectChange = (event) => {
-  //   setReg(event.target.value);
-  //   // console.log(event.target.value, reg)
-  //   const regNumber = event.target.value;
-  //   getResults(regNumber);
-  // };
-
   useEffect(() => {
     getResults(reg);
   }, [reg]);
+
+  useEffect(() => {
+    console.log(mainParent);
+    updateDisplay();
+  }, [mainParent]);
 
   const getDisplayName = (value) => {
     return `${value?.semester?.session} ${value?.semester?.name} (${value?.semester?.name == "Rain" ? "2nd" : "1st"}) Semester`;
@@ -137,7 +130,7 @@ const Result = () => {
   const getResults = async (regNumber) => {
     let semesters = [];
     try {
-      setLoading(true);
+      // setLoading(true);
       const { data } = await customAxios.post("/parent/getChildResult", {
         regNo: regNumber,
       });
@@ -328,6 +321,17 @@ const Result = () => {
     },
   ]);
 
+  const updateDisplay = () => {
+    setChildrenDisplay(
+      mainParent?.children.map((child) => {
+        return {
+          title: child.user.firstName + " " + child.user.lastName,
+          value: child?.reg,
+        };
+      })
+    );
+  };
+
   useEffect(() => {
     getResults(parentChildren[0]);
   }, [parentChildren[0]]);
@@ -363,10 +367,10 @@ const Result = () => {
       showAlert(data?.message, {
         variant: "success",
       });
-      const mainData = getParentProfile();
+      const mainData = await getParentProfile();
       setLoading(false);
       setAddChild(false);
-      console.log(mainData);
+      setMainParent(mainData);
     } catch (e) {
       showAlert(e?.response?.data?.message, {
         variant: "error",
@@ -375,6 +379,7 @@ const Result = () => {
     }
   };
   useEffect(() => {
+    setMainParent(parent);
     let ResponsiveModal = () => {
       if (window.innerWidth < 539) {
         setFullscreen(true);
@@ -384,14 +389,7 @@ const Result = () => {
     };
     ResponsiveModal();
     window.addEventListener("resize", ResponsiveModal);
-    setChildrenDisplay(
-      parent?.children.map((child) => {
-        return {
-          title: child.user.firstName + " " + child.user.lastName,
-          value: child?.reg,
-        };
-      })
-    );
+    updateDisplay();
   }, []);
 
   const DialogContent = () => {
@@ -461,7 +459,7 @@ const Result = () => {
     );
   };
 
-  return parent && parent?.children?.length > 0 ? (
+  return mainParent && mainParent?.children?.length > 0 ? (
     <div>
       <Dialog open={addChild}>
         <AddChildModal />
@@ -499,24 +497,6 @@ const Result = () => {
       <div className="flex sm:flex-row flex-col justify-between sm:items-center my-4">
         <div className="flex justify-between items-center w-full">
           <div className="w-max">
-            {/* <FormControl>
-              <InputLabel id="demo-simple-select-label">
-                Select Child
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={reg}
-                label="Select Child"
-                onChange={handleSelectChange}
-              >
-                {parent?.children.map((child, i) => (
-                  <MenuItem key={i} value={child.reg}>
-                    {child.user.firstName + " " + child.user.lastName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
             <Select2
               value={reg}
               setValue={(e) => setReg(e)}
@@ -590,35 +570,6 @@ const Result = () => {
           <p className="pe-1.5">Add Child</p>
         </Button>
       </div>
-      {/* {addChild ? (
-        <div>
-          <p>Add a child</p>
-          <div className="pb-5 w-1/3 my-5">
-            <label
-              htmlFor="number"
-              className="block mb-3 text-sm text-neutral-400"
-            >
-              Child{`'`}s reg no.
-            </label>
-            <InputField
-              value={regNumber}
-              setValue={setRegNumber}
-              id="regNumber"
-              placeholder="201911111"
-              type="number"
-            ></InputField>
-            <Button
-              disabled={!regNumber}
-              onClick={uploadChild}
-              className="flex mt-5 justify-center items-center px-1.5 text-sm gap-1"
-            >
-              {loading ? <Loader /> : <p className="pe-1.5">Add Child</p>}
-            </Button>
-          </div>
-        </div>
-      ) : (
-        
-      )} */}
     </div>
   );
 };
