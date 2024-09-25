@@ -28,6 +28,10 @@ function Sidebar({ showMenu = false, toggleMenu = () => false }) {
       name: "Profile",
       path: "/adviser/profile",
     },
+    {
+      name: "Messages",
+      path: "/adviser/messages",
+    },
   ]);
 
   const [studentLinks] = useState([
@@ -51,6 +55,10 @@ function Sidebar({ showMenu = false, toggleMenu = () => false }) {
       name: "Notification",
       path: "/student/notifications",
     },
+    {
+      name: "Messages",
+      path: "/student/messages",
+    },
   ]);
 
   const [parentLinks] = useState([
@@ -69,6 +77,10 @@ function Sidebar({ showMenu = false, toggleMenu = () => false }) {
     {
       name: "Notification",
       path: "/parent/notifications",
+    },
+    {
+      name: "Messages",
+      path: "/parent/messages",
     },
   ]);
 

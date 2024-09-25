@@ -17,6 +17,7 @@ import AdviserResults from "./pages/dashboard/adviser/sections/Results";
 import AdviserManageStudents from "./pages/dashboard/adviser/sections/ManageStudents";
 import AdviserProfile from "./pages/dashboard/adviser/sections/Profile";
 import AdviserViewSemester from "./pages/dashboard/adviser/sections/ViewSemester";
+import AdviserMessages from "./pages/dashboard/adviser/sections/Messages";
 
 // Student
 import StudentDashboard from "./pages/dashboard/student/sections/Dashboard";
@@ -26,12 +27,15 @@ import StudentResults from "./pages/dashboard/student/sections/Results";
 import StudentProfile from "./pages/dashboard/student/sections/Profile";
 import StudentNotifications from "./pages/dashboard/student/sections/Notifications";
 import StudentRegisterCourses from "./pages/dashboard/student/sections/RegisterCourses";
+import StudentMessages from "./pages/dashboard/student/sections/Messages";
 
 // Parent
 import ParentDashboard from "./pages/dashboard/parent/sections/Dashboard";
 import ParentResult from "./pages/dashboard/parent/sections/Result";
 import ParentProfile from "./pages/dashboard/parent/sections/Profile";
 import ParentNotification from "./pages/dashboard/parent/sections/Notifications";
+import ParentMessages from "./pages/dashboard/parent/sections/Messages";
+
 import AdviserContextProvider from "./context/AdviserContext";
 import StudentContextProvider from "./context/StudentContext";
 import ParentContextProvider from "./context/ParentContext";
@@ -100,6 +104,10 @@ function App() {
                   path: "/adviser/profile",
                   element: <AdviserProfile />,
                 },
+                {
+                  path: "/adviser/messages",
+                  element: <AdviserMessages />,
+                },
               ],
             },
             {
@@ -138,6 +146,10 @@ function App() {
                   path: "/student/notifications",
                   element: <StudentNotifications />,
                 },
+                {
+                  path: "/student/messages",
+                  element: <StudentMessages />,
+                },
               ],
             },
             {
@@ -163,6 +175,10 @@ function App() {
                 {
                   path: "/parent/notifications",
                   element: <ParentNotification />,
+                },
+                {
+                  path: "/parent/messages",
+                  element: <ParentMessages />,
                 },
               ],
             },
