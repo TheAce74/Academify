@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "../../../../components/ui/Button";
-import Dialog from "@mui/material/Dialog";
-import IconButton from "@mui/material/IconButton";
-import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-// import Button2 from "@mui/material/Button";
-// import UndoOutlinedIcon from "@mui/icons-material/UndoOutlined";
+import MessageBox from "../../components/ui/MessageBox";
+import MessageDialog from "../../components/ui/MessageDialog";
 
 export default function Messages() {
   const [contacts] = useState([
@@ -22,25 +19,11 @@ export default function Messages() {
     // },
   ]);
   const [activeContact, setActiveContact] = useState(null);
-
   const [dialog, setDialog] = useState(false);
-  const [FullScreen, setFullscreen] = useState(false);
 
   const handleContactClick = (contact) => {
     setActiveContact(contact);
   };
-
-  useEffect(() => {
-    let ResponsiveModal = () => {
-      if (window.innerWidth < 539) {
-        setFullscreen(true);
-      } else {
-        setFullscreen(false);
-      }
-    };
-    ResponsiveModal();
-    window.addEventListener("resize", ResponsiveModal);
-  }, []);
 
   return contacts.length > 0 ? (
     <div className="grid grid-cols-1 xl:grid-cols-4 h-[83dvh] xl:h-[73dvh] bg-gray-100">
@@ -92,7 +75,7 @@ export default function Messages() {
               </div>
             ))}
           </div>
-          <MessageBox />
+          <MessageBox sendMessage={() => {}} />
         </div>
       ) : (
         <div className="xl:col-span-3 flex flex-col bg-white">
@@ -107,84 +90,8 @@ export default function Messages() {
       <h2 className="text-xl font-medium">No conversations</h2>
       <Button onClick={() => setDialog(true)}>Start one</Button>
       <div className="block sm:hidden">
-        <Dialog open={dialog} fullScreen={FullScreen}>
-          <DialogContent setDialog={setDialog} />
-        </Dialog>
+        <MessageDialog dialog={dialog} setDialog={setDialog} />
       </div>
     </div>
   );
 }
-
-const MessageBox = () => {
-  const [input, setInput] = useState("");
-
-  const handleSend = () => {
-    if (input.trim() !== "") {
-      // Add logic to send message
-      console.log("Sending message:", input);
-      setInput("");
-    }
-  };
-
-  return (
-    <div className="p-4 border-t border-gray-200 flex items-center bg-gray-50">
-      <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Type a message..."
-        className="flex-grow p-3 border rounded-md resize-none focus:outline-none focus:border-blue-400 mr-4"
-      />
-      <Button onClick={handleSend}>Send</Button>
-    </div>
-  );
-};
-
-const DialogContent = ({ setDialog }) => {
-  // const [messageContent] = useState([
-  //   {
-  //     name: "John Joe",
-  //     time: "11:11am",
-  //     message: "Thank you very much for the car",
-  //   },
-  //   {
-  //     name: "Jennifer Okeke",
-  //     time: "11:11am",
-  //     message:
-  //       "Hello ma, I have an issue with my CSC 411 result. I did the practical, took the test and even sat for the exam but as the result came out I found out I had a missing test and practical score and my exam score was nothing to write home about. Please ma I would appreciate if you can look into this. Thank you!",
-  //   },
-  // ]);
-
-  return (
-    <div className="relative p-5 overflow-y-auto">
-      <div className="absolute top-2 right-2">
-        <IconButton onClick={() => setDialog(false)}>
-          <HighlightOffOutlinedIcon fontSize="small" />
-        </IconButton>
-      </div>
-      <p className="bg-slate-300 rounded-xl sm:w-2/3 w-3/4 mx-auto text-center p-4 text-xs text-neutral-500 mt-[2rem]">
-        All messages can only be seen and replied to by the course adviser.
-      </p>
-      <div className="mt-20 fixed sm:static bottom-0 left-0 right-0">
-        <MessageBox />
-      </div>
-      {/* {messageContent.map((message, i) => (
-        <div
-          key={i}
-          className="border border-neutral-700 shadow-sm rounded-xl px-4 pt-2 pb-7 my-5 relative"
-        >
-          <h3 className="text-sm">
-            <span className="font-bold">{message?.name} </span>
-            {message?.time}
-          </h3>
-          <h3 className="my-2">{message?.message}</h3>
-          <div className="absolute bottom-0 right-0">
-            <Button2 variant="text" sx={{ color: "#808080" }}>
-              <UndoOutlinedIcon fontSize="small" />
-              <span className="ml-2 text-sm">Reply</span>
-            </Button2>
-          </div>
-        </div>
-      ))} */}
-    </div>
-  );
-};

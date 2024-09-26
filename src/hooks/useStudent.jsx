@@ -30,7 +30,24 @@ function useStudent() {
     }
   }, [showAlert]);
 
-  return { getStudentProfile, getLastResults };
+  const messageAdviser = useCallback(
+    async (content, studentId) => {
+      try {
+        const response = await customAxios.post(
+          `/api/messages/student/advisor/${studentId}`,
+          { content }
+        );
+        return response.data;
+      } catch (e) {
+        showAlert(e?.response?.data?.message, {
+          variant: "error",
+        });
+      }
+    },
+    [showAlert]
+  );
+
+  return { getStudentProfile, getLastResults, messageAdviser };
 }
 
 export { useStudent };
