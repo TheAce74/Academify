@@ -4,30 +4,28 @@ import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-import { useStudent } from "../../../../hooks/useStudent";
 import { useStudentContext } from "../../../../context/StudentContext";
 import { useAlert } from "../../../../hooks/useAlert";
 import MessageBox from "./MessageBox";
 import Dialog from "@mui/material/Dialog";
 
-export default function MessageDialog({ dialog, setDialog }) {
+export default function MessageDialog({ dialog, setDialog, senderCallback }) {
   const [fullScreen, setFullscreen] = useState(false);
   const [messageContent, setMessageContent] = useState([]);
 
-  const { messageAdviser } = useStudent();
   const { student } = useStudentContext();
   const { showAlert } = useAlert();
 
   const sendMessage = async (message) => {
     setMessageContent([
       {
-        name: `${student.student.user.firstName} ${student.student.user.lastName}`,
-        time: format(new Date(), "aaa"),
+        name: `${student?.student?.user?.firstName} ${student?.student?.user?.lastName}`,
+        time: format(new Date(), "Pp"),
         message,
       },
     ]);
     try {
-      const response = await messageAdviser(message, student.student._id);
+      const response = await senderCallback(message);
       showAlert(response.message, {
         variant: "success",
       });

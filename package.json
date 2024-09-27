@@ -16,7 +16,7 @@
     "@mui/material": "^5.15.14",
     "axios": "^1.6.8",
     "clsx": "^2.1.1",
-    "date-fns": "^3.6.0",
+    "date-fns": "^4.1.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "notistack": "^3.0.1",

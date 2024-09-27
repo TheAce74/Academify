@@ -47,7 +47,23 @@ function useStudent() {
     [showAlert]
   );
 
-  return { getStudentProfile, getLastResults, messageAdviser };
+  const getMessages = useCallback(
+    async (studentId) => {
+      try {
+        const response = await customAxios.get(
+          `/api/messages/student/${studentId}`
+        );
+        return response.data;
+      } catch (e) {
+        showAlert(e?.response?.data?.message, {
+          variant: "error",
+        });
+      }
+    },
+    [showAlert]
+  );
+
+  return { getStudentProfile, getLastResults, messageAdviser, getMessages };
 }
 
 export { useStudent };
