@@ -16,6 +16,7 @@ import InputField from "../../../../components/ui/InputField";
 import Loader from "../../../../components/ui/Loader";
 import { useAlert } from "../../../../hooks/useAlert";
 import { useParent } from "../../../../hooks/useParent";
+import { getGPA } from "../../../../utils/functions";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
@@ -30,30 +31,30 @@ const Result = () => {
   const regNumber = useRef(null);
   const [mainParent, setMainParent] = useState(parent);
 
-  const [stats] = useState([
+  const [stats, setStats] = useState([
     {
       title: "Current GPA",
-      value: "4.31",
+      value: "0.00",
     },
     {
       title: "Last semester GPA",
-      value: "3.91",
+      value: "0.00",
     },
     {
       title: "CGPA",
-      value: "4.23",
+      value: "0.00",
     },
-    {
-      title: "% difference from last result",
-      value: "-21%",
-    },
+    // {
+    //   title: "% difference from last result",
+    //   value: "-21%",
+    // },
     {
       title: "Number of A",
-      value: "5",
+      value: 0,
     },
     {
       title: "Number of F",
-      value: "2",
+      value: 0,
     },
   ]);
 
@@ -115,13 +116,17 @@ const Result = () => {
   ]);
 
   useEffect(() => {
+    setLoading(true)
     getResults(reg);
+    getLatestResults(reg)
   }, [reg]);
 
   useEffect(() => {
     console.log(mainParent);
     updateDisplay();
   }, [mainParent]);
+
+  const [localGPA, setLocalGPA] = useState([]);
 
   const getDisplayName = (value) => {
     return `${value?.semester?.session} ${value?.semester?.name} (${value?.semester?.name == "Rain" ? "2nd" : "1st"}) Semester`;
@@ -157,6 +162,28 @@ const Result = () => {
       setSemesters(semesters);
       setSemester(semesters[0]);
       setAllCourses(newResults);
+      setStats((prev) =>
+        prev.map((stat) =>
+          stat.title === "CGPA"
+            ? {
+                title: "CGPA",
+                value: getGPA(newResults),
+              }
+            : stat.title === "Number of A"
+              ? {
+                  title: "Number of A",
+                  value: newResults.filter((result) => result.grade === "A")
+                    .length,
+                }
+              : stat.title === "Number of F"
+                ? {
+                    title: "Number of F",
+                    value: newResults.filter((result) => result.grade === "F")
+                      .length,
+                  }
+                : stat
+        )
+      );
       // console.log(semesters)
       // console.log(newResults)
       console.log(allCourses);
@@ -321,6 +348,29 @@ const Result = () => {
     },
   ]);
 
+  const getLatestResults = async (regNumber) => {
+    const { data } = await customAxios.post("/parent/getLatestChildResult", {
+      regNo: regNumber,
+    });
+    console.log(data)
+    setStats((prev) =>
+      prev.map((stat) =>
+        stat.title === "Last semester GPA"
+          ? {
+              title: "Last semester GPA",
+              value: getGPA(data.firstSemester),
+            }
+          : stat.title === "Current GPA"
+            ? {
+                title: "Current GPA",
+                value: getGPA(data.secondSemester),
+              }
+            : stat
+      )
+    );
+    setLoading(false);
+  };
+
   const updateDisplay = () => {
     setChildrenDisplay(
       mainParent?.children.map((child) => {
@@ -350,11 +400,13 @@ const Result = () => {
           grade: course?.grade,
           remark: "Pass",
         });
+        localGPA.push(course);
       }
     });
     setTableData(tableData2);
+    setLocalGPA(localGPA);
     console.log(tableData2);
-  }, [allCourses]);
+  }, [semester]);
 
   const uploadChild = async () => {
     console.log(regNumber.current.value);
@@ -469,16 +521,28 @@ const Result = () => {
           <DialogContent />
         </Dialog>
       </div>
-      <div className="mb-4">
-        <Button
-          onClick={() => setAddChild(true)}
-          className="flex justify-center items-center px-1.5 text-sm gap-1"
-        >
-          <p className="ps-1">
-            <AddIcon />
-          </p>
-          <p className="pe-1.5">Add Child</p>
-        </Button>
+      <div className="flex sm:flex-row flex-col sm:items-center">
+        <div className="mb-4">
+          <Button
+            onClick={() => setAddChild(true)}
+            className="flex justify-center items-center px-1.5 text-sm gap-1"
+          >
+            <p className="ps-1">
+              <AddIcon />
+            </p>
+            <p className="pe-1.5">Add Child</p>
+          </Button>
+        </div>
+        <div className="flex justify-center align-middle w-full max-w-2xl">
+            <div className="justify-items-center">
+              <Select2
+                value={reg}
+                setValue={(e) => setReg(e)}
+                placeholder="Select Child"
+                options={childrenDisplay}
+              />
+            </div>
+        </div>
       </div>
       <div className="grid grid-cols-2 xl:gap-0 gap-3 xl:grid-cols-6 border p-5 border-neutral-200 rounded-xl">
         {stats.map((stat, i) => (
@@ -495,21 +559,11 @@ const Result = () => {
       </div>
 
       <div className="flex sm:flex-row flex-col justify-between sm:items-center my-4">
-        <div className="flex justify-between items-center w-full">
-          <div className="w-max">
-            <Select2
-              value={reg}
-              setValue={(e) => setReg(e)}
-              placeholder="Select Child"
-              options={childrenDisplay}
-            />
-          </div>
-          <div className="flex justify-center w-full -mt-4">
+          <div className=" w-full -mt-4">
             <Button2 variant="text" sx={{ color: "#808080" }}>
               <ChatOutlinedIcon />
               <span className="ml-2">View Comments</span>
             </Button2>
-          </div>
         </div>
 
         <div className="w-max">
@@ -524,7 +578,7 @@ const Result = () => {
 
       {loading ? (
         <div className="mt-5">
-          <Table2 data="loading" columns={columns} border />
+          <Table2 data={"loading"} columns={columns} border />
         </div>
       ) : (
         <div className="mt-5">
@@ -532,13 +586,11 @@ const Result = () => {
         </div>
       )}
 
-      <div className="flex flex-col justify-center items-end w-full my-5">
+<div className="flex flex-col justify-center items-end w-full my-5">
         <div className="flex items-center mb-4">
-          <h2 className="mr-12">
-            <span className="font-semibold">GPA:</span> 4.12
-          </h2>
           <h2>
-            <span className="font-semibold">CGPA:</span> 4.24
+            <span className="font-semibold">GPA:</span>{" "}
+            {isNaN(getGPA(localGPA)) ? "0.00" : getGPA(localGPA)}
           </h2>
         </div>
 
