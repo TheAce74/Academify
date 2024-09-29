@@ -19,7 +19,40 @@ function useParent() {
     }
   }, [showAlert, setParent]);
 
-  return { getParentProfile };
+  const messageAdviser = useCallback(
+    async (content, parentId, adviserId) => {
+      try {
+        const response = await customAxios.post(
+          `/api/messages/parent/advisor/${parentId}/${adviserId}`,
+          { content }
+        );
+        return response.data;
+      } catch (e) {
+        showAlert(e?.response?.data?.message, {
+          variant: "error",
+        });
+      }
+    },
+    [showAlert]
+  );
+
+  const getMessages = useCallback(
+    async (parentId) => {
+      try {
+        const response = await customAxios.get(
+          `/api/messages/parent/${parentId}`
+        );
+        return response.data;
+      } catch (e) {
+        showAlert(e?.response?.data?.message, {
+          variant: "error",
+        });
+      }
+    },
+    [showAlert]
+  );
+
+  return { getParentProfile, messageAdviser, getMessages };
 }
 
 export { useParent };

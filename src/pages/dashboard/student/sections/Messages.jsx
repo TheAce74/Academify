@@ -150,6 +150,7 @@ export default function Messages() {
           dialog={dialog}
           setDialog={setDialog}
           senderCallback={senderCallback}
+          role="student"
         />
       </div>
     </div>
