@@ -31,7 +31,7 @@ export default function MessageDialog({
       : []
   );
   const [childrenDisplay] = useState(
-    parent?.children.map((child) => {
+    parent?.children?.map((child) => {
       return {
         title: child.user.firstName + " " + child.user.lastName,
         value: child?.reg,
