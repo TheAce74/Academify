@@ -47,14 +47,21 @@ export default function Messages() {
         you: false,
       });
     }
-    setContacts(adviser);
+    const unique = [];
+    adviser.forEach((item) => {
+      const present = unique.some((obj) => obj.name === item.name);
+      if (!present) {
+        unique.push(item);
+      }
+    });
+    setContacts(unique);
   }, [getMessages, parent?.profile?.roleId, parent?.profile?.userId]);
 
   const senderCallback = async (message, childReg) => {
     const child = parent?.children?.filter(
       (child) => child.reg === childReg
     )[0];
-    const adviserId = child?.courseAdvisor;
+    const adviserId = child?.courseAdvisor?._id;
     return await messageAdviser(message, parent?.profile?.roleId, adviserId);
   };
 
@@ -62,7 +69,7 @@ export default function Messages() {
     if (activeContact) {
       const adviserId = activeContact.id;
       const regNumber = parent?.children?.filter(
-        (child) => child?.courseAdvisor === adviserId
+        (child) => child?.courseAdvisor?.user === adviserId
       )[0]?.reg;
       try {
         const response = await senderCallback(message, regNumber);
@@ -80,85 +87,101 @@ export default function Messages() {
     fetchMessages();
   }, [fetchMessages]);
 
-  return contacts.length > 0 ? (
-    <div className="grid grid-cols-1 xl:grid-cols-4 h-[83dvh] xl:h-[73dvh] bg-gray-100">
-      {/* Chat List Section */}
-      <div className="xl:col-span-1 bg-white border-r border-gray-200 overflow-y-auto">
-        <div className="p-4 text-lg font-bold bg-gray-50 border-b border-gray-200">
-          Chats
-        </div>
-        {contacts.map((contact) => (
-          <div
-            key={contact.id}
-            onClick={() => handleContactClick(contact)}
-            className={`p-4 border-b border-gray-100 cursor-pointer ${
-              contact.id === activeContact?.id
-                ? "bg-blue-50"
-                : "hover:bg-gray-50"
-            }`}
-          >
-            <div className="font-semibold">{contact.name}</div>
-            <div className="text-sm text-gray-500 flex items-center gap-1">
-              <span>{contact.lastMessage}</span>
-              {contact.you && <span className="text-xs italic">(You)</span>}
+  return (
+    <>
+      {contacts.length > 0 ? (
+        <div className="grid grid-cols-1 xl:grid-cols-4 h-[83dvh] xl:h-[73dvh] bg-gray-100">
+          {/* Chat List Section */}
+          <div className="xl:col-span-1 bg-white border-r border-gray-200 overflow-y-auto">
+            <div className="p-4 text-lg font-bold bg-gray-50 border-b border-gray-200">
+              Chats
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Messages Section */}
-      {activeContact ? (
-        <div className="xl:col-span-3 flex flex-col bg-white">
-          <div className="p-4 border-b border-gray-200">
-            {activeContact.name}
-          </div>
-          <div className="flex-1 p-4 overflow-y-auto max-h-[40dvh] xl:max-h-[50dvh]">
-            {[...messages].reverse().map((message, index) => (
+            {contacts.map((contact) => (
               <div
-                key={index}
-                className={`flex mb-4 ${
-                  message.sender?._id === parent?.profile?.roleId
-                    ? "justify-end"
-                    : "justify-start"
+                key={contact.id}
+                onClick={() => handleContactClick(contact)}
+                className={`p-4 border-b border-gray-100 cursor-pointer ${
+                  contact.id === activeContact?.id
+                    ? "bg-blue-50"
+                    : "hover:bg-gray-50"
                 }`}
               >
-                <div
-                  className={`p-3 rounded-lg shadow-md ${
-                    message.sender?._id === parent?.profile?.roleId
-                      ? "bg-[#E7EBFE]"
-                      : "bg-white"
-                  }`}
-                >
-                  {message.content}
-                </div>
-                <div className="text-xs text-gray-400 ml-2 self-end">
-                  {format(new Date(message.timestamp), "Pp")}
+                <div className="font-semibold">{contact.name}</div>
+                <div className="text-sm text-gray-500 flex items-center gap-1">
+                  <span>{contact.lastMessage}</span>
+                  {contact.you && <span className="text-xs italic">(You)</span>}
                 </div>
               </div>
             ))}
+            <Button onClick={() => setDialog(true)} className="mt-6 mx-auto">
+              Message an adviser
+            </Button>
           </div>
-          <MessageBox sendMessage={sendMessage} />
+
+          {/* Messages Section */}
+          {activeContact ? (
+            <div className="xl:col-span-3 flex flex-col bg-white">
+              <div className="p-4 border-b border-gray-200">
+                {activeContact.name}
+              </div>
+              <div className="flex-1 p-4 overflow-y-auto max-h-[40dvh] xl:max-h-[50dvh]">
+                {[
+                  ...messages.filter(
+                    (message) =>
+                      message.sender?._id === activeContact.id ||
+                      message.receiver?._id === activeContact.id
+                  ),
+                ]
+                  .reverse()
+                  .map((message, index) => (
+                    <div
+                      key={index}
+                      className={`flex mb-4 ${
+                        message.sender?._id === parent?.profile?.userId
+                          ? "justify-end"
+                          : "justify-start"
+                      }`}
+                    >
+                      <div
+                        className={`p-3 rounded-lg shadow-md ${
+                          message.sender?._id === parent?.profile?.userId
+                            ? "bg-[#E7EBFE]"
+                            : "bg-white"
+                        }`}
+                      >
+                        {message.content}
+                      </div>
+                      <div className="text-xs text-gray-400 ml-2 self-end">
+                        {format(new Date(message.timestamp), "Pp")}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+              <MessageBox sendMessage={sendMessage} />
+            </div>
+          ) : (
+            <div className="xl:col-span-3 flex flex-col bg-white">
+              <div className="h-[40dvh] grid place-content-center place-items-center xl:h-[70dvh]">
+                <h2 className="text-xl font-medium">No active chat</h2>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
-        <div className="xl:col-span-3 flex flex-col bg-white">
-          <div className="h-[40dvh] grid place-content-center place-items-center xl:h-[70dvh]">
-            <h2 className="text-xl font-medium">No active chat</h2>
-          </div>
+        <div className="h-[80dvh] xl:h-[70dvh] gap-4 grid place-content-center place-items-center">
+          <h2 className="text-xl font-medium">No conversations</h2>
+          <Button onClick={() => setDialog(true)}>Start one</Button>
         </div>
       )}
-    </div>
-  ) : (
-    <div className="h-[80dvh] xl:h-[70dvh] gap-4 grid place-content-center place-items-center">
-      <h2 className="text-xl font-medium">No conversations</h2>
-      <Button onClick={() => setDialog(true)}>Start one</Button>
       <div className="block sm:hidden">
         <MessageDialog
           dialog={dialog}
           setDialog={setDialog}
           senderCallback={senderCallback}
           role="parent"
+          callback={fetchMessages}
         />
       </div>
-    </div>
+    </>
   );
 }

@@ -16,6 +16,7 @@ export default function MessageDialog({
   setDialog,
   senderCallback,
   role,
+  callback,
 }) {
   const [fullScreen, setFullscreen] = useState(false);
   const [messageContent, setMessageContent] = useState([]);
@@ -58,6 +59,9 @@ export default function MessageDialog({
     }
     try {
       const response = await senderCallback(message, reg[0]);
+      {
+        callback && callback();
+      }
       showAlert(response.message, {
         variant: "success",
       });
