@@ -87,6 +87,51 @@ function useAdviser() {
     }
   }, []);
 
+  const messageStudent = useCallback(
+    async (content, adviserId, studentId) => {
+      try {
+        const response = await customAxios.post(
+          `/api/messages/student/${studentId}`,
+          { sender: adviserId, content }
+        );
+        return response.data;
+      } catch (e) {
+        showAlert(e?.response?.data?.message, {
+          variant: "error",
+        });
+      }
+    },
+    [showAlert]
+  );
+
+  const messageParent = useCallback(
+    async (content, adviserId, parentId) => {
+      try {
+        const response = await customAxios.post(
+          `/api/messages/parent/${parentId}`,
+          { sender: adviserId, content }
+        );
+        return response.data;
+      } catch (e) {
+        showAlert(e?.response?.data?.message, {
+          variant: "error",
+        });
+      }
+    },
+    [showAlert]
+  );
+
+  const getMessages = useCallback(async () => {
+    try {
+      const response = await customAxios.get(`/api/messages/advisor`);
+      return response.data;
+    } catch (e) {
+      showAlert(e?.response?.data?.message, {
+        variant: "error",
+      });
+    }
+  }, [showAlert]);
+
   return {
     getAdviserProfile,
     createSemester,
@@ -94,6 +139,9 @@ function useAdviser() {
     getResult,
     getStudents,
     getCourses,
+    messageStudent,
+    messageParent,
+    getMessages,
   };
 }
 

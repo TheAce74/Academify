@@ -16,6 +16,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { customAxios } from "../../services/axios";
 import illustration from "../../assets/illustration.svg";
 import logo from "../../assets/logo.svg";
+import { useAlert } from "../../hooks/useAlert";
 
 export const Register = () => {
   const [type, setType] = useState("adviser");
@@ -28,6 +29,7 @@ export const Register = () => {
   const [advisers, setAdvisers] = useState([]);
   const { register } = useAuth();
   const [loading, setLoading] = useState(false);
+  const { showAlert } = useAlert();
 
   const handleChange = (e) => {
     setType(e.target.value);
@@ -58,9 +60,17 @@ export const Register = () => {
             advisor: advisorRef,
           }
         : generic;
-    setLoading(true);
-    await register(type, payload);
-    setLoading(false);
+    try {
+      setLoading(true);
+      await register(type, payload);
+    } catch (e) {
+      console.error(e);
+      showAlert("Registration failed", {
+        variant: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

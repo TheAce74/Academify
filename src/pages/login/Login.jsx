@@ -1,4 +1,4 @@
-import { MdCircle, MdOutlineEmail } from "react-icons/md";
+import { MdOutlineEmail } from "react-icons/md";
 import { FiEye } from "react-icons/fi";
 import { FiArrowUpRight } from "react-icons/fi";
 import Button from "../../components/ui/Button";
@@ -14,6 +14,7 @@ import { useRef, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import illustration from "../../assets/illustration.svg";
 import logo from "../../assets/logo.svg";
+import { useAlert } from "../../hooks/useAlert";
 
 const Login = () => {
   const [type, setType] = useState("adviser");
@@ -21,6 +22,7 @@ const Login = () => {
   const passwordRef = useRef(null);
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
+  const { showAlert } = useAlert();
 
   const handleChange = (e) => {
     setType(e.target.value);
@@ -32,9 +34,17 @@ const Login = () => {
       email: emailRef.current.value,
       password: passwordRef.current.value,
     };
-    setLoading(true);
-    await login(type, payload);
-    setLoading(false);
+    try {
+      setLoading(true);
+      await login(type, payload);
+    } catch (e) {
+      console.error(e);
+      showAlert("Login failed", {
+        variant: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
