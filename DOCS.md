@@ -126,6 +126,38 @@ Registers a new course advisor account.
   }
   ```
 
+### Register Course Coordinator
+
+Registers a new course coordinator account.
+
+- **URL:** `/register/coursecoordinator`
+- **Method:** `POST`
+- **Description:** Register a new course coordinator account.
+- **Request Body:**
+  - `firstName` (string): The first name of the course coordinator.
+  - `lastName` (string): The last name of the course coordinator.
+  - `email` (string): The email address of the course coordinator.
+  - `password` (string): The password of the course coordinator account.
+- **Example Request:**
+
+  ```json
+  {
+   "firstName": "Chidozie",
+   "lastName": "Inya",
+   "email": "chidozie.inya@gmail.com",
+   "password": "1234567890",
+   "role": "course_coordinator"
+  }
+  ```
+
+- **Example Response:**
+
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiIsIn..."
+  }
+  ```
+
 ---
 
 ## Login Routes
@@ -153,7 +185,9 @@ Logs in a student.
 
   ```json
   {
-    "token": "eyJhbGciOiJIUzI1NiIsIn..."
+   "token": "eyJhbGciOi....",
+   "userID": "67066dd.....",
+   "userType": "course_coordinator"
   }
   ```
 
@@ -211,6 +245,34 @@ Logs in a course advisor.
   }
   ```
 
+### Login Course Coordinator
+
+Logs in a course coordinator.
+
+- **URL:** `/login/coursecoordinator`
+- **Method:** `POST`
+- **Description:** Log in a course coordinator account.
+- **Request Body:**
+  - `email` (string): The email address of the course coordinator.
+  - `password` (string): The password of the course coordinator account.
+- **Example Request:**
+
+  ```json
+  {
+    "email": "chidozie.inya@gmail.com",
+    "password": "1234567890"
+  }
+  ```
+
+- **Example Response:**
+
+  ```json
+  {
+   "token": "eyJhbGciOiJ....",
+   "userID": "67066ddf.....",
+   "userType": "course_coordinator"
+  }
+  ```
 ---
 
 ### Route to Get All Course Advisors
@@ -253,6 +315,51 @@ None
 ]
 ```
 
+### Route to Get All Course Coordinator
+
+#### Description
+
+This route allows you to retrieve a list of all course advisors.
+
+- **URL:** `/coordinators/get-all`
+- **Method:** `GET`
+- **Auth Required:** No
+- **Permissions Required:** None
+
+#### Parameters
+
+None
+
+#### Responses
+
+- **200 OK:** Successfully retrieved the list of course advisors.
+  - **Content:** JSON array containing details of all course advisors.
+- **500 Internal Server Error:** An error occurred on the server while processing the request.
+
+#### Example Response
+
+```json
+[
+  {
+    "_id": "67066ddf9da.....",
+    "user": {
+      "_id": "67066ddf9.....",
+      "firstName": "Chidozie",
+      "lastName": "Inya",
+      "email": "chidozie.inya@gmail.com",
+      "password": "hashedpassword",
+      "role": "course_coordinator",
+      "createdAt": "2024-10-09T11:49:51.270Z",
+      "updatedAt": "2024-10-09T11:49:51.270Z",
+      "__v": 0
+    },
+    "courses": [],
+    "createdAt": "2024-10-09T11:49:51.431Z",
+    "updatedAt": "2024-10-09T11:49:51.431Z",
+    "__v": 0
+  }
+]
+```
 ---
 
 ## Student Routes
@@ -947,3 +1054,301 @@ Authorization: Bearer <your_token_here>
   }
 ]
 ```
+
+---
+## Course Coordinator Routes
+
+### `getProfile`
+
+#### Description
+
+Retrieves the profile information of the authenticated course advisor.
+
+- **URL:** `/profile/coordinators`
+- **Method:** `GET`
+- **Auth Required:** Yes
+- **Permissions Required:** None
+
+#### Responses
+
+- **200 OK:** Successfully retrieved the profile information.
+  - **Content:** JSON object containing the profile information.
+- **401 Unauthorized:** Authentication failure.
+  - **Content:** JSON object with an error message.
+- **404 Not Found:** Course advisor not found.
+  - **Content:** JSON object with an error message.
+- **500 Internal Server Error:** An error occurred on the server while processing the request.
+  - **Content:** JSON object with an error message.
+
+#### Example Response
+
+```json
+{
+  "profile": {
+    "userID": "67066ddf9daf8f316b181c11",
+    "roleID": "67066ddf9daf8f316b181c13",
+    "name": "Chidozie Inya",
+    "email": "chidozie.inya@gmail.com",
+    "courses": []
+  },
+  "token": "eyJhbGci...."
+}
+```
+
+---
+
+### `updatePassword`
+
+#### Description
+
+Updates the password of the authenticated course advisor.
+
+- **URL:** `/coordinators/update-password`
+- **Method:** `PUT`
+- **Auth Required:** Yes
+- **Permissions Required:** None
+
+#### Request Body
+
+- `newPassword` (string, required): The new password.
+
+#### Responses
+
+- **200 OK:** Password updated successfully.
+  - **Content:** JSON object with a success message.
+- **400 Bad Request:** Invalid request body or missing required fields.
+  - **Content:** JSON object with an error message.
+- **401 Unauthorized:** Authentication failure.
+  - **Content:** JSON object with an error message.
+- **404 Not Found:** Course advisor not found.
+  - **Content:** JSON object with an error message.
+- **500 Internal Server Error:** An error occurred on the server while processing the request.
+  - **Content:** JSON object with an error message.
+
+#### Example Request Body
+
+```json
+{
+  "newPassword": "newPassword123"
+}
+```
+
+#### Example Response
+
+```json
+{
+  "message": "Password updated successfully",
+  "token": "eyJhbGciOiJIUzI1NiIsIn..."
+}
+```
+
+---
+
+### 3. `getAllCourseCoordinator`
+
+#### Description
+
+Fetches all course coordinator from the database.
+
+- **URL:** `/coordinator/get-all`
+- **Method:** `GET`
+- **Auth Required:** No
+- **Permissions Required:** None
+
+#### Responses
+
+- **200 OK:** Successfully retrieved the list of course advisors.
+  - **Content:** JSON array containing details of all course advisors.
+- **500 Internal Server Error:** An error occurred on the server while processing the request.
+  - **Content:** JSON object with an error message.
+
+#### Example Response
+
+```json
+[
+  {
+    "_id": "67066ddf9daf8f316b181c13",
+    "user": {
+      "_id": "67066ddf9daf8f316b181c11",
+      "firstName": "Chidozie",
+      "lastName": "Inya",
+      "email": "chidozie.inya@gmail.com",
+      "password": "hashed password",
+      "role": "course_coordinator",
+      "createdAt": "2024-10-09T11:49:51.270Z",
+      "updatedAt": "2024-10-09T18:13:14.828Z",
+      "__v": 0
+    },
+    "courses": [],
+    "createdAt": "2024-10-09T11:49:51.431Z",
+    "updatedAt": "2024-10-09T11:49:51.431Z",
+    "__v": 0
+  }
+]
+```
+
+---
+
+### `updateProfile`
+
+#### Description
+
+Updates the profile information of the authenticated course coordinators.
+
+- **URL:** `/coordinators/update-profile`
+- **Method:** `PUT`
+- **Auth Required:** Yes
+- **Permissions Required:** None
+
+#### Request Body
+
+- `firstName` (string): The new first name.
+- `lastName` (string): The new last name.
+- `email` (string): The new email address.
+- `courses` (object): The courses they are coordinating.
+
+---
+
+### `uploadResults`
+
+#### Description
+
+This controller function handles the uploading of results to the database. It expects the uploaded results to be received as JSON in the request body.
+
+- **URL:** `/coordinators/upload-results`
+- **Method:** `POST`
+- **Auth Required:** Yes
+- **Permissions Required:** None
+
+#### Request Body
+
+- `academicYear` (string): The academic year for the results being uploaded.
+- `semester` (string): The semester for the results being uploaded.
+- `course` (string): The course for which the results are being uploaded.
+- `results` (array of objects): An array of result objects to be uploaded to the database.
+
+#### Responses
+
+- **201 Created:** Results were successfully uploaded to the database.
+  - **Content:** JSON object containing a success message and an authentication token.
+
+- **400 Bad Request:** Missing required parameters in the request body.
+  - **Content:** JSON object containing an error message.
+- **500 Internal Server Error:** An error occurred while processing the request on the server side.
+
+#### Example Response
+
+```json
+{
+  "message": "Results uploaded successfully",
+  "token": "eyJhbGciOiJIUzI1NiIsIn..."
+}
+```
+
+#### Error Response
+
+```json
+{
+  "message": "Internal server error"
+}
+```
+
+---
+
+### Add Courses
+
+#### Description
+
+Adds the courses coordinated by course coordinator.
+
+- **URL:** `/coordinators/add-courses`
+- **Method:** `POST`
+- **Auth Required:** Yes
+- **Permissions Required:** None
+
+#### Request Body
+
+- `coordinatorId` (string): The ID of the course coordinator to whom the courses are being added.
+- `courseIds` (array of strings): An array of course IDs to be added to the course coordinator's profile.
+
+#### Responses
+
+- **201 Created:** Courses were successfully added to the course coordinator.
+  - **Content:** JSON object containing an error message, indicating missing fields or a list of duplicate courses that are already assigned.
+
+- **400 Bad Request:** Missing required parameters in the request body or duplicate courses found.
+  - **Content:** JSON object containing an error message, indicating missing fields or a list of duplicate courses that are already assigned.
+- **404 Not Found:**  Course Coordinator or some courses were not found in the database.
+  -**Content:** JSON object containing an error message.
+- **500 Internal Server Error:** An error occurred while processing the request on the server side.
+
+#### Example Response
+
+```json
+{
+  "message": "Courses added successfully",
+  "courses": [
+    "6621b94113c28c2a6caa4494"
+  ]
+}
+```
+
+#### Error Response
+
+```json
+{
+  "message": "These courses are already assigned: 6621b94113c28c2a6caa4494"
+}
+```
+
+---
+
+### Remove Courses from Course Coordinators
+
+#### Description
+
+Removes the courses coordinated by course coordinator.
+
+- **URL:** `/coordinators/remove-courses`
+- **Method:** `POST`
+- **Auth Required:** Yes
+- **Permissions Required:** None
+
+#### Responses
+
+- **201 Ok:** Courses were successfully removed from the course coordinator.
+  - **Content:** JSON object containing a success message and the updated list of courses.
+
+- **400 Bad Request:** Missing required parameters in the request body.
+  - **Content:** JSON object containing an error message, indicating the missing fields.
+- **404 Not Found:**  Course Coordinator or some courses were not found in the database.
+  -**Content:** JSON object containing an error message.
+- **500 Internal Server Error:** An error occurred while processing the request on the server side.
+  -**Content:** JSON object containing an error message.
+
+#### Example Request Body
+
+```json
+{
+  "coordinatorId":"67066ddf9daf8f316b181c13",
+  "courseIds": ["6621b94113c28c2a6caa4494","6621b94013c28c2a6caa4488",
+    "6621b94213c28c2a6caa4497",
+    "6621b94213c28c2a6caa4497"]
+}
+```
+
+#### Example Response
+
+```json
+{
+  "message": "Courses removed successfully",
+  "courses": [
+    "6621b94013c28c2a6caa4488",
+    "6621b94213c28c2a6caa4497",
+    "6621b94213c28c2a6caa4497"
+  ]
+}
+```
+---
+
+### 
