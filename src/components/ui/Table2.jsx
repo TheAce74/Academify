@@ -7,6 +7,7 @@ export default function Table2({
   border,
   linkState,
   goToLink,
+  action = "view",
 }) {
   const headers = columns?.map((column, index) => {
     return (
@@ -19,74 +20,72 @@ export default function Table2({
     );
   });
 
-  const rows = data == 'loading' ?
-  (
-    <tr>
-      <td colSpan={columns.length} className="text-center">
-        <span className="block my-8">Loading ....</span>
-      </td>
-    </tr>
-  ) : !data?.length ? 
-  (
-    <tr>
-      <td colSpan={columns.length} className="text-center">
-        <span className="block my-8">No data</span>
-      </td>
-    </tr>
-  ) :
-  (
-    data?.map((row, index) => {
-      return (
-        <tr
-          key={`row-${index}`}
-          className={`transition-element hover:bg-slate-100 py-2 ${border ? "border" : ""}`}
-        >
-          {columns?.map((column, index2) => {
-            const value = column.render
-              ? column.render(column, row)
-              : row[column.key];
+  const rows =
+    data == "loading" ? (
+      <tr>
+        <td colSpan={columns.length} className="text-center">
+          <span className="block my-8">Loading ....</span>
+        </td>
+      </tr>
+    ) : !data?.length ? (
+      <tr>
+        <td colSpan={columns.length} className="text-center">
+          <span className="block my-8">No data</span>
+        </td>
+      </tr>
+    ) : (
+      data?.map((row, index) => {
+        return (
+          <tr
+            key={`row-${index}`}
+            className={`transition-element hover:bg-slate-100 py-2 ${border ? "border" : ""}`}
+          >
+            {columns?.map((column, index2) => {
+              const value = column.render
+                ? column.render(column, row)
+                : row[column.key];
 
-            return (
-              <td key={`cell-${index2}`} className="py-4 px-6">
-                <span className="flex items-center font-semibold text-nowrap">
-                  {value}
+              return (
+                <td key={`cell-${index2}`} className="py-4 px-6">
+                  <span className="flex items-center font-semibold text-nowrap">
+                    {value}
+                  </span>
+                </td>
+              );
+            })}
+            {link && !linkState && (
+              <td>
+                <span
+                  onClick={() => {
+                    goToLink(data[index]);
+                  }}
+                  className="bg-primary-100 px-3 py-2 rounded-md cursor-pointer"
+                >
+                  {action == "view" ? "View" : action}
                 </span>
               </td>
-            );
-          })}
-          {link && !linkState && (
-            <td>
-              <span
-                onClick={() => {
-                  goToLink(data[index]);
-                }}
-                className="bg-primary-100 px-3 py-2 rounded-md cursor-pointer"
-              >
-                View
-              </span>
-            </td>
-          )}
-          {link && linkState && (
-            <td>
-              <Link
-                to={link}
-                state={
-                  linkState.filter(
-                    (data) =>
-                      data?.year === row?.year &&
-                      data?.semester === row?.semester
-                  )[0]
-                }
-                className="bg-primary-100 px-3 py-2 rounded-md"
-              >
-                View
-              </Link>
-            </td>
-          )}
-        </tr>
-      );
-    })
-  );
+            )}
+            {link && linkState && (
+              <td>
+                <Link
+                  to={link}
+                  state={
+                    linkState.filter(
+                      (data) =>
+                        data?.year === row?.year &&
+                        data?.semester === row?.semester
+                    )[0]
+                  }
+                  className="bg-primary-100 px-3 py-2 rounded-md"
+                >
+                  View
+                </Link>
+              </td>
+            )}
+          </tr>
+        );
+      })
+    );
 
   return (
     <div className="overflow-x-auto text-sm font-jakarta transition-element w-full">

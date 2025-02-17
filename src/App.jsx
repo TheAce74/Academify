@@ -36,7 +36,13 @@ import ParentProfile from "./pages/dashboard/parent/sections/Profile";
 import ParentNotification from "./pages/dashboard/parent/sections/Notifications";
 import ParentMessages from "./pages/dashboard/parent/sections/Messages";
 
+// Coordinator
+import CoordinatorDashboard from "./pages/dashboard/coordinator/sections/Dashboard";
+import CoordinatorProfile from "./pages/dashboard/coordinator/sections/Profile";
+import CoordinatorCourses from "./pages/dashboard/coordinator/sections/Courses";
+
 import AdviserContextProvider from "./context/AdviserContext";
+import CoordinatorContextProvider from "./context/CoordinatorContext";
 import StudentContextProvider from "./context/StudentContext";
 import ParentContextProvider from "./context/ParentContext";
 
@@ -60,14 +66,16 @@ function App() {
           element: (
             <Guard>
               <AdviserContextProvider>
-                <StudentContextProvider>
-                  <ParentContextProvider>
-                    <MenuTogglerWrapper />
-                    <div className="w-full p-5 ml-auto xl:w-[calc(100%_-22em)] md:w-[calc(100%_-17em)] md:p-8 md:pr-20 md:pt-[3.5em]">
-                      <Outlet />
-                    </div>
-                  </ParentContextProvider>
-                </StudentContextProvider>
+                <CoordinatorContextProvider>
+                  <StudentContextProvider>
+                    <ParentContextProvider>
+                      <MenuTogglerWrapper />
+                      <div className="w-full p-5 ml-auto xl:w-[calc(100%_-22em)] md:w-[calc(100%_-17em)] md:p-8 md:pr-20 md:pt-[3.5em]">
+                        <Outlet />
+                      </div>
+                    </ParentContextProvider>
+                  </StudentContextProvider>
+                </CoordinatorContextProvider>
               </AdviserContextProvider>
             </Guard>
           ),
@@ -179,6 +187,28 @@ function App() {
                 {
                   path: "/parent/messages",
                   element: <ParentMessages />,
+                },
+              ],
+            },
+            {
+              path: "/coordinator",
+              element: (
+                <>
+                  <Outlet />
+                </>
+              ),
+              children: [
+                {
+                  path: "/coordinator",
+                  element: <CoordinatorDashboard />,
+                },
+                {
+                  path: "/coordinator/profile",
+                  element: <CoordinatorProfile />,
+                },
+                {
+                  path: "/coordinator/courses",
+                  element: <CoordinatorCourses />,
                 },
               ],
             },

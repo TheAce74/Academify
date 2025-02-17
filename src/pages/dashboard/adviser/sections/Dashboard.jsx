@@ -1,4 +1,4 @@
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+// import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
@@ -32,8 +32,8 @@ const Dashboard = () => {
 
   return (
     <div className="font-jakarta">
-      <div className="flex flex-col sm:flex-row justify-center align-middle gap-10 ">
-        <Link
+      <div className="flex flex-col sm:flex-row justify-start gap-10 ">
+        {/* <Link
           to="/adviser/results"
           className="border-[1px] border-neutral-200 rounded-lg shadow-[0_4px_5px_0] shadow-neutral-200/50 hover:scale-[1.05] sm:w-1/2 h-full transition"
         >
@@ -45,7 +45,7 @@ const Dashboard = () => {
               Upload student grades and view academic performances.
             </p>
           </div>
-        </Link>
+        </Link> */}
         <Link
           to="/adviser/semesters"
           className="border-[1px] border-neutral-200 rounded-lg shadow-[0_4px_5px_0] shadow-neutral-200/50 hover:scale-[1.05] sm:w-1/2 h-full transition"
