@@ -17,7 +17,9 @@ function useAuth() {
       const type =
         response.data.userType === "course_advisor"
           ? "adviser"
-          : response.data.userType;
+          : response.data.userType === "course_coordinator"
+            ? "coordinator"
+            : response.data.userType;
       handleSetUser({ type });
       showAlert("Registered successfully", {
         variant: "success",
@@ -38,7 +40,9 @@ function useAuth() {
       const type =
         response.data.userType === "course_advisor"
           ? "adviser"
-          : response.data.userType;
+          : response.data.userType === "course_coordinator"
+            ? "coordinator"
+            : response.data.userType;
       handleSetUser({ type });
       showAlert("Logged in successfully", {
         variant: "success",

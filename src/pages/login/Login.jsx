@@ -70,6 +70,9 @@ const Login = () => {
                   <MenuItem value="adviser">Adviser</MenuItem>
                   <MenuItem value="parent">Parent</MenuItem>
                   <MenuItem value="student">Student</MenuItem>
+                  <MenuItem value="coursecoordinator">
+                    Course Coordinator
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Box>

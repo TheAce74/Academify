@@ -59,7 +59,12 @@ export const Register = () => {
             reg: regRef.current.value,
             advisor: advisorRef,
           }
-        : generic;
+        : type === "coursecoordinator"
+          ? {
+              ...generic,
+              role: "course_coordinator",
+            }
+          : generic;
     try {
       setLoading(true);
       await register(type, payload);
@@ -100,6 +105,9 @@ export const Register = () => {
                   <MenuItem value="adviser">Adviser</MenuItem>
                   <MenuItem value="parent">Parent</MenuItem>
                   <MenuItem value="student">Student</MenuItem>
+                  <MenuItem value="coursecoordinator">
+                    Course Coordinator
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Box>
@@ -163,6 +171,64 @@ export const Register = () => {
               </div>
             ) : type === "parent" ? (
               <div key="parent">
+                <div className="input-box mb-6">
+                  <label htmlFor="firstName" className="name mb-2 block w-max">
+                    First name
+                  </label>
+                  <InputField
+                    icon={<HiOutlineUser />}
+                    id="firstName"
+                    placeholder="Enter your first name"
+                    type="text"
+                    required
+                    ref={firstNameRef}
+                  />
+                </div>
+                <div className="input-box mb-6">
+                  <label htmlFor="lastName" className="name mb-2 block w-max">
+                    Last name
+                  </label>
+                  <InputField
+                    icon={<HiOutlineUser />}
+                    id="lastName"
+                    placeholder="Enter your last name"
+                    type="text"
+                    required
+                    ref={lastNameRef}
+                  />
+                </div>
+                <div className="input-box mb-6">
+                  <label htmlFor="email" className="email mb-2 block w-max">
+                    Email
+                  </label>
+                  <InputField
+                    icon={<MdOutlineEmail />}
+                    id="email"
+                    placeholder="Enter your email"
+                    type="email"
+                    required
+                    ref={emailRef}
+                  />
+                </div>
+                <div className="input-box mb-6">
+                  <label
+                    htmlFor="password"
+                    className="password mb-2 block w-max"
+                  >
+                    Password
+                  </label>
+                  <InputField
+                    icon={<FiEye />}
+                    id="password"
+                    placeholder="Enter your password"
+                    type="password"
+                    required
+                    ref={passwordRef}
+                  />
+                </div>
+              </div>
+            ) : type === "coursecoordinator" ? (
+              <div key="coursecoordinator">
                 <div className="input-box mb-6">
                   <label htmlFor="firstName" className="name mb-2 block w-max">
                     First name

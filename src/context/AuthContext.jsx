@@ -5,7 +5,13 @@ const AuthContext = createContext(null);
 
 function AuthContextProvider({ children }) {
   const { userType } = getUser();
-  const type = userType === "course_advisor" ? "adviser" : userType;
+  const type =
+    userType === "course_advisor"
+      ? "adviser"
+      : userType === "course_coordinator"
+        ? "coordinator"
+        : userType;
+
   const [user, setUser] = useState({
     type: type ?? "",
   });

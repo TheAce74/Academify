@@ -16,10 +16,10 @@ function Sidebar({ showMenu = false, toggleMenu = () => false }) {
       name: "Semesters",
       path: "/adviser/semesters",
     },
-    {
-      name: "Results",
-      path: "/adviser/results",
-    },
+    // {
+    //   name: "Results",
+    //   path: "/adviser/results",
+    // },
     {
       name: "Manage Students",
       path: "/adviser/manage",
@@ -84,6 +84,21 @@ function Sidebar({ showMenu = false, toggleMenu = () => false }) {
     },
   ]);
 
+  const [coordinatorLinks] = useState([
+    {
+      name: "Dashboard",
+      path: "/coordinator",
+    },
+    {
+      name: "Profile",
+      path: "/coordinator/profile",
+    },
+    {
+      name: "Courses",
+      path: "/coordinator/courses",
+    },
+  ]);
+
   useClickAway(clickAwayRef, () => toggleMenu(false));
 
   useEffect(() => {
@@ -136,6 +151,24 @@ function Sidebar({ showMenu = false, toggleMenu = () => false }) {
       {activeUser === "parent" && (
         <ul>
           {parentLinks.map((link, index) => {
+            return (
+              <li
+                key={index}
+                className={`w-full transition-element mb-4 cursor-pointer hover:bg-[#ECECEC]`}
+              >
+                <NavLink to={link.path} end={link.name === "Dashboard"}>
+                  <p className="pl-10 lg:pl-16 py-3">{link.name}</p>
+                </NavLink>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {/* Coordinators */}
+      {activeUser === "coordinator" && (
+        <ul>
+          {coordinatorLinks.map((link, index) => {
             return (
               <li
                 key={index}
