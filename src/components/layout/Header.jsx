@@ -30,6 +30,7 @@ const defaultInitials = {
 
 export default function Header({ toggleMenu, showMenu }) {
   const { user } = useAuthContext();
+  const [profileData, setProfileData] = useState(null);
   const [initials, setInitials] = useState(defaultInitials[user.type]);
   const [anchorEl, setAnchorEl] = useState(null);
   const { logout } = useAuth();
@@ -64,14 +65,17 @@ export default function Header({ toggleMenu, showMenu }) {
       if (user.type === "adviser") {
         const data = await getAdviserProfile();
         setInitials(getInitials(data?.profile?.name));
+        setProfileData(data?.profile);
       } else if (user.type === "parent") {
         const data = await getParentProfile();
         setInitials(
           getInitials(`${data?.profile?.firstName} ${data?.profile?.lastName}`)
         );
+        setProfileData(data?.profile);
       } else if (user.type === "coordinator") {
         const data = await getCoordinatorProfile();
         setInitials(getInitials(data?.profile?.name));
+        setProfileData(data?.profile);
       } else {
         const data = await getStudentProfile();
         setInitials(
@@ -79,6 +83,7 @@ export default function Header({ toggleMenu, showMenu }) {
             `${data?.student?.user?.firstName} ${data?.student?.user?.lastName}`
           )
         );
+        setProfileData(data?.profile);
       }
     };
     getProfiles();
@@ -89,6 +94,10 @@ export default function Header({ toggleMenu, showMenu }) {
     getParentProfile,
     getStudentProfile,
   ]);
+
+  useEffect(() => {
+    console.log(profileData);
+  }, [profileData]);
 
   return (
     <div className="z-[300] flex justify-between items-center h-[10vh] w-full bg-[#E7EBFE] md:px-16 px-4 transition-element sticky top-0">
@@ -127,13 +136,14 @@ export default function Header({ toggleMenu, showMenu }) {
             </Avatar>
 
             <span className="ml-3 mr-8 font-semibold capitalize text-black hidden md:block">
-              {user.type === "adviser"
+              {/* {user.type === "adviser"
                 ? "Course Adviser"
                 : user.type === "parent"
                   ? "Parent"
                   : user.type === "coordinator"
                     ? "Course Coordinator"
-                    : "Student"}
+                    : "Student"} */}
+              {profileData?.name}
             </span>
             <ExpandMoreIcon color="dark" />
           </Button>
