@@ -4,8 +4,8 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import Button from "../../../../components/ui/Button";
 import Loader from "../../../../components/ui/Loader";
 import InputField from "../../../../components/ui/InputFieldTwo";
-import pic from "../../../../assets/pic.png";
-import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+// import pic from "../../../../assets/pic.png";
+// import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import { useAdviserContext } from "../../../../context/AdviserContext";
 import { customAxios } from "../../../../services/axios";
 import { getInitials } from "../../../../utils/functions";
@@ -21,6 +21,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [staffName, setStaffName] = useState(adviser?.profile?.name);
   const [staffEmail, setStaffEmail] = useState(adviser?.profile?.email);
+  const [staffLevel, setStaffLevel] = useState(adviser?.profile?.level || "");
   const [initials] = useState(getInitials(adviser?.profile?.name));
 
   const handleSubmit = async (e) => {
@@ -32,7 +33,7 @@ const Profile = () => {
           firstName: staffName.split(" ")[0],
           lastName: staffName.split(" ")[1],
           email: staffEmail,
-          level: adviser?.profile?.level,
+          level: staffLevel,
         });
         setDetailsDisabled(true);
         setLoading(false);
@@ -147,9 +148,11 @@ const Profile = () => {
               <InputField
                 // icon={<BorderColorOutlinedIcon />}
                 id="level"
-                disabled
+                value={staffLevel}
+                setValue={setStaffLevel}
+                disabled={detailsDisabled}
                 placeholder="400"
-                type="text"
+                type="number"
               ></InputField>
             </div>
             <div className="pb-5">
